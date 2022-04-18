@@ -1,0 +1,18 @@
+GET http://localhost:5000/books
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImhvbGV0ZXh0IiwiaWF0IjoxNjQ1NTQwNzk0LCJleHAiOjE2NDU1NDA4MjR9.y2fIKQqZGHN-bGRY4j4RdoctS4BdynBcuhnv-KUpb5M
+
+###
+POST http://localhost:5500/login
+Content-Type: application/json
+
+{
+    "userName":"holetext"
+}
+
+###
+POST http://localhost:5500/refresh
+Content-Type: application/json
+
+{
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImhvbGV0ZXh0IiwiaWF0IjoxNjQ1NTQxODA3LCJleHAiOjE2NDU1NzE4MDd9.T1fRyUHGNSfxuL-CLB0o_n6mYfd2yKKBct9i1ff9lvk"
+}

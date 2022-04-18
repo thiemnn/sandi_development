@@ -1,0 +1,25 @@
+{
+  "name": "ilive4coding-nextjs-ecommerce",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "start:dev": "next start",
+    "start:prod": "next start -p 80",
+    "export": "next build && next export"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^2.8.8",
+    "dotenv": "^16.0.0",
+    "next": "9.5.1",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-hook-form": "^7.28.1",
+    "react-loading-skeleton": "^2.1.1",
+    "react-redux": "^7.2.1",
+    "redux": "^4.0.5",
+    "yup": "^0.32.11"
+  }
+}

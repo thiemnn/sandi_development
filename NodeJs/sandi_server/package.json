@@ -1,0 +1,25 @@
+{
+  "name": "sandi_server",
+  "version": "1.0.0",
+  "description": "san di website server",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "sandi",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "mkdirp": "^1.0.4",
+    "mysql": "^2.18.1",
+    "node-fetch": "^3.2.3",
+    "nodemon": "^2.0.15",
+    "promise-mysql": "^5.1.0",
+    "rimraf": "^3.0.2",
+    "swagger-ui-express": "^4.3.0",
+    "yargs": "^17.3.1"
+  }
+}

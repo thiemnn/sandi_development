@@ -1,0 +1,51 @@
+https://viblo.asia/p/tich-hop-tinymce-va-laravel-filemanager-vao-du-an-laravel-bJzKmP2X59N
+https://github.com/alexusmai/laravel-file-manager/blob/master/docs/integration.md
+https://www.itsolutionstuff.com/post/laravel-file-manager-tutorial-step-by-stepexample.html
+https://hocwp.net/cai-dat-imagick-tren-xampp-va-php-7-1/#:~:text=T%E1%BA%A3i%20Imagick%20cho%20ng%C3%B4n%20ng%E1%BB%AF%20PHP,-B%C3%A2y%20gi%E1%BB%9D%20b%E1%BA%A1n&text=B%E1%BA%A1n%20t%E1%BA%A3i%20v%E1%BB%81%2C%20gi%E1%BA%A3i%20n%C3%A9n,v%C3%A0%20th%C3%AAm%20d%C3%B2ng%20extension%3Dphp_imagick.
+https://laravel.com/docs/7.x
+https://devanswers.co/install-composer-php-windows-10/
+https://viblo.asia/p/laravel-crud-voi-laravel-Do754dWX5M6
+php artisan serve
+npm run dev
+
+debug in controller:
+print_r(json_encode($categories)); 
+die;
+debug in view:
+{{dd($categories)}}
+
+tự tạo file helper
+tạo file helper in app: app/helpers.php
+sửa file composer.json, thêm autoload cho file app/helpers.php:
+"autoload": {
+    "files": [
+        "app/helpers.php"
+    ],
+    "classmap": [
+        "database/seeds",
+        "database/factories"
+    ],
+    "psr-4": {
+        "App\\": "app/"
+    }
+},
+chạy lệnh: composer dump-autoload
+thêm hàm trong file helpers.php
+
+<?php
+if (! function_exists('env')) {
+    function env($key, $default = null) {
+        // ...
+    }
+}
+
+
+
+
+
+    <div>
+      <div class="even">
+        <input type="checkbox" name="product_category[]" value="164">
+        Bộ Điều Khiển<br>
+    </div>
+    </div>

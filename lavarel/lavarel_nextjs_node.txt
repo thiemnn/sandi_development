@@ -1,0 +1,131 @@
+https://viblo.asia/p/tich-hop-tinymce-va-laravel-filemanager-vao-du-an-laravel-bJzKmP2X59N
+https://github.com/alexusmai/laravel-file-manager/blob/master/docs/integration.md
+https://www.itsolutionstuff.com/post/laravel-file-manager-tutorial-step-by-stepexample.html
+https://hocwp.net/cai-dat-imagick-tren-xampp-va-php-7-1/#:~:text=T%E1%BA%A3i%20Imagick%20cho%20ng%C3%B4n%20ng%E1%BB%AF%20PHP,-B%C3%A2y%20gi%E1%BB%9D%20b%E1%BA%A1n&text=B%E1%BA%A1n%20t%E1%BA%A3i%20v%E1%BB%81%2C%20gi%E1%BA%A3i%20n%C3%A9n,v%C3%A0%20th%C3%AAm%20d%C3%B2ng%20extension%3Dphp_imagick.
+https://laravel.com/docs/7.x
+https://devanswers.co/install-composer-php-windows-10/
+https://viblo.asia/p/laravel-crud-voi-laravel-Do754dWX5M6
+https://www.fundaofwebit.com/laravel-8/how-to-edit-update-data-in-laravel
+php artisan serve
+npm run dev
+
+debug in controller:
+print_r(json_encode($categories)); 
+die;
+debug in view:
+{{dd($categories)}}
+
+delete duplicate records in table
+Delete from product_category where id not in (SELECT min(id) from product_category GROUP by product_id, category_id);
+UPDATE product_image SET image_url = REPLACE (image_url, 'http://127.0.0.1:8000', '..') where id > 0
+
+chown -R www-data:www-data /var/www/html/sandi_admin
+chmod -R 755 /var/www/html/sandi_admin/public/storage
+chmod -R 755 /var/www/html/sandi_admin/storage
+systemctl restart apache2
+mysqldump -u root -p sandi_website_db> backup.sql
+
+
+build sitemap
+build robot.txt
+trên trang sản phẩm thêm: giao hàng trong 24h, bảo đảm chất lượng, sản phẩm chính hãng, các sản phẩm mới ra mắt
+sản phẩm liên quan
+45.125.237.89 (mysql database, sandi_server, sandi_admin pm2 apache2)
+14.225.27.138 window server Administrator Abcde123$%
+103.63.111.58 demo.newsunsoftware.com(nextjs_sandi pm2 nginx) cmc demo
+
+install mysql on ubuntu
+sudo apt update
+sudo apt install mysql-server
+sudo systemctl start mysql.service
+sudo mysql_secure_installation
+sudo mysql
+
+CREATE USER 'test'@'%' IDENTIFIED BY 'chibin911';
+GRANT CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT, REFERENCES, RELOAD on *.* TO 'test'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+sudo mysqladmin -p -u test version
+
+117.1.93.70
+sudo ufw allow from 117.1.93.70 to any port 3306
+sudo ufw allow 3306 #from any ip address
+php artisan serve --host=45.125.237.89 --port=8000
+
+remove yarn sudo apt-get remove yarn && sudo apt-get purge yarn
+
+https://devstudioonline.com/article/deploy-nextjs-app-with-nginx-and-pm2-on-linux-ubuntu
+https://docs.nginx.com/nginx/admin-guide/security-controls/terminating-ssl-http/#:~:text=To%20set%20up%20an%20HTTPS,example.com.
+https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-on-centos-7
+https://secure.vinahost.vn/ac/knowledgebase/257/Cu-hnh-SSL-cho-Nginx-lm-Reverse-Proxy.html?gclid=EAIaIQobChMIgYT1iuiQ9wIVCZhmAh1ynAHJEAAYASAAEgKC0_D_BwE
+https://github.com/abzetdin-adamov/Install-CentOS-7-Min-VM-VirtualBox-on-Windows-10-SSH-support/blob/master/tutorial.md
+server {
+    server_name newsunsoftware.com www.newsunsoftware.com;
+
+    location / {
+        proxy_pass http://localhost:3000;
+    }
+}
+
+sudo nginx -t
+rm- rvf delete dir with out ask
+rm -f delete file without ask
+
+firewall-cmd --zone=public --add-port=9000/tcp --permanent
+firewall-cmd --reload
+pm2 start example.js #start nodejs on pm2
+
+check port is in used and kill port
+$ lsof -i tcp:3000
+$ kill -9 PID
+
+pm2 list
+pm2 log
+pm2 start npm --name "appname" -- start # start next app
+pm2 start npm --name "appname99" -- start
+pm2 stop nextjs_sandi # Here nextapp is your app name in PM2
+
+yarn build # Rebuild app for production
+pm2 restart appname99 # Here nextapp is your app name
+sudo service nginx restart
+systemctl restart nginx.service
+nano /etc/nginx/nginx.conf  
+curl http://127.0.0.1:3000 test response of nextjs app
+curl http://localhost:3000
+
+them vao file /etc/nginx/nginx.conf hai dong sau dong include /etc/nginx/conf.d/*.conf;
+include /etc/nginx/conf.d/*.conf;
+include /etc/nginx/sites-enabled/*.conf;
+server_names_hash_bucket_size 64;
+
+tao hai thu muc sites-available va sites-enabled trong /etc/nginx
+tao file newsunsoftware.com.conf trong sites-available
+cd /etc/nginx/sites-available
+sudo nano newsunsoftware.com.conf
+server {
+  listen 80;
+
+  server_name demo.newsunsoftware.com;
+
+
+  location / {
+    proxy_pass http://localhost:3000;
+  }
+}
+chay lenh
+sudo ln -s /etc/nginx/sites-available/demo.newsunsoftware.com.conf /etc/nginx/sites-enabled/demo.newsunsoftware.com.conf
+sudo ln -s /etc/nginx/sites-available/api.newsunsoftware.com.conf /etc/nginx/sites-enabled/api.newsunsoftware.com.conf
+tuong tu cho domain thu hai
+
+sudo nano /etc/hosts dung cho virtual host
+127.0.0.1   localhost
+...
+https://blog.hostvn.net/chia-se/huong-dan-cai-dat-php-tren-centos-7.html
+/var/log/dicom-interactive/error.log
+
+
+Permission denied while connecting to upstream error
+modify the /etc/selinux/config file, change SELINUX=enforcing to disabled:
+SELINUX=disabled
+# reboot
+
+
