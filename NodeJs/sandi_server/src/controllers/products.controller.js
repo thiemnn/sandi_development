@@ -9,7 +9,15 @@ const get = async(req, res) => {
 }
 
 const getAll = async(req, res) => {
-    var response = await productsService.getAll();
+    var search = req.query.search
+    var category_id = req.query.category_id
+    var page = req.query.page
+    var opt1 = req.query.opt1
+    var opt2 = req.query.opt2
+    var opt3 = req.query.opt3
+    var per_page = req.query.per_page
+    var order_by = req.query.order_by
+    var response = await productsService.getAll(category_id, search, opt1, opt2, opt3, page, per_page, order_by);
     return responseHelper.successWithData(res, 'Success With Data', response)
 }
 

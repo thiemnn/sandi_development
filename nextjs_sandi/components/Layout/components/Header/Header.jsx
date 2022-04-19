@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import Link from "next/link";
 
 export default function Header() {
 
+  const [searchQuery, setSearchQuery] = useState("")
+
   function DisplaySearchSelection({optionList}){
     return (
-      <select className="nice-select select-search-category">
+      <select className="nice-select select-search-category" id="search_category_id">
         {optionList.map((opt) => (
           <option key={opt.id} value={opt.id}>{opt.name}</option>
         ))}
@@ -107,6 +108,20 @@ export default function Header() {
     }
   }, [])
 
+  const handleClick = (e) =>  {  
+    // var valid = true;
+    // var validEmail = customerEmail && isValidEmail(customerEmail) ? true : false
+    // var validMobile = customerMobile && isValidMobile(customerMobile) ? true : false
+    // if (!customerName || !validEmail || !validMobile || !customerMessage) {
+    //   valid = false
+    // }
+    // setshowNameError(customerName ? false : true)
+    // setshowEmailError(validEmail ? false : true)
+    // setshowMobileError(validMobile ? false : true)
+    // setshowMessageError(customerMessage ? false : true)
+    window.location = '/search_product?search='+search+'&category_id=108'
+  }
+
   if(searchOptions){
     return(
     <div className="body-wrapper">   
@@ -165,11 +180,11 @@ export default function Header() {
                 </div>
               </div>
               <div className="col-lg-9 pl-0 ml-sm-15 ml-xs-15">
-                <form action="#" className="hm-searchbox">
+                <div className="form-group hm-searchbox">
                   {<DisplaySearchSelection optionList={searchOptions}/>}
-                  <input type="text" placeholder="Nhập từ khóa tìm kiếm ..." />
-                  <button className="li-btn" type="submit"><i className="fa fa-search"></i></button>
-                </form>
+                  <input type="text" id="searchText" placeholder="Nhập từ khóa tìm kiếm ..." />                   
+                  <button className="li-btn" id="searchProduct"><i className="fa fa-search"></i></button>
+                </div>
                 <div className="header-middle-right">
                   <ul className="hm-menu">
                     <li className="hm-wishlist">

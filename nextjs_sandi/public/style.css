@@ -370,6 +370,68 @@ iframe {
     line-height: 1.5;
 }
 
+.slider-with-banner{
+	margin-top: 20px;
+}
+
+.search-form .nice-select {
+    border-radius: 0;
+    color: #626262;
+    font-size: 14px;
+    height: 30px;
+    line-height: 30px;
+    width: 100%;
+    z-index: 2;	
+    -webkit-tap-highlight-color: transparent;
+    background-color: #fff;
+    border-radius: 5px;
+    border: solid 1px #e8e8e8;
+	padding-left: 6px;
+}
+
+
+.search-form .nice-select-test .option {
+    line-height: 30px;
+    min-height: 30px;
+}
+
+.search-form .nice-select-test .list {
+    border-radius: 0px;
+    width: 100%;
+    z-index: 99;
+}
+
+.search-form input{
+	height: 30px;
+}
+
+.search-form .checkbox{
+	height: 20px;
+	width: 20px;
+}
+
+.search-form .li-btn-3 {
+	background: #f2f2f2;
+	line-height: 12px;
+	display: inline-block;
+	padding: 16px 30px;
+	border-radius: 3px;
+	color: #363f4d;
+	font-weight: 500;
+	font-size: 12px;
+	background-color: #349634;
+	border: 1px solid #349634;
+	color: #ffffff;
+	text-transform: uppercase;
+	transition: all 0.3s ease-in-out;
+  }
+.search-form .li-btn-3:hover {
+	background-color: #275427;
+	color: #ffffff;
+	background-color: #275427;
+	border-color: #275427; 
+  }
+
 /* ------------------ */
 
 /*----------------------------------------*/
@@ -457,7 +519,7 @@ button.li-btn:hover {
 a.links, 
 a.links-2, 
 a.review-links {
-	background: #fed700 none repeat scroll 0 0;
+	background: #349634 none repeat scroll 0 0;
 	color: #242424;
 	display: inline-block;
 	font-family: Montserrat;
@@ -473,7 +535,7 @@ a.review-links {
 }
 a.links:hover,
 a.links-2:hover {
-	background: #333333 none repeat scroll 0 0;
+	background: #375837 none repeat scroll 0 0;
 	color: #fff;
 }
 a.review-links {
@@ -580,65 +642,29 @@ textarea:focus {
 /*  1.8 Background Variation Set
 /*----------------------------------------*/
 /*Home One | Slider Background Image*/
-.bg-1, .bg-2, .bg-3 {
-	background-image: url(images/slider/1.jpg);
+.bg-1, .bg-2, .bg-3, .bg-4, .bg-5, .bg-6 {
+	background-image: url('http://admin.newsunsoftware.com/storage/bang%20tai%20pvc/bang-tai-pvc-slide.jpg');
 	background-repeat: no-repeat;
-	background-position: center center;
+	background-position: left;
 	background-size: cover;
 	min-height: 475px;
-	width: 100%;
 }
 .bg-2 {
-	background-image: url(images/slider/2.jpg);
+	background-image: url('http://admin.newsunsoftware.com/storage/Dong%20co/dong-co-slide.jpg');
 }
 .bg-3 {
-	background-image: url(images/slider/3.jpg);
+	background-image: url('http://admin.newsunsoftware.com/storage/Hop%20so/hop-so-slide.jpg');
 }
-/*Home Two | Slider Background Image*/
-.bg-4, .bg-5, .bg-6 {
-	background-image: url(images/slider/4.jpg);
-	background-repeat: no-repeat;
-	background-position: center center;
-	background-size: cover;
-	min-height: 475px;
-	width: 100%;
+.bg-4 {
+	background-image: url('http://admin.newsunsoftware.com/storage/Nhom/nhom-slide.jpg');
 }
 .bg-5 {
-	background-image: url(images/slider/5.jpg);
+	background-image: url('http://admin.newsunsoftware.com/storage/bang tai/tham-esd-1.jpg');
 }
 .bg-6 {
-	background-image: url(images/slider/6.jpg);
+	background-image: url('http://admin.newsunsoftware.com/storage/bang%20tai/phu-kien-bang-tai-slide.jpg');
 }
-/*Home Three | Slider Background Image*/
-.bg-7, .bg-8, .bg-9 {
-	background-image: url(images/slider/7.jpg);
-	background-repeat: no-repeat;
-	background-position: center center;
-	background-size: cover;
-	min-height: 425px;
-	width: 100%;
-}
-.bg-8 {
-	background-image: url(images/slider/8.jpg);
-}
-.bg-9 {
-	background-image: url(images/slider/9.jpg);
-}
-/*Home Four | Slider Background Image*/
-.bg-10, .bg-11, .bg-12 {
-	background-image: url(images/slider/10.jpg);
-	background-repeat: no-repeat;
-	background-position: center center;
-	background-size: cover;
-	min-height: 770px;
-	width: 100%;
-}
-.bg-11 {
-	background-image: url(images/slider/11.jpg);
-}
-.bg-12 {
-	background-image: url(images/slider/12.jpg);
-}
+
 /*----------------------------------------*/
 /*  li's Background Variation Set 
 /*----------------------------------------*/
@@ -2698,7 +2724,7 @@ textarea:focus {
 }
 .li-banner > a, .single-banner > a, .featured-banner a {
 	width: 100%;
-	height: 100%;
+	height: 230px;
 	display: block;
 	overflow: hidden;
 	position: relative;

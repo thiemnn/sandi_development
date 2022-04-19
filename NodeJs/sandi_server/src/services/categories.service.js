@@ -14,21 +14,18 @@ const get = async (_id, filter_options, page, per_page, order_by) => {
         var product_query = ``;
         var filter_option_ids = Array();
         if(filter_options){
-            product_query = `SELECT A.*, B.category_id FROM product_category B 
+            product_query = `SELECT A.id, A.name, A.image, A.url_seo, A.short_description, B.category_id FROM product_category B 
             right join products A on A.id = B.product_id 
             left join product_filter_options C on A.id = C.product_id
             where B.category_id IN (`+category_ids.join(',')+`)  and A.status = 1 and C.filter_option_id IN(`+filter_options+`)`; 
-            //GROUP BY(A.id)`;
             filter_option_ids = filter_options.split(',');
         } else{
-            product_query = `SELECT A.*, B.category_id FROM product_category B 
+            product_query = `SELECT A.id, A.name, A.image, A.url_seo, A.short_description, B.category_id FROM product_category B 
             right join products A on A.id = B.product_id 
             where B.category_id IN (`+category_ids.join(',')+`)  and A.status = 1`; 
-            //GROUP BY(A.id)`;
             filter_option_ids = Array();
         }
 
-        //console.log(product_query)
         var query_count_product = `Select COUNT(*) as product_count from (`+product_query+`) A`;
         const product_count = await con.query(query_count_product)
 
@@ -49,7 +46,6 @@ const get = async (_id, filter_options, page, per_page, order_by) => {
         LEFT JOIN filter_options B on A.id = B.filter_id 
         RIGHT JOIN filters_categories C on A.id = C.filter_id
         where C.category_id = ` + _id + ` and B.status = 1 and A.status = 1 ORDER by A.order_display, A.name, B.order_display`;
-        //console.log(query_filters)
         const filters = await con.query(query_filters);
         await con.end()
         return {
@@ -83,7 +79,7 @@ const getAll = async () =>{
     console.log('get all categories')
     try {
         const con = await db.getConnection()
-        const categories = await con.query("SELECT * FROM categories  where status = 1")
+        const categories = await con.query("SELECT id, name, image, parent_id, url_seo FROM categories  where status = 1")
         await con.end()
     
         var childs = new Array();

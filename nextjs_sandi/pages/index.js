@@ -1,9 +1,9 @@
-import HomeSection from "./sections/HomeSection";
+import HomeSection2 from "./sections/HomeSection2";
 
 export default function Home() {
   return (
     <>
-      <HomeSection />
+      <HomeSection2 />
     </>
   );
 }

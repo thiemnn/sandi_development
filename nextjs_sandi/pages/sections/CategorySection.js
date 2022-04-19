@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { render } from 'react-dom';
 
 function CategorySection({ relation_id }) {
+    //console.log(relation_id)
     const [loaded, setLoaded] = useState(false)
     
     const [dataCategories, setDataCategories] = useState(null)
@@ -110,6 +111,7 @@ function CategorySection({ relation_id }) {
                     current_category = parent_categories.pop()
                     breadcrumbs.push(current_category)
                 }  
+                sessionStorage.setItem("breadcrumbs",JSON.stringify(breadcrumbs))
                 setBreadCrumbs(breadcrumbs)
                 setShowGroup(categoryItem && categoryItem.childs && categoryItem.childs.length > 0 && breadcrumbs.length < 2)
                 setFilterOptions(data.data.filters)
@@ -292,8 +294,9 @@ function CategorySection({ relation_id }) {
                                             <div className="product-short">
                                                 <p>Sắp xếp theo:</p>
                                                 <select className="nice-select">
-                                                    <option value="sales">Thứ tự (A - Z)</option>
-                                                    <option value="sales">Thứ tự (Z - A)</option>
+                                                    <option value="sales">Thứ tự từ A-Z</option>
+                                                    <option value="sales">Sản phẩm mới nhất</option>
+                                                    <option value="sales">Sản phẩm xem nhiều nhất</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -303,8 +306,8 @@ function CategorySection({ relation_id }) {
                                             <div id="grid-view" className="tab-pane fade active show" role="tabpanel">
                                                 <div className="product-area shop-product-area">
                                                     <div className="row">
-                                                        {products && products.map((product) => (
-                                                            <div className="col-lg-4 col-md-4 col-sm-6 mt-40" key={product.url_seo}>
+                                                        {products && products.map((product, index) => (
+                                                            <div className="col-lg-4 col-md-4 col-sm-6 mt-40" key={index}>
                                                                 <div className="single-product-wrap">
                                                                     <div className="product-image">
                                                                         <a href={product.url_seo}>
@@ -338,8 +341,8 @@ function CategorySection({ relation_id }) {
                                             <div id="list-view" className="tab-pane fade product-list-view" role="tabpanel">
                                                 <div className="row">
                                                     <div className="col">
-                                                        {products && products.map((product) => (
-                                                            <div className="row product-layout-list" key={product.url_seo}>
+                                                        {products && products.map((product, index) => (
+                                                            <div className="row product-layout-list" key={index}>
                                                                 <div className="col-lg-4 col-md-4 ">
                                                                     <div className="product-image">
                                                                         <a href={product.url_seo}>
@@ -375,11 +378,11 @@ function CategorySection({ relation_id }) {
                                         </div>
                                         <div id="cate-toggle" className="category-menu-list">
                                             <ul>
-                                                {category && category.childs && category.childs.map((child) => (
-                                                    <DisplaySubCategoryV2 categoryItem={child} />
+                                                {category && category.childs && category.childs.map((child, index) => (
+                                                    <DisplaySubCategoryV2 categoryItem={child} key={index}/>
                                                 ))}
-                                                {!category && dataCategories && dataCategories.map((child) => (
-                                                    <DisplaySubCategoryV2 categoryItem={child} />
+                                                {!category && dataCategories && dataCategories.map((child, index) => (
+                                                    <DisplaySubCategoryV2 categoryItem={child} key={index}/>
                                                 ))}
                                             </ul>
                                         </div>

@@ -44,24 +44,7 @@ function DetailSection({ relation_id }) {
                 .then((data) => {
                     setImages(data.data.images);
                     setProperties(data.data.properties);
-                    var current_category = data.data.categories.filter(function (e) {
-                        return e.id == data.data.product.category_id;
-                    })[0];
-                    var parent_categories = new Array()
-                    if(current_category){
-                        parent_categories.push(current_category)
-                        while(current_category.parent_id > 0){
-                            current_category = data.data.categories.filter(function (e) {
-                                return e.id == current_category.parent_id;
-                            })[0];
-                            parent_categories.push(current_category)
-                        }
-                    }
-                    while(parent_categories.length > 0){
-                        current_category = parent_categories.pop()
-                        breadcrumbs.push(current_category)
-                    }  
-                    setBreadCrumbs(breadcrumbs)                    
+                    setBreadCrumbs(JSON.parse(sessionStorage.getItem("breadcrumbs")))
                     setProduct(data.data.product);       
                     setLoaded(true)
                 })
@@ -77,7 +60,7 @@ function DetailSection({ relation_id }) {
                             <ul>
                                 <li><a href="/">Trang chủ</a></li>
                                 <li><a href="/san_pham">Sản phẩm</a></li>
-                                {bread_crumbs.map((breadcrumb) => {
+                                {bread_crumbs && bread_crumbs.map((breadcrumb) => {
                                     return (
                                         <li key={breadcrumb.url_seo}><a href={"/" + breadcrumb.url_seo}>{breadcrumb.name}</a></li>
                                     )
