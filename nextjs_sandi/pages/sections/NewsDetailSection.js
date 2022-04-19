@@ -90,7 +90,7 @@ function DetailSection({ relation_id }) {
                         <div className="row">
                             <div className="col-lg-3 order-lg-2 order-2">
                                 <div className="li-blog-sidebar-wrapper">
-                                    <div className="li-blog-sidebar">
+                                    <div className="li-blog-sidebar hidden">
                                         <div className="li-sidebar-search-form">
                                             <form action="#">
                                                 <input type="text" className="li-search-field" placeholder="Tìm kiếm" />

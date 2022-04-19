@@ -116,7 +116,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/bang-tai-pvc-den-karo-2-3mm-chong-tinh-dien">
                             <img src="http://admin.newsunsoftware.com/storage/bang%20tai/SBPV23BL2ZNA.png" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -137,7 +137,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/bang-tai-pvc-den-karo-2-3mm-chong-tinh-dien">
                             <img src="http://admin.newsunsoftware.com/storage/bang%20tai/SBPV23BL2ZNA.png" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -158,7 +158,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/bang-tai-pvc-den-karo-2-3mm-chong-tinh-dien">
                             <img src="http://admin.newsunsoftware.com/storage/bang%20tai/SBPV23BL2ZNA.png" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -179,7 +179,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/bang-tai-pvc-den-karo-2-3mm-chong-tinh-dien">
                             <img src="http://admin.newsunsoftware.com/storage/bang%20tai/SBPV23BL2ZNA.png" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -200,7 +200,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/bang-tai-pvc-den-karo-2-3mm-chong-tinh-dien">
                             <img src="http://admin.newsunsoftware.com/storage/bang%20tai/SBPV23BL2ZNA.png" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -221,7 +221,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/bang-tai-pvc-den-karo-2-3mm-chong-tinh-dien">
                             <img src="http://admin.newsunsoftware.com/storage/bang%20tai/SBPV23BL2ZNA.png" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -242,7 +242,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/bang-tai-pvc-den-karo-2-3mm-chong-tinh-dien">
                             <img src="http://admin.newsunsoftware.com/storage/bang%20tai/SBPV23BL2ZNA.png" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -263,7 +263,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/bang-tai-pvc-den-karo-2-3mm-chong-tinh-dien">
                             <img src="http://admin.newsunsoftware.com/storage/bang%20tai/SBPV23BL2ZNA.png" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -284,7 +284,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/bang-tai-pvc-den-karo-2-3mm-chong-tinh-dien">
                             <img src="http://admin.newsunsoftware.com/storage/bang%20tai/SBPV23BL2ZNA.png" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -305,7 +305,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/bang-tai-pvc-den-karo-2-3mm-chong-tinh-dien">
                             <img src="http://admin.newsunsoftware.com/storage/bang%20tai/SBPV23BL2ZNA.png" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -347,7 +347,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/dong-co-spg-200w-3-pha-s9i200gt">
                             <img src="http://admin.newsunsoftware.com/storage/Dong co/spg/s9i200gt-3b.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -368,7 +368,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/dong-co-spg-200w-3-pha-s9i200gt">
                             <img src="http://admin.newsunsoftware.com/storage/Dong co/spg/s9i200gt-3b.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -389,7 +389,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/dong-co-spg-200w-3-pha-s9i200gt">
                             <img src="http://admin.newsunsoftware.com/storage/Dong co/spg/s9i200gt-3b.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -410,7 +410,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/dong-co-spg-200w-3-pha-s9i200gt">
                             <img src="http://admin.newsunsoftware.com/storage/Dong co/spg/s9i200gt-3b.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -431,7 +431,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/dong-co-spg-200w-3-pha-s9i200gt">
                             <img src="http://admin.newsunsoftware.com/storage/Dong co/spg/s9i200gt-3b.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -452,7 +452,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/dong-co-spg-200w-3-pha-s9i200gt">
                             <img src="http://admin.newsunsoftware.com/storage/Dong co/spg/s9i200gt-3b.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -473,7 +473,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/dong-co-spg-200w-3-pha-s9i200gt">
                             <img src="http://admin.newsunsoftware.com/storage/Dong co/spg/s9i200gt-3b.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -494,7 +494,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/dong-co-spg-200w-3-pha-s9i200gt">
                             <img src="http://admin.newsunsoftware.com/storage/Dong co/spg/s9i200gt-3b.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -515,7 +515,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/dong-co-spg-200w-3-pha-s9i200gt">
                             <img src="http://admin.newsunsoftware.com/storage/Dong co/spg/s9i200gt-3b.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -536,7 +536,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/dong-co-spg-200w-3-pha-s9i200gt">
                             <img src="http://admin.newsunsoftware.com/storage/Dong co/spg/s9i200gt-3b.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -578,7 +578,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/tim-hieu-bang-tai-pvc-la-gi">
                             <img src="http://admin.newsunsoftware.com/storage/bang tai/bang-tai-pvc-la-gi.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -593,7 +593,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/tim-hieu-bang-tai-pvc-la-gi">
                             <img src="http://admin.newsunsoftware.com/storage/bang tai/bang-tai-pvc-la-gi.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -608,7 +608,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/tim-hieu-bang-tai-pvc-la-gi">
                             <img src="http://admin.newsunsoftware.com/storage/bang tai/bang-tai-pvc-la-gi.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -623,7 +623,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/tim-hieu-bang-tai-pvc-la-gi">
                             <img src="http://admin.newsunsoftware.com/storage/bang tai/bang-tai-pvc-la-gi.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -638,7 +638,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/tim-hieu-bang-tai-pvc-la-gi">
                             <img src="http://admin.newsunsoftware.com/storage/bang tai/bang-tai-pvc-la-gi.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -653,7 +653,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/tim-hieu-bang-tai-pvc-la-gi">
                             <img src="http://admin.newsunsoftware.com/storage/bang tai/bang-tai-pvc-la-gi.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -668,7 +668,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/tim-hieu-bang-tai-pvc-la-gi">
                             <img src="http://admin.newsunsoftware.com/storage/bang tai/bang-tai-pvc-la-gi.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -683,7 +683,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/tim-hieu-bang-tai-pvc-la-gi">
                             <img src="http://admin.newsunsoftware.com/storage/bang tai/bang-tai-pvc-la-gi.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -698,7 +698,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/tim-hieu-bang-tai-pvc-la-gi">
                             <img src="http://admin.newsunsoftware.com/storage/bang tai/bang-tai-pvc-la-gi.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">
@@ -713,7 +713,7 @@ export default function HomeSection() {
                           <a href="http://demo.newsunsoftware.com/tim-hieu-bang-tai-pvc-la-gi">
                             <img src="http://admin.newsunsoftware.com/storage/bang tai/bang-tai-pvc-la-gi.jpg" alt="Li's Product Image" />
                           </a>
-                          <span class="sticker">New</span>
+                          <span class="sticker hidden">New</span>
                         </div>
                         <div class="product_desc">
                           <div class="product_desc_info">

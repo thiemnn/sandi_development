@@ -36,6 +36,7 @@ class MyDocument extends Document {
           <script src="/js/slick.min.js"></script>
           <script src="/js/owl.carousel.min.js"></script>
           <script src="/js/main_dev.js"></script>
+          <script src="/js/jquery.paulund_modal_box.js"></script>
         </body>
       </Html>
     );

@@ -432,6 +432,10 @@ iframe {
 	border-color: #275427; 
   }
 
+.show{
+	display: block !important;
+}
+
 /* ------------------ */
 
 /*----------------------------------------*/
@@ -2361,7 +2365,7 @@ textarea:focus {
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 }
 .product-image > span.sticker {
-	background: #0363cd;
+	background: #349634;
 	border-radius: 100%;
 	color: #fff;
 	right: 15px;

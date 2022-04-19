@@ -279,29 +279,29 @@ function DetailSection({ relation_id }) {
                                             <div className='form-group quotes'>
                                                 <div className="row mb-10">
                                                     <div className='col-md-4 col-4'>
-                                                        <label className='form-label'>Têm sảm phẩm<span className="required">*</span></label>
+                                                        <label className='form-label'>Têm sảm phẩm</label>
                                                     </div>
                                                     <div className="col-md-8 col-8">
-                                                        <input type="text" readOnly className='form-control' value={product.name} placeholder="" />
+                                                        <input type="text" readOnly className='form-control' name='property_values[]' value={product.name} placeholder="" />
                                                     </div>
                                                 </div>
-                                            {properties && properties.map((property, idx) => (
+                                                {properties && properties.map((property, idx) => (
+                                                    <div className="row mb-10">
+                                                        <div className='col-md-4 col-4'>
+                                                            <label className='form-label'>{property.property_name} {property.property_unit && "(" + property.property_unit + ")"}</label>
+                                                        </div>
+                                                        <div className="col-md-8 col-8">
+                                                            <input type="text" className='form-control' name='property_values[]' value={property.value} placeholder="" />
+                                                        </div>
+                                                    </div>
+                                                ))}
                                                 <div className="row mb-10">
                                                     <div className='col-md-4 col-4'>
-                                                        <label className='form-label'>{property.property_name} {property.property_unit && "(" + property.property_unit + ")"}<span className="required">*</span></label>
-                                                    </div>
-                                                    <div className="col-md-8 col-8">
-                                                        <input type="text" className='form-control' value={property.value} placeholder="" />
-                                                    </div>
-                                                </div>
-                                            ))}
-                                                <div className="row mb-10">
-                                                    <div className='col-md-4 col-4'>
-                                                        <label className='form-label'>Số lượng <span className="required">*</span></label>
+                                                        <label className='form-label'>Số lượng </label>
                                                     </div>
                                                     <div className="col-md-8 col-8">
                                                         <div className="cart-plus-minus">
-                                                            <input className="cart-plus-minus-box" readOnly value={productQuantity} type="text" />
+                                                            <input className="cart-plus-minus-box" readOnly id='product_quantity' name='property_values[]' value={productQuantity} type="text" />
                                                             <div className="dec qtybutton" onClick={() => handleChangeQuantity(-1)}><i className="fa fa-angle-down"></i></div>
                                                             <div className="inc qtybutton" onClick={() => handleChangeQuantity( 1)}><i className="fa fa-angle-up"></i></div>
                                                         </div>
@@ -312,7 +312,7 @@ function DetailSection({ relation_id }) {
                                                     </div>
                                                     <div className="col-md-8 col-8">
                                                         <div className='cart-quantity'>
-                                                            <button className="add-to-cart" type="submit">Gửi yêu cầu báo giá</button>
+                                                            <button className="add-to-cart" id="request_quotation" type="submit">Gửi yêu cầu báo giá</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -323,7 +323,7 @@ function DetailSection({ relation_id }) {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>                
             </>
         )
     } else {

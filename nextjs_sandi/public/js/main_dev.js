@@ -186,7 +186,8 @@ document.addEventListener("DOMContentLoaded", function () {
 			if(searchText != ''){
 				window.location.href = '/search_product?search=' + searchText + '&category_id=' + search_category_id
 			}
-		})
+		});
+		$('.paulund_modal').paulund_modal_box();
 	}, 1000);
 });
 
@@ -199,3 +200,62 @@ $(document).on('keypress',function(e) {
 		}		
 	}
 });
+
+$(document).on("click","#request_quotation",function() {
+	var values = $("input[name='property_values[]']")
+              .map(function(){return $(this).val();}).get();
+	var properties = [];
+	$('label.form-label').each(function(){
+		properties.push($(this).text());
+	});
+	var email = localStorage.getItem('email')
+	var user_id = localStorage.getItem('user_id')
+	if(user_id = null || user_id == undefined || user_id == 'null' || user_id == ''){
+		showModel('Vui lòng đăng nhập để gửi yêu cầu báo giá')
+		return;
+	}
+	var data = {
+		properties: JSON.stringify(properties),
+		values: JSON.stringify(values),
+		email: email
+	}
+
+	$.ajax({
+		type: 'POST',
+		data: JSON.stringify(data),
+		contentType: 'application/json',
+		url: 'http://localhost:9000/products/requestQuotation',						
+		success: function(data) {
+			showModel('Gửi yêu cầu báo giá thành công')
+		},
+		error : function(request,error){
+			showModel('Không thể gửi yêu cầu báo giá')
+		}
+	});
+});
+
+function showModel(message){
+	var html = '<div class="modal fade show" id="dialogModel" tabindex="-1" role="dialog" aria-labelledby="dialogModelLabel" aria-hidden="true">'
+	html += '<div class="modal-dialog" role="document">'
+	html += '	<div class="modal-content">'
+	html += '		<div class="modal-header">'
+	html += '			<h5 class="modal-title" id="dialogModelLabel">Thông báo từ Sandi Việt Nam</h5>'
+	html += '			<button type="button" class="close closeModel" data-dismiss="modal" aria-label="Close">'
+	html += '				<span aria-hidden="true">&times;</span>'
+	html += '			</button>'
+	html += '		</div>'
+	html += '		<div class="modal-body">'
+	html += message
+	html += '		</div>'
+	html += '		<div class="modal-footer">'
+	html += '			<button type="button" class="btn btn-secondary closeModel" data-dismiss="modal">Close</button>'
+	html += '		</div>'
+	html += '	</div>'
+	html += '</div>'
+	html += '</div>'
+	var block_page = $(html);                        
+    $(block_page).appendTo('body');
+	$('.closeModel').click(function(){
+		$('#dialogModel').fadeOut().remove();                 
+	});
+}

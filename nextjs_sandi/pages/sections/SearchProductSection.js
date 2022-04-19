@@ -14,7 +14,7 @@ function SearchProductSection({search, category_id, opt_1, opt_2, opt_3}) {
     const [opt1,setOpt1] = useState(opt_1 == "true" ? true : false)
     const [opt2,setOpt2] = useState(opt_2 == "true" ? true : false)
     const [opt3,setOpt3] = useState(opt_3 == "true" ? true : false)
-
+    const [order_by, setOrderBy] = useState(1)
 
     useEffect(() => {
         if(sessionStorage.getItem("categories")){
@@ -98,6 +98,7 @@ function SearchProductSection({search, category_id, opt_1, opt_2, opt_3}) {
         '&opt1=' + opt1 + 
         '&opt2=' + opt2 + 
         '&opt3=' + opt3 + 
+        '&order_by=' + order_by + 
         '&per_page=' + per_page + 
         '&page=' + page)
             .then((res) => res.json())
@@ -106,7 +107,7 @@ function SearchProductSection({search, category_id, opt_1, opt_2, opt_3}) {
                 setProduct_Count(data.data.product_count)
                 setLoaded(true)
             })
-    }, [page])   
+    }, [page, order_by])   
 
     if (loaded) {
         return (
@@ -190,10 +191,10 @@ function SearchProductSection({search, category_id, opt_1, opt_2, opt_3}) {
                                     <div className="product-select-box">
                                         <div className="product-short">
                                             <p>Sắp xếp theo:</p>
-                                            <select className="nice-select">
-                                                <option value="sales">Thứ tự từ A-Z</option>
-                                                <option value="sales">Sản phẩm mới nhất</option>
-                                                <option value="sales">Sản phẩm xem nhiều nhất</option>
+                                            <select className="nice-select" defaultValue={order_by} onChange={e => setOrderBy(e.target.value)}>
+                                                <option value="1">Thứ tự từ A-Z</option>
+                                                <option value="2">Sản phẩm mới nhất</option>
+                                                <option value="3">Sản phẩm xem nhiều nhất</option>
                                             </select>
                                         </div>
                                     </div>
@@ -210,7 +211,7 @@ function SearchProductSection({search, category_id, opt_1, opt_2, opt_3}) {
                                                                     <a href={product.url_seo}>
                                                                         <img src={product.image.replace("../storage", process.env.NEXT_PUBLIC_ADMIN_DOMAIN + "storage")} alt={product.name} />
                                                                     </a>
-                                                                    <span className="sticker">New</span>
+                                                                    <span className={product.is_new ? "sticker" : "sticker hidden"}>Mới</span>
                                                                 </div>
                                                                 <div className="product_desc">
                                                                     <div className="product_desc_info">
@@ -245,7 +246,7 @@ function SearchProductSection({search, category_id, opt_1, opt_2, opt_3}) {
                                                                     <a href={product.url_seo}>
                                                                         <img src={product.image.replace("../storage", process.env.NEXT_PUBLIC_ADMIN_DOMAIN + "storage")} alt={product.name} />
                                                                     </a>
-                                                                    <span className="sticker">New</span>
+                                                                    <span className={product.is_new ? "sticker" : "sticker hidden"}>Mới</span>
                                                                 </div>
                                                             </div>
                                                             <div className="col-lg-9 col-md-9">

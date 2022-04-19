@@ -17,6 +17,7 @@ function CategorySection({ relation_id }) {
     const [page, setPage] = useState(1)
     const [product_count, setProduct_Count] = useState(0)
     const [show_group, setShowGroup] = useState(false)
+    const [order_by, setOrderBy] = useState(1)
     let checkList = new Array()
     let breadcrumbs = new Array()
 
@@ -85,9 +86,14 @@ function CategorySection({ relation_id }) {
     }
 
     useEffect(() => {
-        fetch(process.env.NEXT_PUBLIC_SERVER_DOMAIN + 'categories/' + relation_id + '?filter_options=' + filter_options + '&per_page=' + per_page + '&page=' + page)
+        fetch(process.env.NEXT_PUBLIC_SERVER_DOMAIN + 'categories/' + relation_id + 
+        '?filter_options=' + filter_options + 
+        '&order_by=' + order_by + 
+        '&per_page=' + per_page + 
+        '&page=' + page)
             .then((res) => res.json())
             .then((data) => {
+                console.log(data.data)
                 var original_categories = JSON.parse(sessionStorage.getItem("original_categories"))
                 var categoryItem = original_categories.filter(function (e) {
                     return e.id == relation_id;
@@ -126,7 +132,7 @@ function CategorySection({ relation_id }) {
                 setFilterNames(filter_names)
                 setLoaded(true)
             })
-    }, [relation_id, filter_options, per_page, page])      
+    }, [relation_id, filter_options, order_by, per_page, page])      
 
     function DisplayFilter({ filterName }){  
         return(
@@ -293,10 +299,10 @@ function CategorySection({ relation_id }) {
                                         <div className="product-select-box">
                                             <div className="product-short">
                                                 <p>Sắp xếp theo:</p>
-                                                <select className="nice-select">
-                                                    <option value="sales">Thứ tự từ A-Z</option>
-                                                    <option value="sales">Sản phẩm mới nhất</option>
-                                                    <option value="sales">Sản phẩm xem nhiều nhất</option>
+                                                <select className="nice-select" defaultValue={order_by} onChange={e => setOrderBy(e.target.value)}>
+                                                    <option value="1">Thứ tự từ A-Z</option>
+                                                    <option value="2">Sản phẩm mới nhất</option>
+                                                    <option value="3">Sản phẩm xem nhiều nhất</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -313,7 +319,7 @@ function CategorySection({ relation_id }) {
                                                                         <a href={product.url_seo}>
                                                                             <img src={product.image.replace("../storage", process.env.NEXT_PUBLIC_ADMIN_DOMAIN+"storage")} alt={product.name} />
                                                                         </a>
-                                                                        <span className="sticker">New</span>
+                                                                        <span className={product.is_new ? "sticker" : "sticker hidden"}>Mới</span>
                                                                     </div>
                                                                     <div className="product_desc">
                                                                         <div className="product_desc_info">
@@ -348,7 +354,7 @@ function CategorySection({ relation_id }) {
                                                                         <a href={product.url_seo}>
                                                                             <img src={product.image.replace("../storage", process.env.NEXT_PUBLIC_ADMIN_DOMAIN+"storage")} alt={product.name} />
                                                                         </a>
-                                                                        <span className="sticker">New</span>
+                                                                        <span className={product.is_new ? "sticker" : "sticker hidden"}>Mới</span>
                                                                     </div>
                                                                 </div>
                                                                 <div className="col-lg-8 col-md-8">
@@ -387,23 +393,6 @@ function CategorySection({ relation_id }) {
                                             </ul>
                                         </div>
                                     </div>
-
-                                    {/* <div className="sidebar-categores-box mt-sm-30 mt-xs-30">
-                                    <div className="sidebar-title">
-                                        <h2>{category && category.name}</h2>
-                                        <h2>{!category && "Sản phẩm"}</h2>
-                                    </div>
-                                    <div className="category-sub-menu">
-                                        <ul>
-                                            {category && category.childs && category.childs.map((child) => (
-                                                <DisplaySubCategoryV1 categoryItem={child} padding = {10}/>
-                                            ))}   
-                                            {!category && categories && categories.map((child) => (
-                                                <DisplaySubCategoryV1 categoryItem={child} padding = {10}/>
-                                            ))}                                          
-                                        </ul>
-                                    </div>
-                                </div> */}
                                     {
                                         filterNames.length > 0 &&
                                         <div className="sidebar-categores-box">
