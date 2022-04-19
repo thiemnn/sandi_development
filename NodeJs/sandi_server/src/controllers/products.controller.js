@@ -12,21 +12,26 @@ const getAll = async(req, res) => {
     var search = req.query.search
     var category_id = req.query.category_id
     var page = req.query.page
-    var opt1 = req.query.opt1
-    var opt2 = req.query.opt2
-    var opt3 = req.query.opt3
+    var opt1 = req.query.opt1 == "true" ? true : false
+    var opt2 = req.query.opt2 == "true" ? true : false
+    var opt3 = req.query.opt3 == "true" ? true : false
     var per_page = req.query.per_page
     var order_by = req.query.order_by
     var response = await productsService.getAll(category_id, search, opt1, opt2, opt3, page, per_page, order_by);
     return responseHelper.successWithData(res, 'Success With Data', response)
 }
 
-const PostRecord = async(req, res, next) => {
-    return responseHelper.success(res, 'Insert record successfully')
+const requestQuotation = async(req, res, next) => {
+    var result = await productsService.requestQuotation(req.body);
+    if(result){
+        return responseHelper.success(res, 'Insert record successfully')
+    } else{
+        return responseHelper.errorResponse(res, 'Can not register user')
+    }
 }
 
 module.exports = {
     get,
-    PostRecord,
+    requestQuotation,
     getAll
 };

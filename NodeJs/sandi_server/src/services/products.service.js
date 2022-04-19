@@ -31,7 +31,7 @@ const getAll = async (category_id, search, opt1, opt2, opt3, page, per_page, ord
         var category_ids = category_childs.map(category_child => category_child.id);
         category_ids.push(category_id)
         var product_query = ``;
-        product_query = `SELECT distinct A.id, A.name, A.image, A.url_seo, A.short_description FROM product_category B 
+        product_query = `SELECT distinct A.id, A.name, A.image, A.url_seo, A.short_description, A.is_new FROM product_category B 
             right join products A on A.id = B.product_id 
             where B.category_id IN (`+category_ids.join(',')+`) and (A.name like '%`+ search+`%'`; 
         if(opt1){
@@ -48,10 +48,20 @@ const getAll = async (category_id, search, opt1, opt2, opt3, page, per_page, ord
         var query_count_product = `Select COUNT(*) as product_count from (`+product_query+`) A`;
         const product_count = await con.query(query_count_product)
 
-        if(order_by){
-            product_query =  product_query + ` ORDER by `;
-            product_query =  product_query + order_by;
+        if(order_by){            
+            switch(order_by){
+                case "1":
+                    product_query =  product_query + ` ORDER by name asc `;
+                    break;
+                case "2":
+                    product_query =  product_query + ` ORDER by name desc `;
+                    break;
+                case "3":
+                    product_query =  product_query + ` ORDER by id asc `;
+                    break;
+            }            
         }
+
         if(per_page && page && page > 0){
             const offset = (page - 1) * per_page;
             product_query = product_query + ` limit `;
@@ -72,7 +82,22 @@ const getAll = async (category_id, search, opt1, opt2, opt3, page, per_page, ord
     }  
 }
 
+const requestQuotation = async (body) =>{
+    try {
+        const con = await db.getConnection()
+        var sql = `INSERT INTO request_quotation (email,property_names,property_values) VALUES 
+        ('${body.email}', '${body.properties}', '${body.values}')`;  
+        const result = await con.query(sql)
+        await con.end()  
+        return result
+    } catch (e) {
+        console.log(e.message);
+        return null;  
+    }  
+}
+
 module.exports = {
     get,
-    getAll
+    getAll,
+    requestQuotation
 };

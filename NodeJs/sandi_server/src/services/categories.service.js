@@ -14,13 +14,13 @@ const get = async (_id, filter_options, page, per_page, order_by) => {
         var product_query = ``;
         var filter_option_ids = Array();
         if(filter_options){
-            product_query = `SELECT A.id, A.name, A.image, A.url_seo, A.short_description, B.category_id FROM product_category B 
+            product_query = `SELECT A.id, A.name, A.image, A.url_seo, A.short_description, A.is_new, B.category_id FROM product_category B 
             right join products A on A.id = B.product_id 
             left join product_filter_options C on A.id = C.product_id
             where B.category_id IN (`+category_ids.join(',')+`)  and A.status = 1 and C.filter_option_id IN(`+filter_options+`)`; 
             filter_option_ids = filter_options.split(',');
         } else{
-            product_query = `SELECT A.id, A.name, A.image, A.url_seo, A.short_description, B.category_id FROM product_category B 
+            product_query = `SELECT A.id, A.name, A.image, A.url_seo, A.short_description, A.is_new, B.category_id FROM product_category B 
             right join products A on A.id = B.product_id 
             where B.category_id IN (`+category_ids.join(',')+`)  and A.status = 1`; 
             filter_option_ids = Array();
@@ -29,10 +29,23 @@ const get = async (_id, filter_options, page, per_page, order_by) => {
         var query_count_product = `Select COUNT(*) as product_count from (`+product_query+`) A`;
         const product_count = await con.query(query_count_product)
 
-        if(order_by){
-            product_query =  product_query + ` ORDER by `;
-            product_query =  product_query + order_by;
+        if(order_by){            
+            switch(order_by){
+                case "1":
+                    console.log(1)
+                    product_query =  product_query + ` ORDER by name asc `;
+                    break;
+                case "2":
+                    console.log(2)
+                    product_query =  product_query + ` ORDER by name desc `;
+                    break;
+                case "3":
+                    console.log(3)
+                    product_query =  product_query + ` ORDER by id asc `;
+                    break;
+            }            
         }
+        
         if(per_page && page && page > 0){
             const offset = (page - 1) * per_page;
             product_query = product_query + ` limit `;
