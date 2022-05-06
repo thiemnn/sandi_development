@@ -357,6 +357,13 @@ iframe {
     font-size: 15px;
 }
 
+.attachments{
+	width: 50%;
+    margin: auto;	
+    text-align: center;	
+    font-size: 15px;
+}
+
 .quotes{
 	width: 50%;
     margin: auto;
@@ -434,6 +441,22 @@ iframe {
 
 .show{
 	display: block !important;
+}
+
+.attachments a:link,.attachments a:visited {
+	background-color: #349634;
+	color: white;
+	padding: 0.5rem 1rem;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	border: 0;
+    border-radius: 0.375rem;
+    font-size: 16px;
+}
+  
+.attachments a:hover,.attachments a:active {
+	background-color: #275427;
 }
 
 /* ------------------ */

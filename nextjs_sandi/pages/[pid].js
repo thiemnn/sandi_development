@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router'
 import React, { useState, useEffect } from 'react';
-import HomeSection from "./sections/HomeSection";
 import DetailSection from './sections/DetailSection';
 import NotFoundSection from './sections/NotFoundSection';
 import CategorySection from './sections/CategorySection';

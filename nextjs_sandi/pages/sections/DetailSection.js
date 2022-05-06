@@ -1,16 +1,17 @@
 
 import React, { useState, useEffect } from 'react';
+import DefaultHeader from './DefaultHeader';
 
 function DetailSection({ relation_id }) {
     const [product, setProduct] = useState(null)
     const [images, setImages] = useState(null)
     const [properties, setProperties] = useState(null)
+    const [attachments, setAttachments] = useState(null)
     const [bread_crumbs, setBreadCrumbs] = useState(null)
     const [loaded, setLoaded] = useState(false)
     const [displayTab, setDisplayTab] = useState(1)
     const [productQuantity, setProductQuantity] = useState(1)
 
-    let breadcrumbs = new Array()
     const handleClick = (tab_id) => {
         setDisplayTab(tab_id)
     }
@@ -21,28 +22,13 @@ function DetailSection({ relation_id }) {
         }
     }
 
-    function DisplayImage({image}){
-        return(
-            <div className="lg-image">
-                <a className="popup-img venobox vbox-item" href={image.image_url.replace("../storage", process.env.NEXT_PUBLIC_ADMIN_DOMAIN + "storage")} data-gall="myGallery">
-                    <img src={image.image_url.replace("../storage", process.env.NEXT_PUBLIC_ADMIN_DOMAIN + "storage")} alt="product image" />
-                </a>
-            </div>
-        )
-    }
-
-    function DisplayImageSmall({image}){
-        return(
-            <div className="sm-image"><img src={image.image_url.replace("../storage", process.env.NEXT_PUBLIC_ADMIN_DOMAIN+"storage")} alt="product image thumb" /></div>
-        )
-    }
-
     useEffect(() => {
         if (relation_id) {
             fetch(process.env.NEXT_PUBLIC_SERVER_DOMAIN + 'products/' + relation_id)
                 .then((res) => res.json())
                 .then((data) => {
                     setImages(data.data.images);
+                    setAttachments(data.data.attachments)
                     setProperties(data.data.properties);
                     setBreadCrumbs(JSON.parse(sessionStorage.getItem("breadcrumbs")))
                     setProduct(data.data.product);       
@@ -54,6 +40,7 @@ function DetailSection({ relation_id }) {
     if (loaded && product) {
         return (
             <>
+                {/* <DefaultHeader/> */}
                 <div className="breadcrumb-area">
                     <div className="container">
                         <div className="breadcrumb-content">
@@ -265,9 +252,30 @@ function DetailSection({ relation_id }) {
                                             </div>                                            
                                         </div>
                                         <div className={!(displayTab == 5) ? "hidden" : "tab-pane fade"} id="tab5" role="tabpanel">
-                                            <p>
-                                                Nội dung đang cập nhật
-                                            </p>
+                                            <div className='attachments'>
+                                                <table className="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Tên tài liệu</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {attachments && attachments.map((attachment, idx) => (
+                                                            <tr>
+                                                                <td className="attachment-name">
+                                                                    {attachment.attachment_name}
+                                                                </td>
+                                                                <td>
+                                                                    <div>
+                                                                        <a href={attachment.attachment_url.replace("../storage", process.env.NEXT_PUBLIC_ADMIN_DOMAIN + "storage")} download target="_blank">Tải về</a>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                         <div className={!(displayTab == 6) ? "hidden" : "tab-pane fade center"} id="tab6" role="tabpanel">
                                             <div>
@@ -282,7 +290,7 @@ function DetailSection({ relation_id }) {
                                                         <label className='form-label'>Têm sảm phẩm</label>
                                                     </div>
                                                     <div className="col-md-8 col-8">
-                                                        <input type="text" readOnly className='form-control' name='property_values[]' value={product.name} placeholder="" />
+                                                        <input type="text" readOnly className='form-control' name='property_values[]' defaultValue={product.name} placeholder="" />
                                                     </div>
                                                 </div>
                                                 {properties && properties.map((property, idx) => (
@@ -291,7 +299,7 @@ function DetailSection({ relation_id }) {
                                                             <label className='form-label'>{property.property_name} {property.property_unit && "(" + property.property_unit + ")"}</label>
                                                         </div>
                                                         <div className="col-md-8 col-8">
-                                                            <input type="text" className='form-control' name='property_values[]' value={property.value} placeholder="" />
+                                                            <input type="text" className='form-control' name='property_values[]' defaultValue={property.value} placeholder="" />
                                                         </div>
                                                     </div>
                                                 ))}

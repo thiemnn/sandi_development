@@ -11,18 +11,7 @@ class MyDocument extends Document {
       <Html>
         <Head>
           <meta charSet="utf-8" />
-          <meta httpEquiv="X-UA-Compatible" content="IE=edge" />         
-
-          <link rel="stylesheet" href="/css/font-awesome.min.css" />
-          <link rel="stylesheet" href="/css/meanmenu.css" />
-          <link rel="stylesheet" href="/css/nice-select.css" />
-          <link rel="stylesheet" href="/css/bootstrap.min.css" />
-          <link rel="stylesheet" href="/css/slick.css" />
-          <link rel="stylesheet" href="/css/animate.css" />
-          <link rel="stylesheet" href="/css/owl.carousel.min.css" />
-          <link rel="stylesheet" href="/css/helper.css" />
-          <link rel="stylesheet" href="/style.css" />
-          <link rel="stylesheet" href="/css/responsive.css"></link>
+          <meta httpEquiv="X-UA-Compatible" content="IE=edge" />          
         </Head>
         <body>
           <Main />

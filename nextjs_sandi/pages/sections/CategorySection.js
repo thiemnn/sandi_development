@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DefaultHeader from './DefaultHeader';
 import { render } from 'react-dom';
 
 function CategorySection({ relation_id }) {
@@ -93,7 +94,6 @@ function CategorySection({ relation_id }) {
         '&page=' + page)
             .then((res) => res.json())
             .then((data) => {
-                console.log(data.data)
                 var original_categories = JSON.parse(sessionStorage.getItem("original_categories"))
                 var categoryItem = original_categories.filter(function (e) {
                     return e.id == relation_id;
@@ -201,6 +201,7 @@ function CategorySection({ relation_id }) {
     if (loaded) {
         return (
             <>
+                {/* <DefaultHeader/> */}
                 <div className="breadcrumb-area">
                     <div className="container">
                         <div className="breadcrumb-content">

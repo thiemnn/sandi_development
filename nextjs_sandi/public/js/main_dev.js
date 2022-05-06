@@ -1,4 +1,6 @@
 
+var api_server_domain = "http://45.125.237.89:9000/";
+
 var number_of_load_product_fail = 0;
 function loadProductDetail() {
 	if(number_of_load_product_fail > 30){
@@ -224,7 +226,7 @@ $(document).on("click","#request_quotation",function() {
 		type: 'POST',
 		data: JSON.stringify(data),
 		contentType: 'application/json',
-		url: 'http://localhost:9000/products/requestQuotation',						
+		url: api_server_domain + 'products/requestQuotation',						
 		success: function(data) {
 			showModel('Gửi yêu cầu báo giá thành công')
 		},

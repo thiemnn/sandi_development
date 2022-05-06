@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 export default function Header() {
 
-  const [searchQuery, setSearchQuery] = useState("")
-
   function DisplaySearchSelection({optionList}){
     return (
       <select className="nice-select select-search-category" id="search_category_id">
@@ -106,21 +104,9 @@ export default function Header() {
         setSearchOptions(optionList)
       })
     }
+    
   }, [])
 
-  const handleClick = (e) =>  {  
-    // var valid = true;
-    // var validEmail = customerEmail && isValidEmail(customerEmail) ? true : false
-    // var validMobile = customerMobile && isValidMobile(customerMobile) ? true : false
-    // if (!customerName || !validEmail || !validMobile || !customerMessage) {
-    //   valid = false
-    // }
-    // setshowNameError(customerName ? false : true)
-    // setshowEmailError(validEmail ? false : true)
-    // setshowMobileError(validMobile ? false : true)
-    // setshowMessageError(customerMessage ? false : true)
-    window.location = '/search_product?search='+search+'&category_id=108'
-  }
 
   if(searchOptions){
     return(
