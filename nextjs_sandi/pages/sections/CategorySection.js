@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import DefaultHeader from './DefaultHeader';
 import { render } from 'react-dom';
 
 function CategorySection({ relation_id }) {
@@ -201,7 +200,6 @@ function CategorySection({ relation_id }) {
     if (loaded) {
         return (
             <>
-                {/* <DefaultHeader/> */}
                 <div className="breadcrumb-area">
                     <div className="container">
                         <div className="breadcrumb-content">
