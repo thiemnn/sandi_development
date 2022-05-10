@@ -1,12 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
-import DefaultHeader from './DefaultHeader';
 
 function DetailSection({ relation_id }) {
     const [product, setProduct] = useState(null)
     const [images, setImages] = useState(null)
     const [properties, setProperties] = useState(null)
     const [attachments, setAttachments] = useState(null)
+    const [videos, setVideos] = useState(null)
     const [bread_crumbs, setBreadCrumbs] = useState(null)
     const [loaded, setLoaded] = useState(false)
     const [displayTab, setDisplayTab] = useState(1)
@@ -27,8 +27,10 @@ function DetailSection({ relation_id }) {
             fetch(process.env.NEXT_PUBLIC_SERVER_DOMAIN + 'products/' + relation_id)
                 .then((res) => res.json())
                 .then((data) => {
+                    console.log(data.data)
                     setImages(data.data.images);
                     setAttachments(data.data.attachments)
+                    setVideos(data.data.videos)
                     setProperties(data.data.properties);
                     setBreadCrumbs(JSON.parse(sessionStorage.getItem("breadcrumbs")))
                     setProduct(data.data.product);       
@@ -40,7 +42,6 @@ function DetailSection({ relation_id }) {
     if (loaded && product) {
         return (
             <>
-                {/* <DefaultHeader/> */}
                 <div className="breadcrumb-area">
                     <div className="container">
                         <div className="breadcrumb-content">
@@ -277,11 +278,17 @@ function DetailSection({ relation_id }) {
                                                 </table>
                                             </div>
                                         </div>
-                                        <div className={!(displayTab == 6) ? "hidden" : "tab-pane fade center"} id="tab6" role="tabpanel">
-                                            <div>
-                                                <iframe width="420" height="315" src="https://www.youtube.com/embed/nxe_0jh83Is">
-                                                </iframe>
-                                            </div>
+                                        <div className={!(displayTab == 6) ? "hidden" : "tab-pane fade "} id="tab6" role="tabpanel">  
+                                            {videos && videos.map((video, idx) => (
+                                                <div key={idx}>
+                                                    <div className='video_title'>{video.video_name}</div>
+                                                    <div className='center'>
+                                                        <video width="800" controls>
+                                                            <source src={video.video_url.replace("../storage", process.env.NEXT_PUBLIC_ADMIN_DOMAIN + "storage")} type="video/mp4" />
+                                                        </video>
+                                                    </div>
+                                                </div>
+                                            ))}                                             
                                         </div>
                                         <div className={!(displayTab == 7) ? "hidden" : "tab-pane fade"} id="tab7" role="tabpanel">
                                             <div className='form-group quotes'>

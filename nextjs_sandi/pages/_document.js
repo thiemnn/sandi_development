@@ -9,11 +9,12 @@ class MyDocument extends Document {
   render() {
     return (
       <Html>
-        <Head>
-          <meta charSet="utf-8" />
-          <meta httpEquiv="X-UA-Compatible" content="IE=edge" />          
-        </Head>
+        <Head> 
+          <meta httpEquiv="X-UA-Compatible" content="IE=edge" /> 
+        </Head>        
+        
         <body>
+               
           <Main />
           <NextScript />
           <script src="/js/vendor/jquery-1.12.4.min.js"></script>

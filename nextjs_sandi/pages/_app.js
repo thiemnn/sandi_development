@@ -1,3 +1,4 @@
+
 import "../styles/globals.css";
 import Layout from "../components/Layout/Layout";
 import Head from 'next/head'
@@ -9,7 +10,7 @@ function MyApp({ Component, pageProps }) {
   const pid = router.query.pid
   const [meta_title, setMeta_title] = useState("Sandi Viet Nam - Nhà cung cấp băng tải hàng đầu Việt Nam")
   const [meta_desc, setMeta_desc] = useState("Băng tải Sandi Viet Nam - Là đơn vị cung cấp vật tư băng tải, thiết kế lắp đặt hệ thống băng tải mini hàng đầu tại Việt Nam")
-  const [image, setImage] = useState("https://sandivietnam.com/image/catalog/Chung/logo-sandi.png");
+  const [image, setImage] = useState(process.env.NEXT_PUBLIC_ADMIN_DOMAIN+"storage/Chung/logo-sandi.png");
   const [loaded, setLoaded] = useState(false)
   useEffect(() => {
     if(pid){ 
@@ -39,7 +40,7 @@ function MyApp({ Component, pageProps }) {
         <meta name="keywords" content="băng tải, bang tai, hệ thống băng tải, dây băng tải" />
           <meta name="author" content="Sandi Viet Nam" />
           <meta name="description" content={meta_desc}/> 
-          <meta property="og:url" content="https://sandivietnam.com/"/> 
+          <meta property="og:url" content={process.env.NEXT_PUBLIC_WEBSITE_DOMAIN}/> 
           <meta property="og:type" content="website"/> 
           <meta property="og:title" content={meta_title}/> 
           <meta property="og:description" content={meta_desc}/> 
@@ -51,8 +52,8 @@ function MyApp({ Component, pageProps }) {
           <meta name="twitter:image" content={image.replace("../storage", process.env.NEXT_PUBLIC_ADMIN_DOMAIN+"storage")}/> 
           <meta name="robots" content="index, follow, noodp, noydir"></meta>
           
-          <link href="https://sandivietnam.com/image/catalog/Chung/rsz_logoapp.png" rel="icon"/>
-          <link href="https://sandivietnam.com" rel="canonical"></link>  
+          <link href={process.env.NEXT_PUBLIC_ADMIN_DOMAIN+"storage/Chung/rsz_logoapp.png"} rel="icon"/>          
+          <link href={process.env.NEXT_PUBLIC_WEBSITE_DOMAIN} rel="canonical"></link>  
 
           <script
             type="application/ld+json"
@@ -98,8 +99,7 @@ function MyApp({ Component, pageProps }) {
                   ]
               })
             }}
-          />
-
+          />           
           <link rel="stylesheet" href="/css/font-awesome.min.css" />
           <link rel="stylesheet" href="/css/meanmenu.css" />
           <link rel="stylesheet" href="/css/nice-select.css" />
@@ -107,10 +107,10 @@ function MyApp({ Component, pageProps }) {
           <link rel="stylesheet" href="/css/slick.css" />
           <link rel="stylesheet" href="/css/animate.css" />
           <link rel="stylesheet" href="/css/owl.carousel.min.css" />
-          <link rel="stylesheet" href="/css/helper.css" />
-          <link rel="stylesheet" href="/style.css" />
-          <link rel="stylesheet" href="/css/responsive.css"></link>
-      </Head>
+          <link rel="stylesheet" href="/css/helper.css" />             
+          <link rel="stylesheet" href="/style.css" />    
+          <link rel="stylesheet" href="/css/responsive.css"></link> 
+      </Head>   
       <Layout>
         <Component {...pageProps} />
       </Layout>

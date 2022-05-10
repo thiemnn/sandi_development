@@ -5639,6 +5639,12 @@ span.required {
 	margin-top: 50px;
 }
 
+.video_title{
+	font-family: sans-serif;
+    font-size: 20px;
+	margin-bottom: 20px;
+}
+
 
 /* anthony */
 	.nav-pills .nav-link.active, .nav-pills .nav-link.active:hover, .nav-pills .nav-link.active:focus {
