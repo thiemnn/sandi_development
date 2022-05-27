@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
-
 import { Form } from 'react-bootstrap';
-import { ProgressBar } from 'react-bootstrap';
 
 export default class List extends Component {
   state = {
@@ -23,9 +21,7 @@ export default class List extends Component {
 
   handleClick() {
     var items = this.state.items;
-
     items.push({'message':this.state.message,'code':this.state.code});
-
     this.setState({
       items: items,
       message: "",

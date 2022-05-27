@@ -6,16 +6,14 @@ import Select from 'react-select';
 export class Insert extends Component {
 
   state = {
-    startDate: new Date(),
-    testString: process.env.REACT_APP_TEST_STRING,
     code:'',
+    name:'',
+    address:'',
+    remark:'',
+    email:'',
+    tax_code:'',
+    phone:'',
     items: [{full_name: '', position: '', mobile: '', email: ''}]
-  };
-
-  handleChange = date => {
-    this.setState({
-      startDate: date
-    });
   };
 
   setCode = data =>{
@@ -24,10 +22,51 @@ export class Insert extends Component {
     });
   };
 
+  setName = data =>{
+    this.setState({
+      name: data
+    });
+  };
+
+  setAddress = data =>{
+    this.setState({
+      address: data
+    });
+  };
+
+  setRemark = data =>{
+    this.setState({
+      remark: data
+    });
+  };
+
+  setEmail = data =>{
+    this.setState({
+      email: data
+    });
+  };
+
+  setTaxCode = data =>{
+    this.setState({
+      tax_code: data
+    });
+  };
+
+  setPhone = data =>{
+    this.setState({
+      phone: data
+    });
+  };
+
+
   componentDidMount() {
     bsCustomFileInput.init()
-    this.fetchUsers()
-    this.postUser()
+    //this.fetchUsers()
+    //this.postUser()
+
+    // const filteredCars = filteredData.filter(
+    //   (car) => car.release_year === selectedYear
+    // );
   }
 
   async fetchUsers() {
@@ -42,13 +81,13 @@ export class Insert extends Component {
 
   async postUser() {
     const body = {
-      code: 'abc',
-      name: 'abc',
-      address: 'abc',
-      email: 'abc',
-      tax_code: 'abc',
-      phone: 'abc',
-      remark: 'abc',
+      code: this.state.code,
+      name: this.state.name,
+      address: this.state.address,
+      email: this.state.email,
+      tax_code: this.state.tax_code,
+      phone: this.state.phone,
+      remark: this.state.remark,
     }
     const requestOptions = {
       method: 'POST',
@@ -82,7 +121,6 @@ export class Insert extends Component {
   handleItemFullNameChanged(i, event) {
     var items = this.state.items;
     items[i].full_name  = event.target.value;
-
     this.setState({
       items: items
     });
@@ -91,7 +129,6 @@ export class Insert extends Component {
   handleItemPositionChanged(i, event) {
     var items = this.state.items;
     items[i].position  = event.target.value;
-
     this.setState({
       items: items
     });
@@ -100,7 +137,6 @@ export class Insert extends Component {
   handleItemEmailChanged(i, event) {
     var items = this.state.items;
     items[i].email  = event.target.value;
-
     this.setState({
       items: items
     });
@@ -109,32 +145,31 @@ export class Insert extends Component {
   handleItemMobileChanged(i, event) {
     var items = this.state.items;
     items[i].mobile  = event.target.value;
-
     this.setState({
       items: items
     });
   }
 
-  handleItemDeleted(i) {
+  handleDeleteItem(i) {
     var items = this.state.items;
-
     items.splice(i, 1);
-
     this.setState({
       items: items
     });
   }
 
-  handleClick() {
+  handleAddItem() {
     var items = this.state.items;
-
     items.push({full_name: '', position: '', mobile: '', email: ''});
-
     this.setState({
       items: items,
       message: "",
       code: ""
     });
+  }
+
+  handleSave(){
+    this.postUser();
   }
 
   render() {
@@ -152,7 +187,7 @@ export class Insert extends Component {
                   <Form.Group className="row">
                     <label htmlFor="code" className="col-sm-2 col-form-label">Mã nhà cung cấp</label>
                     <div className="col-sm-4">
-                      <Form.Control type="text" className="form-control" value={this.state.code} onChange={e => this.setCode(e.target.value)} id="code" placeholder="" />
+                      <Form.Control type="text" className="form-control" value={this.state.code} onChange={e => this.setCode(e.target.value)} placeholder="" />
                     </div>
                     <label htmlFor="type" className="col-sm-2 col-form-label">Loại nhà cung cấp</label>
                     <div className="col-sm-4">
@@ -173,7 +208,7 @@ export class Insert extends Component {
                   <Form.Group className="row">
                     <label htmlFor="name" className="col-sm-2 col-form-label">Tên nhà cung cấp</label>
                     <div className="col-sm-10">
-                      <Form.Control type="text" className="form-control" id="name" placeholder="" />
+                      <Form.Control type="text" className="form-control" value={this.state.name} onChange={e => this.setName(e.target.value)} placeholder="" />
                     </div>
                   </Form.Group>
                   <Form.Group className="row">
@@ -211,29 +246,29 @@ export class Insert extends Component {
                   <Form.Group className="row">
                     <label htmlFor="address" className="col-sm-2 col-form-label">Địa chỉ</label>
                     <div className="col-sm-10">
-                      <Form.Control type="text" className="form-control" id="address" placeholder="" />
+                      <Form.Control type="text" className="form-control" value={this.state.address} onChange={e => this.setAddress(e.target.value)} placeholder="" />
                     </div>
                   </Form.Group>                  
                   <Form.Group className="row">
                     <label htmlFor="remark" className="col-sm-2 col-form-label">Ghi chú</label>
                     <div className="col-sm-10">
-                      <Form.Control type="text" className="form-control" id="remark" placeholder="" />
+                      <Form.Control type="text" className="form-control" value={this.state.remark} onChange={e => this.setRemark(e.target.value)} placeholder="" />
                     </div>
                   </Form.Group>
                   <Form.Group className="row">
                     <label htmlFor="email" className="col-sm-2 col-form-label">Email</label>
                     <div className="col-sm-4">
-                      <Form.Control type="text" className="form-control" id="email" placeholder="" />
+                      <Form.Control type="text" className="form-control" value={this.state.email} onChange={e => this.setEmail(e.target.value)} placeholder="" />
                     </div>
                     <label htmlFor="tax_code" className="col-sm-2 col-form-label">Mã số thuế</label>
                     <div className="col-sm-4">
-                      <Form.Control type="text" className="form-control" id="tax_code" placeholder="" />
+                      <Form.Control type="text" className="form-control" value={this.state.tax_code} onChange={e => this.setTaxCode(e.target.value)} placeholder="" />
                     </div>
                   </Form.Group>
                   <Form.Group className="row">
                     <label htmlFor="phone" className="col-sm-2 col-form-label">Số điện thoại</label>
                     <div className="col-sm-4">
-                      <Form.Control type="text" className="form-control" id="phone" placeholder="" />
+                      <Form.Control type="text" className="form-control" value={this.state.phone} onChange={e => this.setPhone(e.target.value)} placeholder="" />
                     </div>
                     <label htmlFor="status" className="col-sm-2 col-form-label">Trạng thái</label>
                     <div className="col-sm-4">
@@ -281,7 +316,7 @@ export class Insert extends Component {
                                     <Form.Control type="text" value={o.email} onChange={context.handleItemEmailChanged.bind(context, i)} className="form-control" placeholder="" />                                    
                                   </td>
                                   <td>
-                                    <button type="button" class="btn btn-danger btn-icon small_button" onClick={context.handleItemDeleted.bind(context, i)}><i class="mdi mdi-delete"></i></button>                            
+                                    <button type="button" className="btn btn-danger btn-icon small_button" onClick={context.handleDeleteItem.bind(context, i)}><i className="mdi mdi-delete"></i></button>                            
                                   </td>
                                 </tr>
                               );
@@ -291,13 +326,13 @@ export class Insert extends Component {
                       </div>
                     </div>
                     <div className='right'>
-                      <button type="button" class="btn btn-primary btn-icon small_button" onClick={this.handleClick.bind(this)}><i class="mdi mdi-plus-box"></i></button>
+                      <button type="button" className="btn btn-primary btn-icon small_button" onClick={this.handleAddItem.bind(this)}><i className="mdi mdi-plus-box"></i></button>
                     </div>
                   </Form.Group>
                   <Form.Group className="row">
                     <label htmlFor="submit" className="col-sm-2 col-form-label"></label>
                     <div className="col-sm-4">
-                      <button type="submit" className="btn btn-primary mr-2">Lưu</button>
+                      <button type="button" className="btn btn-primary mr-2" onClick={this.handleSave.bind(this)}>Lưu</button>
                       <button className="btn btn-success">Quay lại</button>
                     </div>
                   </Form.Group>
