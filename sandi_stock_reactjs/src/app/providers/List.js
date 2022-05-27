@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react'
 
-export default class DynamicTable extends React.Component {
+import { Form } from 'react-bootstrap';
+import { ProgressBar } from 'react-bootstrap';
+
+export default class List extends Component {
   state = {
     message: "",
     code:"",
@@ -127,6 +130,44 @@ export default class DynamicTable extends React.Component {
         >
           Add Item
         </button>
+
+        
+        <div className="col-lg-12 grid-margin stretch-card">
+            <div className="card">
+              <div className="card-body">
+                <div className="table-responsive">
+                  <table className="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th> STT </th>
+                        <th> Họ và tên </th>                        
+                        <th> Chức vụ </th>
+                        <th> Điện thoại </th>
+                        <th> Email </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td> 1 </td>
+                        <td> 
+                          <Form.Control type="text" className="form-control" id="name" placeholder="" /> 
+                        </td>
+                        <td>
+                          <Form.Control type="text" className="form-control" id="name" placeholder="" />
+                        </td>
+                        <td>
+                          <Form.Control type="text" className="form-control" id="name" placeholder="" />
+                        </td>
+                        <td>
+                          <Form.Control type="text" className="form-control" id="name" placeholder="" />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
       </div>
     );
   }

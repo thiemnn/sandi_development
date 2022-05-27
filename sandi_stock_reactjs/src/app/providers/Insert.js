@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dropdown, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import bsCustomFileInput from 'bs-custom-file-input';
 import Select from 'react-select';
 
@@ -8,7 +8,8 @@ export class Insert extends Component {
   state = {
     startDate: new Date(),
     testString: process.env.REACT_APP_TEST_STRING,
-    code:''
+    code:'',
+    items: [{full_name: '', position: '', mobile: '', email: ''}]
   };
 
   handleChange = date => {
@@ -78,7 +79,66 @@ export class Insert extends Component {
     { value: '3', label: 'Loại 3' }
   ]
 
+  handleItemFullNameChanged(i, event) {
+    var items = this.state.items;
+    items[i].full_name  = event.target.value;
+
+    this.setState({
+      items: items
+    });
+  }
+
+  handleItemPositionChanged(i, event) {
+    var items = this.state.items;
+    items[i].position  = event.target.value;
+
+    this.setState({
+      items: items
+    });
+  }
+
+  handleItemEmailChanged(i, event) {
+    var items = this.state.items;
+    items[i].email  = event.target.value;
+
+    this.setState({
+      items: items
+    });
+  }
+
+  handleItemMobileChanged(i, event) {
+    var items = this.state.items;
+    items[i].mobile  = event.target.value;
+
+    this.setState({
+      items: items
+    });
+  }
+
+  handleItemDeleted(i) {
+    var items = this.state.items;
+
+    items.splice(i, 1);
+
+    this.setState({
+      items: items
+    });
+  }
+
+  handleClick() {
+    var items = this.state.items;
+
+    items.push({full_name: '', position: '', mobile: '', email: ''});
+
+    this.setState({
+      items: items,
+      message: "",
+      code: ""
+    });
+  }
+
   render() {
+    var context = this;
     return (
       <div>
         <div className="page-header">
@@ -184,6 +244,54 @@ export class Insert extends Component {
                           Hoạt động
                         </label>
                       </div>
+                    </div>
+                  </Form.Group>
+                  <Form.Group className="row">
+                    <label htmlFor="submit" className="col-sm-2 col-form-label">Người liên lạc</label>
+                    <div className="col-sm-10">
+                      <div className="table-responsive">
+                        <table className="table table-bordered inside_table">
+                          <thead>
+                            <tr>
+                              <th style={{width: '50px'}}> STT </th>
+                              <th> Họ và tên </th>
+                              <th> Chức vụ </th>
+                              <th> Điện thoại </th>
+                              <th> Email </th>
+                              <th style={{width: '50px'}}> Thao tác </th>
+                            </tr>
+                          </thead>
+                          <tbody>    
+                            {this.state.items.map(function(o, i) {
+                              return (
+                                <tr key={"item-" + i}>
+                                  <td className='center'>
+                                    {i + 1}
+                                  </td>
+                                  <td>
+                                    <Form.Control type="text" value={o.full_name} onChange={context.handleItemFullNameChanged.bind(context, i)} className="form-control" placeholder="" />                                    
+                                  </td>
+                                  <td>
+                                    <Form.Control type="text" value={o.position} onChange={context.handleItemPositionChanged.bind(context, i)} className="form-control" placeholder="" />                                    
+                                  </td>
+                                  <td>
+                                    <Form.Control type="text" value={o.mobile} onChange={context.handleItemMobileChanged.bind(context, i)} className="form-control" placeholder="" />                                    
+                                  </td>
+                                  <td>
+                                    <Form.Control type="text" value={o.email} onChange={context.handleItemEmailChanged.bind(context, i)} className="form-control" placeholder="" />                                    
+                                  </td>
+                                  <td>
+                                    <button type="button" class="btn btn-danger btn-icon small_button" onClick={context.handleItemDeleted.bind(context, i)}><i class="mdi mdi-delete"></i></button>                            
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div className='right'>
+                      <button type="button" class="btn btn-primary btn-icon small_button" onClick={this.handleClick.bind(this)}><i class="mdi mdi-plus-box"></i></button>
                     </div>
                   </Form.Group>
                   <Form.Group className="row">
