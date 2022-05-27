@@ -1,0 +1,6 @@
+DB_HOST=localhost
+DB_USER=test
+DB_PASSWORD=chibin911
+DB_NAME=sandi_stock_db
+
+PORT=3000

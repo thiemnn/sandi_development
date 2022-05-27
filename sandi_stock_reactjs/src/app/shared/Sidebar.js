@@ -36,7 +36,7 @@ class Sidebar extends Component {
       {path:'/apps', state: 'appsMenuOpen'},
       {path:'/basic-ui', state: 'basicUiMenuOpen'},
       {path:'/form-elements', state: 'formElementsMenuOpen'},
-      {path:'/ncc', state: 'nccOpen'},
+      {path:'/providers', state: 'providersOpen'},
       {path:'/kh', state: 'khOpen'},
       {path:'/tables', state: 'tablesMenuOpen'},
       {path:'/icons', state: 'iconsMenuOpen'},
@@ -106,19 +106,21 @@ class Sidebar extends Component {
               </Dropdown>
             </div>
           </li>
-          <li className={ this.isPathActive('/ncc') ? 'nav-item active' : 'nav-item' }>
-            <div className={ this.state.nccOpen ? 'nav-link menu-expanded' : 'nav-link' } onClick={ () => this.toggleMenuState('nccOpen') } data-toggle="collapse">
+
+          <li className={ this.isPathActive('/providers') ? 'nav-item active' : 'nav-item' }>
+            <div className={ this.state.providersOpen ? 'nav-link menu-expanded' : 'nav-link' } onClick={ () => this.toggleMenuState('providersOpen') } data-toggle="collapse">
               <i className="mdi mdi mdi mdi-account-box menu-icon"></i>
               <span className="menu-title"><Trans>Nhà cung cấp</Trans></span>
               <i className="menu-arrow"></i>
             </div>
-            <Collapse in={ this.state.nccOpen }>
+            <Collapse in={ this.state.providersOpen }>
               <ul className="nav flex-column sub-menu">
-                <li className="nav-item"> <Link className={ this.isPathActive('/ncc/form-1') ? 'nav-link active' : 'nav-link' } to="/ncc/form-1"><Trans>Thêm mới nhà cung cấp</Trans></Link></li>
-                <li className="nav-item"> <Link className={ this.isPathActive('/ncc/form-2') ? 'nav-link active' : 'nav-link' } to="/ncc/form-2"><Trans>Danh sách nhà cung cấp</Trans></Link></li>
+                <li className="nav-item"> <Link className={ this.isPathActive('/providers/insert') ? 'nav-link active' : 'nav-link' } to="/providers/insert"><Trans>Thêm mới nhà cung cấp</Trans></Link></li>
+                <li className="nav-item"> <Link className={ this.isPathActive('/providers/list') ? 'nav-link active' : 'nav-link' } to="/providers/list"><Trans>Danh sách nhà cung cấp</Trans></Link></li>
               </ul>
             </Collapse>
           </li>
+
           <li className={ this.isPathActive('/kh') ? 'nav-item active' : 'nav-item' }>
             <div className={ this.state.khOpen ? 'nav-link menu-expanded' : 'nav-link' } onClick={ () => this.toggleMenuState('khOpen') } data-toggle="collapse">
               <i className="mdi mdi mdi mdi-account-box-outline menu-icon"></i>

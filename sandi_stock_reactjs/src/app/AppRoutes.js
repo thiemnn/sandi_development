@@ -9,8 +9,10 @@ const Buttons = lazy(() => import('./basic-ui/Buttons'));
 const Dropdowns = lazy(() => import('./basic-ui/Dropdowns'));
 
 const BasicElements = lazy(() => import('./form-elements/BasicElements'));
-const Form1 = lazy(() => import('./form-elements/Form1'));
-const List = lazy(() => import('./form-elements/List'));
+
+
+const ProvidersInsert = lazy(() => import('./providers/Insert'));
+const ProvidersList = lazy(() => import('./providers/List'));
 
 const BasicTable = lazy(() => import('./tables/BasicTable'));
 
@@ -38,11 +40,11 @@ class AppRoutes extends Component {
           <Route path="/form-Elements/basic-elements" component={ BasicElements } />
           <Route path="/ncc/basic-elements" component={ BasicElements } />
 
-          <Route path="/ncc/form-1" component={ Form1 } />
-          <Route path="/ncc/form-2" component={ List } />
+          <Route path="/providers/insert" component={ ProvidersInsert } />
+          <Route path="/providers/list" component={ ProvidersList } />
 
-          <Route path="/kh/form-1" component={ Form1 } />
-          <Route path="/kh/form-2" component={ List } />
+          <Route path="/kh/form-1" component={ ProvidersInsert } />
+          <Route path="/kh/form-2" component={ ProvidersList } />
 
           <Route path="/tables/basic-table" component={ BasicTable } />
 

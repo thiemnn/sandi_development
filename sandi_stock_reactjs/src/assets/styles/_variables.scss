@@ -97,7 +97,7 @@ $social-colors: (
 
 $type1:     'Roboto', sans-serif;
 
-$default-font-size: .875rem; // 14px as base font size
+$default-font-size: 1rem; // 14px as base font size
 
 $text-muted: #6c7293;
 $body-color: #343a40;
@@ -218,8 +218,8 @@ $nav-link-height: 52px;
 ///////// BUTTONS ////////
 
 $button-fixed-width: 120px;
-$btn-padding-y: 0.4rem;
-$btn-padding-x: 1rem;
+$btn-padding-y: 0.8rem;
+$btn-padding-x: 1.8rem;
 $btn-line-height: 1;
 $btn-padding-y-xs: .5rem;
 $btn-padding-x-xs: .75rem;
@@ -259,7 +259,7 @@ $tooltip-border-radius: .375rem;
 $input-bg:                color(white);
 $input-border-radius:     2px;
 $input-placeholder-color: #b9b8b8;
-$input-font-size: 0.75rem;
+$input-font-size: 1rem;
 
 $input-padding-y:       .875rem;
 $input-padding-x:       1.375rem;

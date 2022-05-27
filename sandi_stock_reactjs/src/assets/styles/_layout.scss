@@ -130,7 +130,6 @@
               display: none;
             }
             .menu-title {
-              @include border-radius(0 5px 5px 0px);
               @at-root #{selector-append(".rtl", &)} {
                 @include border-radius(5px 0 0 5px);
               }
@@ -146,8 +145,7 @@
               }
             }
             &[aria-expanded] {
-              .menu-title {
-                @include border-radius(0 5px 0 0px);
+              .menu-title {                
                 @at-root #{selector-append(".rtl", &)} {
                   @include border-radius(5px 0 0 0);
                 }

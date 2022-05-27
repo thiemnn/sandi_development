@@ -1,7 +1,7 @@
 /* Forms */
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .input-group-append,
@@ -32,7 +32,8 @@
   font-family: $type1;
   font-size: $input-font-size;
   font-weight: 400;
-  padding: 8px 12px;
+  padding: 5px 5px;
+  border-radius: 5px;
 }
 
 select {

@@ -18,12 +18,12 @@ export class BasicElements extends Component {
   componentDidMount() {
     bsCustomFileInput.init()
     this.fetchUsers()
-    //this.postUser()
+    this.postUser()
   }
 
   async fetchUsers() {
     try {
-      const response = await fetch("http://api.sandivietnam.com/products/209");
+      const response = await fetch(process.env.REACT_APP_API_URL + "providers");
       const data = await response.json();
       return console.log(data);
     } catch (error) {
@@ -33,18 +33,20 @@ export class BasicElements extends Component {
 
   async postUser(){
     const body = { 
-      news_id: 1,
+      code: 'abc',
       name:'abc', 
+      address:'abc',
       email:'abc',
-      website:'abc',
-      comment:'abc',
+      tax_code:'abc',
+      phone:'abc',
+      remark:'abc',
     }
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     };
-    const response = await fetch('http://api.sandivietnam.com/news/addComment', requestOptions);
+    const response = await fetch(process.env.REACT_APP_API_URL + 'providers/insert', requestOptions);
     const data = await response.json();
     return console.log(data);
   }
