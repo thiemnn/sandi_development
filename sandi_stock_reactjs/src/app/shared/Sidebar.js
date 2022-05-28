@@ -36,7 +36,7 @@ class Sidebar extends Component {
       {path:'/basic-ui', state: 'basicUiMenuOpen'},
       {path:'/form-elements', state: 'formElementsMenuOpen'},
       {path:'/providers', state: 'providersOpen'},
-      {path:'/kh', state: 'khOpen'},
+      {path:'/customers', state: 'customersOpen'},
       {path:'/tables', state: 'tablesMenuOpen'},
       {path:'/icons', state: 'iconsMenuOpen'},
       {path:'/charts', state: 'chartsMenuOpen'},
@@ -120,16 +120,16 @@ class Sidebar extends Component {
             </Collapse>
           </li>
 
-          <li className={ this.isPathActive('/kh') ? 'nav-item active' : 'nav-item' }>
-            <div className={ this.state.khOpen ? 'nav-link menu-expanded' : 'nav-link' } onClick={ () => this.toggleMenuState('khOpen') } data-toggle="collapse">
+          <li className={ this.isPathActive('/customers') ? 'nav-item active' : 'nav-item' }>
+            <div className={ this.state.customersOpen ? 'nav-link menu-expanded' : 'nav-link' } onClick={ () => this.toggleMenuState('customersOpen') } data-toggle="collapse">
               <i className="mdi mdi mdi mdi-account-box-outline menu-icon"></i>
               <span className="menu-title">Khách hàng</span>
               <i className="menu-arrow"></i>
             </div>
-            <Collapse in={ this.state.khOpen }>
+            <Collapse in={ this.state.customersOpen }>
               <ul className="nav flex-column sub-menu">
-                <li className="nav-item"> <Link className={ this.isPathActive('/kh/form-1') ? 'nav-link active' : 'nav-link' } to="/kh/form-1">Thêm mới khách hàng</Link></li>
-                <li className="nav-item"> <Link className={ this.isPathActive('/kh/form-2') ? 'nav-link active' : 'nav-link' } to="/kh/form-2">Danh sách khách hàng</Link></li>
+                <li className="nav-item"> <Link className={ this.isPathActive('/customers/insert') ? 'nav-link active' : 'nav-link' } to="/customers/insert">Thêm mới khách hàng</Link></li>
+                <li className="nav-item"> <Link className={ this.isPathActive('/customers/list') ? 'nav-link active' : 'nav-link' } to="/customers/list">Danh sách khách hàng</Link></li>
               </ul>
             </Collapse>
           </li>

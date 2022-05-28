@@ -2,17 +2,13 @@ import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
 import Select from 'react-select';
 
-export class Edit extends Component {
+export class Insert extends Component {
 
 //#region state manager
   state = {
-    id:0,
     cate_types:[],
     cate_fields:[],
     cate_regions:[],
-    selected_type: { value: '0', label: 'Chọn ...' },
-    selected_field: { value: '0', label: 'Chọn ...' },
-    selected_region: { value: '0', label: 'Chọn ...' },
     code:'',
     name:'',
     address:'',
@@ -89,9 +85,8 @@ export class Edit extends Component {
   
 //#region main process
   componentDidMount() {
-    console.log(this.props.match.params.id)
-    this.fetchGeneralCate();    
-    this.fetchProvider(this.props.match.params.id);
+    console.log(this.props)
+    this.fetchGeneralCate()    
   }
 
   async fetchGeneralCate(){
@@ -120,38 +115,17 @@ export class Edit extends Component {
     }
   }
 
-  async fetchProvider(id) {
+  async fetchUsers() {
     try {
-      const response = await fetch(process.env.REACT_APP_API_URL + "providers/" + id);
+      const response = await fetch(process.env.REACT_APP_API_URL + "customers");
       const data = await response.json();
-      const provider = data.data.provider;
-      var contacts = data.data.contacts;
-      if(contacts.length === 0){
-        contacts.push({full_name: '', position: '', mobile: '', email: ''});
-      }
-      this.setState({
-        id:provider.id,
-        code: provider.code,
-        name: provider.name,
-        address: provider.address,
-        remark: provider.remark,
-        email: provider.email,
-        tax_code: provider.tax_code,
-        phone: provider.phone,
-        type_id: provider.type_id,
-        field_id: provider.field_id,
-        region_id: provider.region_id, 
-        selected_type: {value: provider.type_id, label: provider.type_name},
-        selected_field: {value: provider.field_id, label: provider.field_name},
-        selected_region: {value: provider.region_id, label: provider.region_name},
-        items: contacts
-      });
+      return console.log(data);
     } catch (error) {
       return console.error(error);
     }
   }
 
-  async updateProvider() {
+  async insertCustomer() {
     const body = {
       code: this.state.code,
       name: this.state.name,
@@ -166,22 +140,22 @@ export class Edit extends Component {
       contacts: this.state.items
     }
     const requestOptions = {
-      method: 'PUT',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     };
-    const response = await fetch(process.env.REACT_APP_API_URL + 'providers/' + this.state.id + '/update', requestOptions);
+    const response = await fetch(process.env.REACT_APP_API_URL + 'customers/insert', requestOptions);
     const data = await response.json();
     console.log(data);
-    this.props.history.push("/providers/list");
+    this.props.history.push("/customers/list");
   }
 
   handleSave(){
-    this.updateProvider();
+    this.insertCustomer();
   }
 
   handleReturn(){
-    this.props.history.push("/providers/list");
+    this.props.history.push("/customers/list");
   }
 
   defaulOption = { value: '0', label: 'Chọn ...' }
@@ -242,7 +216,7 @@ export class Edit extends Component {
     return (
       <div>
         <div className="page-header">
-          <h3 className="page-title"> Sửa thông tin nhà cung cấp</h3>
+          <h3 className="page-title"> Thêm mới khách hàng</h3>
           <div>
           <button type="button" className="btn btn-primary btn-icon small_button" style={{margin: '0px 10px'}} onClick={this.handleSave.bind(this)}><i className="mdi mdi-content-save"></i></button>
           <button type="button" className="btn btn-warning btn-icon small_button" onClick={this.handleReturn.bind(this)}><i className="mdi mdi-keyboard-return"></i></button>
@@ -254,15 +228,14 @@ export class Edit extends Component {
               <div className="card-body">
                 <form className="forms-sample">
                   <Form.Group className="row">
-                    <label htmlFor="code" className="col-sm-2 col-form-label">Mã nhà cung cấp</label>
+                    <label htmlFor="code" className="col-sm-2 col-form-label">Mã khách hàng</label>
                     <div className="col-sm-4">
                       <Form.Control type="text" className="form-control" value={this.state.code} onChange={e => this.setCode(e.target.value)} placeholder="" />
                     </div>
-                    <label htmlFor="type" className="col-sm-2 col-form-label">Loại nhà cung cấp</label>
+                    <label htmlFor="type" className="col-sm-2 col-form-label">Loại khách hàng</label>
                     <div className="col-sm-4">
                     <Select
-                      defaultValue={this.state.selected_type}
-                      value={this.state.cate_types.filter((item) => item.value === this.state.type_id)[0]}
+                      defaultValue={this.defaulOption}
                       className="basic-single"
                       classNamePrefix="select"
                       isDisabled={false}
@@ -277,7 +250,7 @@ export class Edit extends Component {
                     </div>
                   </Form.Group>
                   <Form.Group className="row">
-                    <label htmlFor="name" className="col-sm-2 col-form-label">Tên nhà cung cấp</label>
+                    <label htmlFor="name" className="col-sm-2 col-form-label">Tên khách hàng</label>
                     <div className="col-sm-10">
                       <Form.Control type="text" className="form-control" value={this.state.name} onChange={e => this.setName(e.target.value)} placeholder="" />
                     </div>
@@ -286,8 +259,7 @@ export class Edit extends Component {
                     <label htmlFor="field" className="col-sm-2 col-form-label">Lĩnh vực hoạt động</label>
                     <div className="col-sm-4">
                     <Select
-                      defaultValue={this.state.selected_field}
-                      value={this.state.cate_fields.filter((item) => item.value === this.state.field_id)[0]}
+                      defaultValue={this.defaulOption}
                       className="basic-single"
                       classNamePrefix="select"
                       isDisabled={false}
@@ -303,8 +275,7 @@ export class Edit extends Component {
                     <label htmlFor="region" className="col-sm-2 col-form-label">Vùng miền</label>
                     <div className="col-sm-4">
                     <Select
-                      defaultValue={this.state.selected_region}
-                      value={this.state.cate_regions.filter((item) => item.value === this.state.region_id)[0]}
+                      defaultValue={this.defaulOption}
                       className="basic-single"
                       classNamePrefix="select"
                       isDisabled={false}
@@ -414,4 +385,4 @@ export class Edit extends Component {
   }
 }
 
-export default Edit
+export default Insert

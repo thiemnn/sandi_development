@@ -15,6 +15,10 @@ const ProvidersInsert = lazy(() => import('./providers/Insert'));
 const ProvidersEdit = lazy(() => import('./providers/Edit'));
 const ProvidersList = lazy(() => import('./providers/List'));
 
+const CustomersInsert = lazy(() => import('./customers/Insert'));
+const CustomersEdit = lazy(() => import('./customers/Edit'));
+const CustomersList = lazy(() => import('./customers/List'));
+
 const BasicTable = lazy(() => import('./tables/BasicTable'));
 
 const Mdi = lazy(() => import('./icons/Mdi'));
@@ -45,8 +49,9 @@ class AppRoutes extends Component {
           <Route path="/providers/edit/:id" component={ ProvidersEdit } />
           <Route path="/providers/list" component={ ProvidersList } />
 
-          <Route path="/kh/form-1" component={ ProvidersInsert } />
-          <Route path="/kh/form-2" component={ ProvidersList } />
+          <Route path="/customers/insert" component={ CustomersInsert } />
+          <Route path="/customers/edit/:id" component={ CustomersEdit } />
+          <Route path="/customers/list" component={ CustomersList } />
 
           <Route path="/tables/basic-table" component={ BasicTable } />
 

@@ -91,7 +91,7 @@ export class Edit extends Component {
   componentDidMount() {
     console.log(this.props.match.params.id)
     this.fetchGeneralCate();    
-    this.fetchProvider(this.props.match.params.id);
+    this.fetchCustomer(this.props.match.params.id);
   }
 
   async fetchGeneralCate(){
@@ -120,30 +120,30 @@ export class Edit extends Component {
     }
   }
 
-  async fetchProvider(id) {
+  async fetchCustomer(id) {
     try {
-      const response = await fetch(process.env.REACT_APP_API_URL + "providers/" + id);
+      const response = await fetch(process.env.REACT_APP_API_URL + "customers/" + id);
       const data = await response.json();
-      const provider = data.data.provider;
+      const customer = data.data.customer;
       var contacts = data.data.contacts;
       if(contacts.length === 0){
         contacts.push({full_name: '', position: '', mobile: '', email: ''});
       }
       this.setState({
-        id:provider.id,
-        code: provider.code,
-        name: provider.name,
-        address: provider.address,
-        remark: provider.remark,
-        email: provider.email,
-        tax_code: provider.tax_code,
-        phone: provider.phone,
-        type_id: provider.type_id,
-        field_id: provider.field_id,
-        region_id: provider.region_id, 
-        selected_type: {value: provider.type_id, label: provider.type_name},
-        selected_field: {value: provider.field_id, label: provider.field_name},
-        selected_region: {value: provider.region_id, label: provider.region_name},
+        id:customer.id,
+        code: customer.code,
+        name: customer.name,
+        address: customer.address,
+        remark: customer.remark,
+        email: customer.email,
+        tax_code: customer.tax_code,
+        phone: customer.phone,
+        type_id: customer.type_id,
+        field_id: customer.field_id,
+        region_id: customer.region_id, 
+        selected_type: {value: customer.type_id, label: customer.type_name},
+        selected_field: {value: customer.field_id, label: customer.field_name},
+        selected_region: {value: customer.region_id, label: customer.region_name},
         items: contacts
       });
     } catch (error) {
@@ -151,7 +151,7 @@ export class Edit extends Component {
     }
   }
 
-  async updateProvider() {
+  async updateCustomer() {
     const body = {
       code: this.state.code,
       name: this.state.name,
@@ -170,18 +170,18 @@ export class Edit extends Component {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     };
-    const response = await fetch(process.env.REACT_APP_API_URL + 'providers/' + this.state.id + '/update', requestOptions);
+    const response = await fetch(process.env.REACT_APP_API_URL + 'customers/' + this.state.id + '/update', requestOptions);
     const data = await response.json();
     console.log(data);
-    this.props.history.push("/providers/list");
+    this.props.history.push("/customers/list");
   }
 
   handleSave(){
-    this.updateProvider();
+    this.updateCustomer();
   }
 
   handleReturn(){
-    this.props.history.push("/providers/list");
+    this.props.history.push("/customers/list");
   }
 
   defaulOption = { value: '0', label: 'Chọn ...' }
@@ -242,7 +242,7 @@ export class Edit extends Component {
     return (
       <div>
         <div className="page-header">
-          <h3 className="page-title"> Sửa thông tin nhà cung cấp</h3>
+          <h3 className="page-title"> Sửa thông tin khách hàng</h3>
           <div>
           <button type="button" className="btn btn-primary btn-icon small_button" style={{margin: '0px 10px'}} onClick={this.handleSave.bind(this)}><i className="mdi mdi-content-save"></i></button>
           <button type="button" className="btn btn-warning btn-icon small_button" onClick={this.handleReturn.bind(this)}><i className="mdi mdi-keyboard-return"></i></button>
@@ -254,11 +254,11 @@ export class Edit extends Component {
               <div className="card-body">
                 <form className="forms-sample">
                   <Form.Group className="row">
-                    <label htmlFor="code" className="col-sm-2 col-form-label">Mã nhà cung cấp</label>
+                    <label htmlFor="code" className="col-sm-2 col-form-label">Mã khách hàng</label>
                     <div className="col-sm-4">
                       <Form.Control type="text" className="form-control" value={this.state.code} onChange={e => this.setCode(e.target.value)} placeholder="" />
                     </div>
-                    <label htmlFor="type" className="col-sm-2 col-form-label">Loại nhà cung cấp</label>
+                    <label htmlFor="type" className="col-sm-2 col-form-label">Loại khách hàng</label>
                     <div className="col-sm-4">
                     <Select
                       defaultValue={this.state.selected_type}
@@ -277,7 +277,7 @@ export class Edit extends Component {
                     </div>
                   </Form.Group>
                   <Form.Group className="row">
-                    <label htmlFor="name" className="col-sm-2 col-form-label">Tên nhà cung cấp</label>
+                    <label htmlFor="name" className="col-sm-2 col-form-label">Tên khách hàng</label>
                     <div className="col-sm-10">
                       <Form.Control type="text" className="form-control" value={this.state.name} onChange={e => this.setName(e.target.value)} placeholder="" />
                     </div>
