@@ -9,6 +9,9 @@ router.route('/')
 router.route('/:_id')
     .get(providersController.get);
 
+router.route('/:_id/update')
+    .put(providersController.update);
+
 router.route('/insert')
     .post(providersController.insert);
 

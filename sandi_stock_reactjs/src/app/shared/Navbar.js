@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Dropdown } from 'react-bootstrap';
-import { Trans } from 'react-i18next';
 
 class Navbar extends Component {
   toggleOffcanvas() {
@@ -25,16 +24,16 @@ class Navbar extends Component {
                 </Dropdown.Toggle>
                 <Dropdown.Menu className="preview-list navbar-dropdown pb-3">                  
                   <Dropdown.Item className="dropdown-item preview-item d-flex align-items-center border-0 mt-2" onClick={evt =>evt.preventDefault()}>
-                    <Trans>Manage Accounts</Trans>
+                  Manage Accounts
                   </Dropdown.Item>
                   <Dropdown.Item className="dropdown-item preview-item d-flex align-items-center border-0" onClick={evt =>evt.preventDefault()}>
-                    <Trans>Change Password</Trans>
+                  Change Password
                   </Dropdown.Item>
                   <Dropdown.Item className="dropdown-item preview-item d-flex align-items-center border-0" onClick={evt =>evt.preventDefault()}>
-                    <Trans>Check Inbox</Trans>
+                  Check Inbox
                   </Dropdown.Item>
                   <Dropdown.Item className="dropdown-item preview-item d-flex align-items-center border-0" onClick={evt =>evt.preventDefault()}>
-                    <Trans>Sign Out</Trans>
+                  Sign Out
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>

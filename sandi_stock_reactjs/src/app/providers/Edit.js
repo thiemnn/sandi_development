@@ -2,13 +2,17 @@ import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
 import Select from 'react-select';
 
-export class Insert extends Component {
+export class Edit extends Component {
 
 //#region state manager
   state = {
+    id:0,
     cate_types:[],
     cate_fields:[],
     cate_regions:[],
+    selected_type: { value: '0', label: 'Chọn ...' },
+    selected_field: { value: '0', label: 'Chọn ...' },
+    selected_region: { value: '0', label: 'Chọn ...' },
     code:'',
     name:'',
     address:'',
@@ -85,8 +89,9 @@ export class Insert extends Component {
   
 //#region main process
   componentDidMount() {
-    console.log(this.props)
-    this.fetchGeneralCate()    
+    console.log(this.props.match.params.id)
+    this.fetchGeneralCate();    
+    this.fetchProvider(this.props.match.params.id);
   }
 
   async fetchGeneralCate(){
@@ -115,17 +120,38 @@ export class Insert extends Component {
     }
   }
 
-  async fetchUsers() {
+  async fetchProvider(id) {
     try {
-      const response = await fetch(process.env.REACT_APP_API_URL + "providers");
+      const response = await fetch(process.env.REACT_APP_API_URL + "providers/" + id);
       const data = await response.json();
-      return console.log(data);
+      const provider = data.data.provider;
+      var contacts = data.data.contacts;
+      if(contacts.length == 0){
+        contacts.push({full_name: '', position: '', mobile: '', email: ''});
+      }
+      this.setState({
+        id:provider.id,
+        code: provider.code,
+        name: provider.name,
+        address: provider.address,
+        remark: provider.remark,
+        email: provider.email,
+        tax_code: provider.tax_code,
+        phone: provider.phone,
+        type_id: provider.type_id,
+        field_id: provider.field_id,
+        region_id: provider.region_id, 
+        selected_type: {value: provider.type_id, label: provider.type_name},
+        selected_field: {value: provider.field_id, label: provider.field_name},
+        selected_region: {value: provider.region_id, label: provider.region_name},
+        items: contacts
+      });
     } catch (error) {
       return console.error(error);
     }
   }
 
-  async insertProvider() {
+  async updateProvider() {
     const body = {
       code: this.state.code,
       name: this.state.name,
@@ -140,18 +166,18 @@ export class Insert extends Component {
       contacts: this.state.items
     }
     const requestOptions = {
-      method: 'POST',
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     };
-    const response = await fetch(process.env.REACT_APP_API_URL + 'providers/insert', requestOptions);
+    const response = await fetch(process.env.REACT_APP_API_URL + 'providers/' + this.state.id + '/update', requestOptions);
     const data = await response.json();
     console.log(data);
     this.props.history.push("/providers/list");
   }
 
   handleSave(){
-    this.insertProvider();
+    this.updateProvider();
   }
 
   handleReturn(){
@@ -216,7 +242,7 @@ export class Insert extends Component {
     return (
       <div>
         <div className="page-header">
-          <h3 className="page-title"> Thêm mới nhà cung cấp</h3>
+          <h3 className="page-title"> Sửa thông tin nhà cung cấp</h3>
           <div>
           <button type="button" className="btn btn-primary btn-icon small_button" style={{margin: '0px 10px'}} onClick={this.handleSave.bind(this)}><i className="mdi mdi-content-save"></i></button>
           <button type="button" className="btn btn-warning btn-icon small_button" onClick={this.handleReturn.bind(this)}><i className="mdi mdi-keyboard-return"></i></button>
@@ -235,7 +261,8 @@ export class Insert extends Component {
                     <label htmlFor="type" className="col-sm-2 col-form-label">Loại nhà cung cấp</label>
                     <div className="col-sm-4">
                     <Select
-                      defaultValue={this.defaulOption}
+                      defaultValue={this.state.selected_type}
+                      value={this.state.cate_types.filter((item) => item.value === this.state.type_id)[0]}
                       className="basic-single"
                       classNamePrefix="select"
                       isDisabled={false}
@@ -259,7 +286,8 @@ export class Insert extends Component {
                     <label htmlFor="field" className="col-sm-2 col-form-label">Lĩnh vực hoạt động</label>
                     <div className="col-sm-4">
                     <Select
-                      defaultValue={this.defaulOption}
+                      defaultValue={this.state.selected_field}
+                      value={this.state.cate_fields.filter((item) => item.value === this.state.field_id)[0]}
                       className="basic-single"
                       classNamePrefix="select"
                       isDisabled={false}
@@ -275,7 +303,8 @@ export class Insert extends Component {
                     <label htmlFor="region" className="col-sm-2 col-form-label">Vùng miền</label>
                     <div className="col-sm-4">
                     <Select
-                      defaultValue={this.defaulOption}
+                      defaultValue={this.state.selected_region}
+                      value={this.state.cate_regions.filter((item) => item.value === this.state.region_id)[0]}
                       className="basic-single"
                       classNamePrefix="select"
                       isDisabled={false}
@@ -385,4 +414,4 @@ export class Insert extends Component {
   }
 }
 
-export default Insert
+export default Edit
