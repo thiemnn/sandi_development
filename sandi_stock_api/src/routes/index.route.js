@@ -4,6 +4,7 @@ const menus = require('./menus.route');
 const products = require('./products.route');
 const news = require('./news.route');
 const providers = require('./providers.route');
+const customers = require('./customers.route');
 const general_cates = require('./general_cates.route');
 
 const users = require('./users.route');
@@ -21,6 +22,7 @@ router.use('/news', news);
 
 
 router.use('/providers', providers);
+router.use('/customers', customers);
 router.use('/general_cate', general_cates);
 
 
