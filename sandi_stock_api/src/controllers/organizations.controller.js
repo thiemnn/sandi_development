@@ -23,9 +23,25 @@ const update = async (req, res, next) => {
     return responseHelper.success(res, 'Update record successfully')
 }
 
+const delete_item = async (req, res, next) => {
+    var response = await organizationsService.delete_item(req.params._id);
+    if(response)
+    return responseHelper.success(res, 'Delete record successfully')
+    else return responseHelper.errorResponse(res, 'Can not delete data')
+}
+
+const get_employees = async (req, res, next) => {
+    var response = await organizationsService.get_employees(req.params._id);
+    if(response)
+    return responseHelper.successWithData(res, 'Success With Data', response)
+    else return responseHelper.notFound(res, 'Can not get data')
+}
+
 module.exports = {
     get,
     insert,
     update,
+    delete_item,
+    get_employees,
     getAll
 };

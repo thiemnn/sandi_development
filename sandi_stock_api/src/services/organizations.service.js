@@ -22,15 +22,18 @@ const get = async (_id) => {
 const getAll = async () =>{
     try {
         const con = await db.getConnection()
-        const organizations = await con.query("SELECT id, name, parent_id FROM m_organization where status = 1")
+        const organizations = await con.query("SELECT id, code, name, description, parent_id FROM m_organization where status = 1")
+        const employees = await con.query("SELECT id, organization_id, code, full_name, account FROM m_employee")
         await con.end()
     
         var childs = new Array();
+        var ids = new Array();
         organizations.forEach(item => {
             if(!childs[item["parent_id"]]){
                 childs[item["parent_id"]] = new Array();  
             }
             childs[item["parent_id"]].push(item["id"].toString());
+            ids.push(item["id"].toString())
         });
         organizations.forEach(item => {
             if(childs[item["id"]]){
@@ -39,7 +42,9 @@ const getAll = async () =>{
         });
     
         return {
-            "organizations": organizations
+            "organizations": organizations,
+            "employees": employees,
+            "ids": ids
         }
     } catch (e) {
         console.log("can't query all organizations");
@@ -50,27 +55,16 @@ const getAll = async () =>{
 const insert = async (body) =>{
     try {
         const con = await db.getConnection()
-        //insert customer
-        var sql = `INSERT INTO m_customer (code, name, address, email, tax_code, phone, remark, type_id, field_id, region_id) VALUES 
-        ('${body.code}', '${body.name}','${body.address}','${body.email}','${body.tax_code}','${body.phone}','${body.remark}',${body.type_id},${body.field_id},${body.region_id})`;
+        //insert m_organization
+        var sql = `INSERT INTO m_organization (code, name, description, parent_id) VALUES 
+        ('${body.code}', '${body.name}','${body.description}',${body.parent_id})`;
         const result = await con.query(sql)
-        var id = result.insertId;
-        //insert contacts
-        var contacts = body.contacts.filter(function (el) {
-            return el.full_name !== ''
-        });
-        if (contacts.length > 0) {
-            var sql_contacts = `INSERT INTO m_customer_contact (customer_id, full_name, position, mobile, email) VALUES`;
-            contacts.forEach(function (contact) {
-                sql_contacts = sql_contacts + `(${id}, '${contact.full_name}','${contact.position}','${contact.mobile}','${contact.email}'),`;
-            });
-            await con.query(sql_contacts.slice(0, -1))
-        }
+        // var id = result.insertId;        
         //close connection
         await con.end()
         return result
     } catch (e) {
-        console.log("can't insert into m_customer");
+        console.log("can't insert into m_organization");
         return null;  
     }  
 }
@@ -79,29 +73,53 @@ const update = async (id, body) =>{
     try {
         const con = await db.getConnection()
         //update customer
-        var sql = `Update m_customer Set code = '${body.code}', name = '${body.name}', address = '${body.address}', 
-         email = '${body.email}', tax_code = '${body.tax_code}', 
-         phone = '${body.phone}', remark = '${body.remark}', 
-         type_id = ${body.type_id}, field_id = ${body.field_id}, region_id = ${body.region_id} 
+        var sql = `Update m_organization Set code = '${body.code}', name = '${body.name}', description = '${body.description}'
          where id = ${id}`;
-        const result = await con.query(sql)
-        //update contacts
-        var contacts = body.contacts.filter(function (el) {
-            return el.full_name !== ''
-        });
-        await con.query(`Delete FROM m_customer_contact where customer_id = ${id}`);
-        if (contacts.length > 0) {
-            var sql_contacts = `INSERT INTO m_customer_contact (customer_id, full_name, position, mobile, email) VALUES`;
-            contacts.forEach(function (contact) {
-                sql_contacts = sql_contacts + `(${id}, '${contact.full_name}','${contact.position}','${contact.mobile}','${contact.email}'),`;
-            });
-            await con.query(sql_contacts.slice(0, -1))
-        }
+        const result = await con.query(sql)        
         //close connection
         await con.end()
         return result
     } catch (e) {
-        console.log("can't update into m_customer");
+        console.log("can't update into m_organization");
+        return null;  
+    }  
+}
+
+const delete_item = async (id) =>{
+    try {
+        const con = await db.getConnection()
+        const childs = await con.query(`SELECT * FROM m_organization WHERE parent_id = ` + _id)
+        await con.end()    
+        if(childs && childs.length > 0){
+            return null;
+        }
+        //update m_organization
+        var sql = `Update m_organization Set status = 0 
+         where id = ${id}`;
+        const result = await con.query(sql)        
+        //close connection
+        await con.end()
+        return result
+    } catch (e) {
+        console.log("can't delete into m_organization");
+        return null;  
+    }  
+}
+
+const get_employees = async (id) =>{
+    try {
+        const con = await db.getConnection()
+        const employees = await con.query(`SELECT * FROM m_employee WHERE organization_id = ` + _id)
+        await con.end()    
+             
+        //close connection
+        await con.end()
+        return {
+            "employees": employees,
+            "organization_id": id
+        }
+    } catch (e) {
+        console.log("can't delete into m_employee");
         return null;  
     }  
 }
@@ -110,5 +128,7 @@ module.exports = {
     get,
     insert,
     update,
+    delete_item,
+    get_employees,
     getAll
 };
