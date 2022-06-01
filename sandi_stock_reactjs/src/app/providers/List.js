@@ -87,7 +87,7 @@ export class List extends Component {
                               </td>
                               <td className='center'>
                                 <button type="button" className="btn btn-success btn-icon small_button" onClick={context.handleEdit.bind(context, provider)}><i className="mdi mdi-pencil"></i></button>
-                                <button type="button" className="btn btn-danger btn-icon small_button" onClick={context.handleDelete.bind(context, provider)} style={{ margin: '0px 10px' }}><i className="mdi mdi-delete"></i></button>
+                                <button type="button" className="btn btn-danger btn-icon small_button ml-10" onClick={context.handleDelete.bind(context, provider)}><i className="mdi mdi-delete"></i></button>
                               </td>
                             </tr>
                           );

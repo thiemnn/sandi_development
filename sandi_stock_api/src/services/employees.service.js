@@ -20,7 +20,7 @@ const update = async (id, body) => {
     try {
         const con = await db.getConnection()
         //update customer
-        var sql = `Update m_employee Set code = '${body.code}', name = '${body.name}', full_name = '${body.full_name}', 
+        var sql = `Update m_employee Set code = '${body.code}', full_name = '${body.full_name}', account = '${body.account}', 
         organization_id = ${body.organization_id} 
         where id = ${id}`;
         const result = await con.query(sql)

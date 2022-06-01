@@ -19,6 +19,8 @@ const CustomersInsert = lazy(() => import('./customers/Insert'));
 const CustomersEdit = lazy(() => import('./customers/Edit'));
 const CustomersList = lazy(() => import('./customers/List'));
 
+const EmployeesList = lazy(() => import('./employees/List'));
+
 const BasicTable = lazy(() => import('./tables/BasicTable'));
 
 const Mdi = lazy(() => import('./icons/Mdi'));
@@ -52,6 +54,8 @@ class AppRoutes extends Component {
           <Route path="/customers/insert" component={ CustomersInsert } />
           <Route path="/customers/edit/:id" component={ CustomersEdit } />
           <Route path="/customers/list" component={ CustomersList } />
+
+          <Route path="/employees/list" component={ EmployeesList } />
 
           <Route path="/tables/basic-table" component={ BasicTable } />
 

@@ -448,6 +448,10 @@
   font-size: .9rem;
   padding: 5px 5px;
 }
+.employees td{
+  padding: 5px 5px;
+  cursor: pointer;
+}
 .right{
   text-align: right;
   width: 100%;
@@ -462,4 +466,33 @@
 }
 .center{
   text-align: center;
+}
+.tree-wrapper{
+  height: calc(100vh - 300px);
+  overflow-y: auto;
+}
+.table-wrapper{
+  height: calc(100vh - 300px);
+  overflow-y: auto;
+}
+.ml-10{
+  margin-left: 10px;
+}
+.mb-10{
+  margin-bottom: 10px;
+}
+.mt-10{
+  margin-top: 10px;
+}
+.fl-right{
+  float: right;
+}
+.fl-left{
+  float: left;
+}
+.clear-both{
+  clear: both;
+}
+.card .card-title {
+  font-size: 17px;
 }

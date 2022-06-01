@@ -37,6 +37,7 @@ class Sidebar extends Component {
       {path:'/form-elements', state: 'formElementsMenuOpen'},
       {path:'/providers', state: 'providersOpen'},
       {path:'/customers', state: 'customersOpen'},
+      {path:'/employees', state: 'employeesOpen'},
       {path:'/tables', state: 'tablesMenuOpen'},
       {path:'/icons', state: 'iconsMenuOpen'},
       {path:'/charts', state: 'chartsMenuOpen'},
@@ -133,6 +134,21 @@ class Sidebar extends Component {
               </ul>
             </Collapse>
           </li>
+
+          <li className={ this.isPathActive('/employees') ? 'nav-item active' : 'nav-item' }>
+            <div className={ this.state.employeesOpen ? 'nav-link menu-expanded' : 'nav-link' } onClick={ () => this.toggleMenuState('employeesOpen') } data-toggle="collapse">
+              <i className="mdi mdi mdi mdi-account-box-outline menu-icon"></i>
+              <span className="menu-title">Nhân viên</span>
+              <i className="menu-arrow"></i>
+            </div>
+            <Collapse in={ this.state.employeesOpen }>
+              <ul className="nav flex-column sub-menu">
+                <li className="nav-item"> <Link className={ this.isPathActive('/employees/list') ? 'nav-link active' : 'nav-link' } to="/employees/list">Danh sách nhân viên</Link></li>
+              </ul>
+            </Collapse>
+          </li>
+
+
           <li className={ this.isPathActive('/dashboard') ? 'nav-item active' : 'nav-item' }>
             <Link className="nav-link" to="/dashboard">
               <i className="mdi mdi-television menu-icon"></i>
