@@ -23,15 +23,28 @@ export class List extends Component {
   }
 
   async fetchCustomers(){
+    const requestOptions = {
+      method: 'GET',
+      Authorization: 'Basic ' + 'abc'
+    };
     try {
-      const response = await fetch(process.env.REACT_APP_API_URL + "customers");
-      const data = await response.json();      
-      this.setState({
-        customers: data.data
-      });
+      fetch(process.env.REACT_APP_API_URL + "customers", requestOptions)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data)
+        })
     } catch (error) {
       console.error(error);
     }
+    // try {
+    //   const response = await fetch(process.env.REACT_APP_API_URL + "customers");
+    //   const data = await response.json();      
+    //   this.setState({
+    //     customers: data.data
+    //   });
+    // } catch (error) {
+    //   console.error(error);
+    // }
   }
 
   render() {
