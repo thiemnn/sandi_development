@@ -30,7 +30,7 @@ const ChartJs = lazy(() => import('./charts/ChartJs'));
 const Error404 = lazy(() => import('./error-pages/Error404'));
 const Error500 = lazy(() => import('./error-pages/Error500'));
 
-const Login = lazy(() => import('./user-pages/Login'));
+const Login = lazy(() => import('./components/Login'));
 const Register1 = lazy(() => import('./user-pages/Register'));
 
 
@@ -64,7 +64,7 @@ class AppRoutes extends Component {
           <Route path="/charts/chart-js" component={ ChartJs } />
 
 
-          <Route path="/user-pages/login-1" component={ Login } />
+          <Route path="/login" component={ Login } />
           <Route path="/user-pages/register-1" component={ Register1 } />
 
           <Route path="/error-pages/error-404" component={ Error404 } />

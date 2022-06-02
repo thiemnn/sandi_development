@@ -23,7 +23,7 @@ const getAll = async () =>{
     try {
         const con = await db.getConnection()
         const organizations = await con.query("SELECT id, code, name, description, parent_id FROM m_organization where status = 1")
-        const employees = await con.query("SELECT id, organization_id, code, full_name, account FROM m_employee")
+        const employees = await con.query("SELECT id, organization_id, code, full_name, account FROM m_employee WHERE (status = 1 or status = 2)")
         await con.end()
     
         var childs = new Array();
@@ -88,20 +88,14 @@ const update = async (id, body) =>{
 const delete_item = async (id) =>{
     try {
         const con = await db.getConnection()
-        const childs = await con.query(`SELECT * FROM m_organization WHERE parent_id = ` + _id)
-        await con.end()    
-        if(childs && childs.length > 0){
-            return null;
-        }
-        //update m_organization
-        var sql = `Update m_organization Set status = 0 
-         where id = ${id}`;
+        //update customer
+        var sql = `Update m_organization Set status = 0 where id = ${id}`;
         const result = await con.query(sql)        
         //close connection
         await con.end()
         return result
     } catch (e) {
-        console.log("can't delete into m_organization");
+        console.log("can't update into m_organization");
         return null;  
     }  
 }
@@ -109,7 +103,7 @@ const delete_item = async (id) =>{
 const get_employees = async (id) =>{
     try {
         const con = await db.getConnection()
-        const employees = await con.query(`SELECT * FROM m_employee WHERE organization_id = ` + _id)
+        const employees = await con.query(`SELECT * FROM m_employee WHERE (status = 1 or status = 2) and organization_id = ` + _id)
         await con.end()    
              
         //close connection

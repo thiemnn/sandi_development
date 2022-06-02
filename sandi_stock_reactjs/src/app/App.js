@@ -1,22 +1,29 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 import './App.scss';
 import AppRoutes from './AppRoutes';
 import Navbar from './shared/Navbar';
 import Sidebar from './shared/Sidebar';
 import SettingsPanel from './shared/SettingsPanel';
 import Footer from './shared/Footer';
+import Login from './components/Login';
 
 class App extends Component {
-  state = {}
+  state = { }
   componentDidMount() {
+    let token = localStorage.getItem('token');
+    if(!token) {
+      this.props.history.push("/login");
+    }    
     this.onRouteChanged();
-  }
+  }  
+
   render () {
     let navbarComponent = !this.state.isFullPageLayout ? <Navbar/> : '';
     let sidebarComponent = !this.state.isFullPageLayout ? <Sidebar/> : '';
     let SettingsPanelComponent = !this.state.isFullPageLayout ? <SettingsPanel/> : '';
     let footerComponent = !this.state.isFullPageLayout ? <Footer/> : '';
+    
     return (
       <div className="container-scroller">
         { navbarComponent }
@@ -42,8 +49,15 @@ class App extends Component {
 
   onRouteChanged() {
     console.log("ROUTE CHANGED");
+    let token = localStorage.getItem('token');
+    if(this.props.location.pathname != '/login' && !token){
+      this.props.history.push("/login");
+    }
     window.scrollTo(0, 0);
-    const fullPageLayoutRoutes = ['/user-pages/login-1', '/user-pages/login-2', '/user-pages/register-1', '/user-pages/register-2', '/user-pages/lockscreen', '/error-pages/error-404', '/error-pages/error-500', '/general-pages/landing-page'];
+    this.setState({
+      isFullPageLayout: false
+    })
+    const fullPageLayoutRoutes = ['/login', '/user-pages/login-2', '/user-pages/register-1', '/user-pages/register-2', '/user-pages/lockscreen', '/error-pages/error-404', '/error-pages/error-500', '/general-pages/landing-page'];
     for ( let i = 0; i < fullPageLayoutRoutes.length; i++ ) {
       if (this.props.location.pathname === fullPageLayoutRoutes[i]) {
         this.setState({

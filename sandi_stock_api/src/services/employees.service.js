@@ -4,8 +4,8 @@ const insert = async (body) => {
     try {
         const con = await db.getConnection()
         //insert employee
-        var sql = `INSERT INTO m_employee (code, full_name, account, organization_id) VALUES 
-        ('${body.code}', '${body.full_name}','${body.account}',${body.organization_id})`;
+        var sql = `INSERT INTO m_employee (code, full_name, account, organization_id, password) VALUES 
+        ('${body.code}', '${body.full_name}','${body.account}',${body.organization_id},'${body.password}')`;
         const result = await con.query(sql)
         //close connection
         await con.end()
@@ -33,7 +33,39 @@ const update = async (id, body) => {
     }
 }
 
+const update_password = async (id, body) => {
+    try {
+        const con = await db.getConnection()
+        //update customer
+        var sql = `Update m_employee Set password = '${body.password}' where id = ${id}`;
+        const result = await con.query(sql)
+        //close connection
+        await con.end()
+        return result
+    } catch (e) {
+        console.log("can't update into m_employee");
+        return null;
+    }
+}
+
+const delete_item = async (id) =>{
+    try {
+        const con = await db.getConnection()
+        //update customer
+        var sql = `Update m_employee Set status = 0 where id = ${id}`;
+        const result = await con.query(sql)        
+        //close connection
+        await con.end()
+        return result
+    } catch (e) {
+        console.log("can't update into m_employee");
+        return null;  
+    }  
+}
+
 module.exports = {
     insert,
-    update
+    update,
+    update_password,
+    delete_item
 };
