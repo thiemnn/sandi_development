@@ -6,6 +6,7 @@ import Modal from '../components/Modal';
 import Alert from '../components/Alert';
 import Validator from '../../utils/validator';
 import Common from '../../utils/common';
+import { fetchWrapper } from '../../utils/fetch-wrapper';
 
 function List() {
   const [selected_employee, setSelectedEmployee] = useState(null);
@@ -41,7 +42,7 @@ function List() {
   //alert message
   const [alert_message, setAlertMessage] = useState('');
   const [alert_show, setAlertShow] = useState(false);
-  
+
   const organization_rules = [
     {
       field: 'code',
@@ -120,15 +121,14 @@ function List() {
 
   function fetchOrganization() {
     try {
-      fetch(process.env.REACT_APP_API_URL + "organizations")
-        .then((res) => res.json())
-        .then((data) => {
+      fetchWrapper.get(process.env.REACT_APP_API_URL + 'organizations').then((data) => {
+        if (data.success) {
           setOrganizations(readOrganization(data.data.organizations))
           setEmployees(data.data.employees)
           setExpandedItems(data.data.ids)
           setSelectedEmployee(null)
-          console.log(data.data)
-        })
+        }
+      })
     } catch (error) {
       console.error(error);
     }
@@ -151,17 +151,17 @@ function List() {
     return data.items;
   };
 
-  function handleOpenEmployeeModel(type){
+  function handleOpenEmployeeModel(type) {
     setModelEmpType(type)
     setEmployeeErrors({})
-    if(type === 1){
+    if (type === 1) {
       if (selectedItems.length < 1) {
         setAlertMessage('Vui lòng chọn đơn vị tổ chức để thêm nhân viên')
         setAlertShow(true)
         return
       }
       const selectedOrganization = organizations[selectedItems[0]]
-      if(selectedOrganization.hasChildren){
+      if (selectedOrganization.hasChildren) {
         setAlertMessage('Không được thêm nhân viên cho tổ chức cha')
         setAlertShow(true)
         return
@@ -169,13 +169,13 @@ function List() {
       setModelEmployeeTitle('Thêm nhân viên')
       setEmployee({ ...employee, "code": '', "full_name": '', "account": '', "password": '', "confirm": '' });
       setShowEmployeeModel(true)
-    } else if(type === 2){
+    } else if (type === 2) {
       if (selectedItems.length < 1) {
         setAlertMessage('Vui lòng chọn đơn vị tổ chức')
         setAlertShow(true)
         return
       }
-      if( selected_employee === null){
+      if (selected_employee === null) {
         setAlertMessage('Vui lòng chọn nhân viên để sửa')
         setAlertShow(true)
         return
@@ -183,13 +183,13 @@ function List() {
       setModelEmployeeTitle('Sửa thông tin nhân viên')
       setEmployee({ ...employee, "id": selected_employee.id, "code": selected_employee.code, "full_name": selected_employee.full_name, "account": selected_employee.account });
       setShowEmployeeModel(true)
-    } else if(type === 3){
+    } else if (type === 3) {
       if (selectedItems.length < 1) {
         setAlertMessage('Vui lòng chọn đơn vị tổ chức')
         setAlertShow(true)
         return
       }
-      if( selected_employee === null){
+      if (selected_employee === null) {
         setAlertMessage('Vui lòng chọn nhân viên để xem')
         setAlertShow(true)
         return
@@ -197,13 +197,13 @@ function List() {
       setModelEmployeeTitle('Xem thông tin nhân viên')
       setEmployee({ ...employee, "id": selected_employee.id, "code": selected_employee.code, "full_name": selected_employee.full_name, "account": selected_employee.account });
       setShowEmployeeModel(true)
-    }  else if(type === 4){
+    } else if (type === 4) {
       if (selectedItems.length < 1) {
         setAlertMessage('Vui lòng chọn đơn vị tổ chức')
         setAlertShow(true)
         return
       }
-      if( selected_employee === null){
+      if (selected_employee === null) {
         setAlertMessage('Vui lòng chọn nhân viên để xóa')
         setAlertShow(true)
         return
@@ -211,13 +211,13 @@ function List() {
       setModelEmployeeTitle('Xóa thông tin nhân viên')
       setEmployee({ ...employee, "id": selected_employee.id, "code": selected_employee.code, "full_name": selected_employee.full_name, "account": selected_employee.account });
       setShowEmployeeModel(true)
-    } else if(type === 5){
+    } else if (type === 5) {
       if (selectedItems.length < 1) {
         setAlertMessage('Vui lòng chọn đơn vị tổ chức')
         setAlertShow(true)
         return
       }
-      if( selected_employee === null){
+      if (selected_employee === null) {
         setAlertMessage('Vui lòng chọn nhân viên để đặt lại mật khẩu')
         setAlertShow(true)
         return
@@ -228,14 +228,14 @@ function List() {
     }
   }
 
-  function handleSaveEmployee(){
+  function handleSaveEmployee() {
     if (selectedItems.length < 1) {
       setAlertMessage('Vui lòng chọn đơn vị tổ chức')
       setAlertShow(true)
       return
-    }    
+    }
     const selected_id = parseInt(selectedItems[0])
-    if(modelEmpType === 1){
+    if (modelEmpType === 1) {
       const current_errors = employee_insert_validator.validate(employee)
       setEmployeeErrors(current_errors)
       if (!Common.isEmptyObject(current_errors)) {
@@ -248,29 +248,21 @@ function List() {
         organization_id: selected_id,
         password: employee.password
       }
-      const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      };
       try {
-        fetch(process.env.REACT_APP_API_URL + "employees/insert", requestOptions)
-          .then((res) => res.json())
-          .then((data) => {            
-            setShowEmployeeModel(false)
-            if(data.success){
-              console.log(data)
-              setSelectedEmployee(null)
-              fetchOrganization()
-            } else {
-              setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
-              setAlertShow(true)
-            }
-          })
+        fetchWrapper.post(process.env.REACT_APP_API_URL + 'employees/insert', body).then((data) => {
+          setShowEmployeeModel(false)
+          if (data.success) {
+            setSelectedEmployee(null)
+            fetchOrganization()
+          } else {
+            setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
+            setAlertShow(true)
+          }
+        })
       } catch (error) {
         console.error(error);
       }
-    } else if(modelEmpType === 2){
+    } else if (modelEmpType === 2) {
       const current_errors = employee_validator.validate(employee)
       setEmployeeErrors(current_errors)
       if (!Common.isEmptyObject(current_errors)) {
@@ -282,49 +274,36 @@ function List() {
         account: employee.account,
         organization_id: selected_id
       }
-      const requestOptions = {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      };
       try {
-        fetch(process.env.REACT_APP_API_URL + 'employees/' + employee.id + '/update', requestOptions)
-          .then((res) => res.json())
-          .then((data) => {            
-            setShowEmployeeModel(false)
-            if(data.success){
-              setSelectedEmployee(null)
-              fetchOrganization()
-            } else{
-              setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
-              setAlertShow(true)
-            }
-          })
+        fetchWrapper.put(process.env.REACT_APP_API_URL + 'employees/' + employee.id + '/update', body).then((data) => {
+          setShowEmployeeModel(false)
+          if (data.success) {
+            setSelectedEmployee(null)
+            fetchOrganization()
+          } else {
+            setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
+            setAlertShow(true)
+          }
+        })
       } catch (error) {
         console.error(error);
       }
-    } else if(modelEmpType === 4){
-      const requestOptions = {
-        method: 'DELETE'
-      };
-      console.log(employee.id)
+    } else if (modelEmpType === 4) {
       try {
-        fetch(process.env.REACT_APP_API_URL + 'employees/' + employee.id + '/delete', requestOptions)
-          .then((res) => res.json())
-          .then((data) => {            
-            setShowEmployeeModel(false)
-            if(data.success){
-              setSelectedEmployee(null)   
-              fetchOrganization()           
-            } else{
-              setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
-              setAlertShow(true)
-            }
-          })
+        fetchWrapper.delete(process.env.REACT_APP_API_URL + 'employees/' + employee.id + '/delete').then((data) => {
+          setShowEmployeeModel(false)
+          if (data.success) {
+            setSelectedEmployee(null)
+            fetchOrganization()
+          } else {
+            setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
+            setAlertShow(true)
+          }
+        })
       } catch (error) {
         console.error(error);
       }
-    } else if(modelEmpType === 5){
+    } else if (modelEmpType === 5) {
       const current_errors = employee_insert_validator.validate(employee)
       setEmployeeErrors(current_errors)
       if (!Common.isEmptyObject(current_errors)) {
@@ -333,39 +312,32 @@ function List() {
       const body = {
         password: employee.password
       }
-      const requestOptions = {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      };
       try {
-        fetch(process.env.REACT_APP_API_URL + 'employees/' + employee.id + '/update_password', requestOptions)
-          .then((res) => res.json())
-          .then((data) => {            
-            setShowEmployeeModel(false)
-            if(data.success){
-              setSelectedEmployee(null)              
-            } else{
-              setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
-              setAlertShow(true)
-            }
-          })
+        fetchWrapper.put(process.env.REACT_APP_API_URL + 'employees/' + employee.id + '/update_password', body).then((data) => {
+          setShowEmployeeModel(false)
+          if (data.success) {
+            setSelectedEmployee(null)
+          } else {
+            setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
+            setAlertShow(true)
+          }
+        })
       } catch (error) {
         console.error(error);
       }
     }
-  }  
+  }
 
-  function handleOpenOrganizationModel(type) {    
+  function handleOpenOrganizationModel(type) {
     setModelOrgType(type)
     setOrganizationErrors({})
-    if(type === 1){
+    if (type === 1) {
       if (selectedItems.length < 1) {
         setAlertMessage('Vui lòng chọn đơn vị tổ chức cha để thêm tổ chức')
         setAlertShow(true)
         return
       }
-      if(display_employees && display_employees.length > 0){
+      if (display_employees && display_employees.length > 0) {
         setAlertMessage('Không được tạo tổ chức con cho tổ chức có nhân viên')
         setAlertShow(true)
         return
@@ -373,7 +345,7 @@ function List() {
       setModelOrganizationTitle('Thêm tổ chức')
       setOrganization({ ...organization, "code": '', "name": '', "desc": '' });
       setShowOrganizationModel(true)
-    } else if(type === 2){
+    } else if (type === 2) {
       if (selectedItems.length < 1) {
         setAlertMessage('Vui lòng chọn đơn vị tổ chức để sửa')
         setAlertShow(true)
@@ -383,46 +355,46 @@ function List() {
       setModelOrganizationTitle('Sửa tổ chức')
       setOrganization({ ...organization, "code": selectedOrganization.code, "name": selectedOrganization.name, "desc": selectedOrganization.desc });
       setShowOrganizationModel(true)
-    } else if(type === 3){
+    } else if (type === 3) {
       if (selectedItems.length < 1) {
         setAlertMessage('Vui lòng chọn đơn vị tổ chức để xem')
         setAlertShow(true)
         return
       }
       const selectedOrganization = organizations[selectedItems[0]]
-      setModelOrganizationTitle('Xem tổ chức')      
+      setModelOrganizationTitle('Xem tổ chức')
       setOrganization({ ...organization, "code": selectedOrganization.code, "name": selectedOrganization.name, "desc": selectedOrganization.desc });
       setShowOrganizationModel(true)
-    } else if(type === 4){
+    } else if (type === 4) {
       if (selectedItems.length < 1) {
         setAlertMessage('Vui lòng chọn đơn vị tổ chức để xóa')
         setAlertShow(true)
         return
       }
       const selectedOrganization = organizations[selectedItems[0]]
-      if(selectedOrganization.hasChildren){
+      if (selectedOrganization.hasChildren) {
         setAlertMessage('Không được xóa tổ chức cha')
         setAlertShow(true)
         return
       }
-      if(display_employees && display_employees.length > 0){
+      if (display_employees && display_employees.length > 0) {
         setAlertMessage('Không được xóa tổ chức có nhân viên')
         setAlertShow(true)
         return
       }
-      setModelOrganizationTitle('Xóa tổ chức')      
+      setModelOrganizationTitle('Xóa tổ chức')
       setOrganization({ ...organization, "code": selectedOrganization.code, "name": selectedOrganization.name, "desc": selectedOrganization.desc });
       setShowOrganizationModel(true)
-    } else if(type === 5){
+    } else if (type === 5) {
       if (selectedItems.length < 1) {
         setAlertMessage('Vui lòng chọn đơn vị tổ chức để phân quyền')
         setAlertShow(true)
         return
       }
-    }   
+    }
   }
 
-  function handleSaveOrganization(){
+  function handleSaveOrganization() {
     if (selectedItems.length < 1) {
       setAlertMessage('Vui lòng chọn đơn vị tổ chức')
       setAlertShow(true)
@@ -434,72 +406,60 @@ function List() {
       return
     }
     const selected_id = parseInt(selectedItems[0])
-    if(modelOrgType === 1){
+    if (modelOrgType === 1) {
       const body = {
         code: organization.code,
         name: organization.name,
         description: organization.desc,
         parent_id: selected_id
       }
-      const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      };
       try {
-        fetch(process.env.REACT_APP_API_URL + "organizations/insert", requestOptions)
-          .then((res) => res.json())
-          .then((data) => {
-            console.log(data)
+        fetchWrapper.post(process.env.REACT_APP_API_URL + "organizations/insert", body).then((data) => {
+          setShowOrganizationModel(false)
+          if (data.success) {
             fetchOrganization()
-            setShowOrganizationModel(false)
-          })
+          } else {
+            setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
+            setAlertShow(true)
+          }
+        })
       } catch (error) {
         console.error(error);
       }
-    } else if(modelOrgType === 2){
+    } else if (modelOrgType === 2) {
       const body = {
         code: organization.code,
         name: organization.name,
         description: organization.desc
       }
-      const requestOptions = {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      };
       try {
-        fetch(process.env.REACT_APP_API_URL + 'organizations/' + selected_id + '/update', requestOptions)
-          .then((res) => res.json())
-          .then((data) => {
-            console.log(data)
+        fetchWrapper.put(process.env.REACT_APP_API_URL + 'organizations/' + selected_id + '/update', body).then((data) => {
+          setShowOrganizationModel(false)
+          if (data.success) {
             fetchOrganization()
-            setShowOrganizationModel(false)
-          })
+          } else {
+            setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
+            setAlertShow(true)
+          }
+        })
       } catch (error) {
         console.error(error);
       }
     } else if (modelOrgType === 4) {
-      const requestOptions = {
-        method: 'DELETE'
-      };
       try {
-        fetch(process.env.REACT_APP_API_URL + 'organizations/' + selected_id + '/delete', requestOptions)
-          .then((res) => res.json())
-          .then((data) => {
-            setShowOrganizationModel(false)
-            if (data.success) {              
-              console.log(data)
-              fetchOrganization()              
-            } else {
-              setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
-              setAlertShow(true)
-            }
-          })
+        fetchWrapper.delete(process.env.REACT_APP_API_URL + 'organizations/' + selected_id + '/delete').then((data) => {
+          setShowOrganizationModel(false)
+          if (data.success) {
+            fetchOrganization()
+          } else {
+            setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
+            setAlertShow(true)
+          }
+        })
       } catch (error) {
         console.error(error);
       }
-    } 
+    }
   }
 
   useEffect(() => {
@@ -509,7 +469,7 @@ function List() {
     );
     setDisplayEmployees(temp_employees)
     setSelectedEmployee(null)
-  }, [employees, selectedItems])   
+  }, [employees, selectedItems])
 
   return (
     <div>
@@ -563,7 +523,7 @@ function List() {
                     <Tree treeId="tree_organizations" rootItem="12" treeLabel="Cơ cấu tổ chức" />
                   </ControlledTreeEnvironment>
                 }
-                
+
               </div>
             </div>
           </div>
@@ -614,15 +574,15 @@ function List() {
                   )}
                 </div>
               </div>
-            </div>              
+            </div>
           </div>
         </div>
       </div>
       {/* model organization */}
-      <Modal showOverlay={true} size={'md'} show={showOrganizationModel} onClose={() => {setShowOrganizationModel(false)}}>
+      <Modal showOverlay={true} size={'md'} show={showOrganizationModel} onClose={() => { setShowOrganizationModel(false) }}>
         <Modal.Header>
           <Modal.Title>
-          {model_organization_title}
+            {model_organization_title}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -632,7 +592,7 @@ function List() {
               <Form.Control type="text" required readOnly={modelOrgType === 3 || modelOrgType === 4} name="code" value={organization.code} onChange={handleOrganizationChange} className="form-control" placeholder="" />
               {organization_errors.code && <div className="validation">{organization_errors.code}</div>}
             </div>
-            <div className="validation"></div>            
+            <div className="validation"></div>
           </Form.Group>
           <Form.Group className="row">
             <label htmlFor="name" className="col-form-label col-sm-3">Tên tổ chức<span>*</span></label>
@@ -645,7 +605,7 @@ function List() {
           <Form.Group className="row">
             <label htmlFor="description" className="col-form-label col-sm-3">Mô tả</label>
             <div className="col-sm-9">
-            <textarea className="form-control" readOnly={modelOrgType === 3 || modelOrgType === 4} name="desc" value={organization.desc} onChange={handleOrganizationChange} rows="4"></textarea>
+              <textarea className="form-control" readOnly={modelOrgType === 3 || modelOrgType === 4} name="desc" value={organization.desc} onChange={handleOrganizationChange} rows="4"></textarea>
             </div>
           </Form.Group>
         </Modal.Body>
@@ -656,36 +616,36 @@ function List() {
           {(modelOrgType === 4) &&
             <button type="button" className="btn btn-danger btn-icon small_button" onClick={() => handleSaveOrganization()}>Xóa</button>
           }
-          <button type="button" className="btn btn-secondary btn-icon small_button" onClick={() => {setShowOrganizationModel(false)}}>Đóng</button>
+          <button type="button" className="btn btn-secondary btn-icon small_button" onClick={() => { setShowOrganizationModel(false) }}>Đóng</button>
         </Modal.Footer>
       </Modal>
       {/* model employee */}
-      <Modal showOverlay={true} size={'md'} show={showEmployeeModel} onClose={() => {setShowEmployeeModel(false)}}>
+      <Modal showOverlay={true} size={'md'} show={showEmployeeModel} onClose={() => { setShowEmployeeModel(false) }}>
         <Modal.Header>
           <Modal.Title>
-          {model_employee_title}
+            {model_employee_title}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group className="row">
             <label htmlFor="code" className="col-form-label col-sm-3">Mã nhân viên<span>*</span></label>
             <div className="col-sm-9">
-            <Form.Control type="text" readOnly={[3,4,5].includes(modelEmpType)} name="code" value={employee.code} onChange={handleEmployeeChange} className="form-control" placeholder="" />
-            {employee_errors.code && <div className="validation">{employee_errors.code}</div>}
-            </div>            
+              <Form.Control type="text" readOnly={[3, 4, 5].includes(modelEmpType)} name="code" value={employee.code} onChange={handleEmployeeChange} className="form-control" placeholder="" />
+              {employee_errors.code && <div className="validation">{employee_errors.code}</div>}
+            </div>
           </Form.Group>
           <Form.Group className="row">
             <label htmlFor="full_name" className="col-form-label col-sm-3">Họ và tên<span>*</span></label>
             <div className="col-sm-9">
-            <Form.Control type="text" readOnly={[3,4,5].includes(modelEmpType)} name="full_name" value={employee.full_name} onChange={handleEmployeeChange} className="form-control" placeholder="" />
-            {employee_errors.full_name && <div className="validation">{employee_errors.full_name}</div>}
+              <Form.Control type="text" readOnly={[3, 4, 5].includes(modelEmpType)} name="full_name" value={employee.full_name} onChange={handleEmployeeChange} className="form-control" placeholder="" />
+              {employee_errors.full_name && <div className="validation">{employee_errors.full_name}</div>}
             </div>
           </Form.Group>
           <Form.Group className="row">
             <label htmlFor="account" className="col-form-label col-sm-3">Tài khoản<span>*</span></label>
             <div className="col-sm-9">
-            <Form.Control type="text" readOnly={[3,4,5].includes(modelEmpType)} name="account" value={employee.account} onChange={handleEmployeeChange} className="form-control" placeholder="" />
-            {employee_errors.account && <div className="validation">{employee_errors.account}</div>}
+              <Form.Control type="text" readOnly={[3, 4, 5].includes(modelEmpType)} name="account" value={employee.account} onChange={handleEmployeeChange} className="form-control" placeholder="" />
+              {employee_errors.account && <div className="validation">{employee_errors.account}</div>}
             </div>
           </Form.Group>
           {(modelEmpType === 1 || modelEmpType === 5) &&
@@ -705,20 +665,20 @@ function List() {
                 {employee_errors.confirm && <div className="validation">{employee_errors.confirm}</div>}
               </div>
             </Form.Group>
-          }          
+          }
         </Modal.Body>
         <Modal.Footer>
-          {([1,2,5].includes(modelEmpType)) &&
+          {([1, 2, 5].includes(modelEmpType)) &&
             <button type="button" className="btn btn-primary btn-icon small_button" onClick={() => handleSaveEmployee()}>Lưu</button>
           }
           {(modelEmpType === 4) &&
             <button type="button" className="btn btn-danger btn-icon small_button" onClick={() => handleSaveEmployee()}>Xóa</button>
           }
-          <button type="button" className="btn btn-secondary btn-icon small_button" onClick={() => {setShowEmployeeModel(false)}}>Đóng</button>
+          <button type="button" className="btn btn-secondary btn-icon small_button" onClick={() => { setShowEmployeeModel(false) }}>Đóng</button>
         </Modal.Footer>
       </Modal>
       {/* model alert */}
-      <Alert message={alert_message} show={alert_show} onClose={() => setAlertShow(false)}/>
+      <Alert message={alert_message} show={alert_show} onClose={() => setAlertShow(false)} />
     </div>
   )
 }

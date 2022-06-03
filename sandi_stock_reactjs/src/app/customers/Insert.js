@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
 import Select from 'react-select';
+import { fetchWrapper } from '../../utils/fetch-wrapper';
 
 export class Insert extends Component {
 
@@ -89,43 +90,31 @@ export class Insert extends Component {
     this.fetchGeneralCate()    
   }
 
-  async fetchGeneralCate(){
-    try {
-      const response = await fetch(process.env.REACT_APP_API_URL + "general_cate");
-      const data = await response.json();
-      const types = data.data.filter(
-        (cate) => cate.cate_type === 1
-      );
-      const cate_types = types.map(s => ({value: s.cate_key, label: s.cate_name}));
-      const fields = data.data.filter(
-        (cate) => cate.cate_type === 2
-      );
-      const cate_fields = fields.map(s => ({value: s.cate_key, label: s.cate_name}));
-      const regions = data.data.filter(
-        (cate) => cate.cate_type === 3
-      );
-      const cate_regions = regions.map(s => ({value: s.cate_key, label: s.cate_name}));
-      this.setState({
-        cate_types: [{ value: 0, label: 'Chọn ...' },...cate_types],
-        cate_fields: [{ value: 0, label: 'Chọn ...' },...cate_fields],
-        cate_regions: [{ value: 0, label: 'Chọn ...' },...cate_regions]
-      });
-    } catch (error) {
-      console.error(error);
-    }
+  fetchGeneralCate(){
+    fetchWrapper.get(process.env.REACT_APP_API_URL + "general_cate").then((data) => {
+      if (data.success) {
+        const types = data.data.filter(
+          (cate) => cate.cate_type === 1
+        );
+        const cate_types = types.map(s => ({value: s.cate_key, label: s.cate_name}));
+        const fields = data.data.filter(
+          (cate) => cate.cate_type === 2
+        );
+        const cate_fields = fields.map(s => ({value: s.cate_key, label: s.cate_name}));
+        const regions = data.data.filter(
+          (cate) => cate.cate_type === 3
+        );
+        const cate_regions = regions.map(s => ({value: s.cate_key, label: s.cate_name}));
+        this.setState({
+          cate_types: [{ value: 0, label: 'Chọn ...' },...cate_types],
+          cate_fields: [{ value: 0, label: 'Chọn ...' },...cate_fields],
+          cate_regions: [{ value: 0, label: 'Chọn ...' },...cate_regions]
+        });
+      }
+    })
   }
 
-  async fetchUsers() {
-    try {
-      const response = await fetch(process.env.REACT_APP_API_URL + "customers");
-      const data = await response.json();
-      return console.log(data);
-    } catch (error) {
-      return console.error(error);
-    }
-  }
-
-  async insertCustomer() {
+  insertCustomer() {
     const body = {
       code: this.state.code,
       name: this.state.name,
@@ -139,15 +128,11 @@ export class Insert extends Component {
       region_id: this.state.region_id,
       contacts: this.state.items
     }
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    };
-    const response = await fetch(process.env.REACT_APP_API_URL + 'customers/insert', requestOptions);
-    const data = await response.json();
-    console.log(data);
-    this.props.history.push("/customers/list");
+    fetchWrapper.post(process.env.REACT_APP_API_URL + 'customers/insert', body).then((data) => {
+      if (data.success) {
+        this.props.history.push("/customers/list");
+      }
+    })
   }
 
   handleSave(){

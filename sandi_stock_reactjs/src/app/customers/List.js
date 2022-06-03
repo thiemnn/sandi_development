@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { fetchWrapper } from '../../utils/fetch-wrapper';
 
 export class List extends Component {
 
@@ -22,29 +23,14 @@ export class List extends Component {
     this.fetchCustomers()
   }
 
-  async fetchCustomers(){
-    const requestOptions = {
-      method: 'GET',
-      Authorization: 'Basic ' + 'abc'
-    };
-    try {
-      fetch(process.env.REACT_APP_API_URL + "customers", requestOptions)
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data)
-        })
-    } catch (error) {
-      console.error(error);
-    }
-    // try {
-    //   const response = await fetch(process.env.REACT_APP_API_URL + "customers");
-    //   const data = await response.json();      
-    //   this.setState({
-    //     customers: data.data
-    //   });
-    // } catch (error) {
-    //   console.error(error);
-    // }
+  fetchCustomers(){
+    fetchWrapper.get(process.env.REACT_APP_API_URL + 'customers').then((data) => {
+      if (data.success) {
+        this.setState({
+          customers: data.data
+        });
+      }
+    })
   }
 
   render() {

@@ -1,0 +1,622 @@
+import React, { useState, useEffect } from 'react'
+import 'react-complex-tree/lib/style.css';
+import { ControlledTreeEnvironment, Tree } from 'react-complex-tree';
+import { Form } from 'react-bootstrap';
+import Modal from '../components/Modal';
+import Alert from '../components/Alert';
+import Validator from '../../utils/validator';
+import Common from '../../utils/common';
+import { fetchWrapper } from '../../utils/fetch-wrapper';
+
+function List() {
+  const [selected_product, setSelectedProduct] = useState(null);
+  const [focusedItem, setFocusedItem] = useState();
+  const [expandedItems, setExpandedItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [product_groups, setProductGroups] = useState();
+  const [products, setProducts] = useState([]);
+  const [display_products, setDisplayProducts] = useState([]);
+
+  //model product_group
+  const [model_product_group_title, setModelProductGroupTitle] = useState();
+  const [showProductGroupModel, setShowProductGroupModel] = useState(false);
+  const [product_group_errors, setProductGroupErrors] = useState({});
+  const [product_group, setProductGroup] = useState({ id: 0, code: "", name: "", description: "" });
+  const handleProductGroupChange = (event) => {
+    event.persist();
+    setProductGroup({ ...product_group, [event.target.name]: event.target.value });
+  };
+  const [modelOrgType, setModelOrgType] = useState(0);
+
+  //model product
+  const [model_product_title, setModelProductTitle] = useState();
+  const [showProductModel, setShowProductModel] = useState(false);
+  const [product_errors, setProductErrors] = useState({});
+  const [product, setProduct] = useState({ id: 0, code: "", name: "", description: "" });
+  const handleProductChange = (event) => {
+    event.persist();
+    setProduct({ ...product, [event.target.name]: event.target.value });
+  };
+  const [modelEmpType, setModelEmpType] = useState(0);
+
+  //alert message
+  const [alert_message, setAlertMessage] = useState('');
+  const [alert_show, setAlertShow] = useState(false);
+
+  const product_group_rules = [
+    {
+      field: 'code',
+      method: 'isEmpty',
+      validWhen: false,
+      message: 'Vui lòng nhập mã nhóm.',
+    },
+    {
+      field: 'name',
+      method: 'isEmpty',
+      validWhen: false,
+      message: 'Vui lòng nhập tên nhóm.',
+    },
+  ];
+  const product_group_validator = new Validator(product_group_rules);
+
+  const product_rules = [
+    {
+      field: 'code',
+      method: 'isEmpty',
+      validWhen: false,
+      message: 'Vui lòng nhập mã sản phẩm.',
+    },
+    {
+      field: 'name',
+      method: 'isEmpty',
+      validWhen: false,
+      message: 'Vui lòng nhập họ tên.',
+    }
+  ];
+  const product_validator = new Validator(product_rules);
+
+  const product_insert_rules = [
+    {
+      field: 'code',
+      method: 'isEmpty',
+      validWhen: false,
+      message: 'Vui lòng nhập mã sản phẩm.',
+    },
+    {
+      field: 'name',
+      method: 'isEmpty',
+      validWhen: false,
+      message: 'Vui lòng nhập họ tên.',
+    }
+  ];
+  const product_insert_validator = new Validator(product_insert_rules);
+
+  useEffect(() => {
+    fetchProductGroup()
+  }, [])
+
+  function fetchProductGroup() {
+    try {
+      fetchWrapper.get(process.env.REACT_APP_API_URL + 'product_groups').then((data) => {
+        if (data.success) {
+          console.log(data.data)
+          setProductGroups(readProductGroup(data.data.product_groups))
+          setProducts(data.data.products)
+          setExpandedItems(data.data.ids)
+          setSelectedProduct(null)
+        }
+      })
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const readProductGroup = (template, data = { items: {} }) => {
+    template.map((product_group, i) => {
+      data.items[product_group.id.toString()] = {
+        "index": product_group.id.toString(),
+        "desc": product_group.description,
+        "name": product_group.name,
+        "code": product_group.code,
+        "canMove": true,
+        "hasChildren": product_group.childs && product_group.childs.length > 0 ? true : false,
+        "children": product_group.childs && product_group.childs.length > 0 ? product_group.childs : null,
+        "data": product_group.name,
+        "canRename": true,
+      };
+      return data;
+    })
+    return data.items;
+  };
+
+  function handleOpenProductModel(type) {
+    setModelEmpType(type)
+    setProductErrors({})
+    if (type === 1) {
+      if (selectedItems.length < 1) {
+        setAlertMessage('Vui lòng chọn nhóm để thêm sản phẩm')
+        setAlertShow(true)
+        return
+      }
+      const selectedProductGroup = product_groups[selectedItems[0]]
+      if (selectedProductGroup.hasChildren) {
+        setAlertMessage('Không được thêm sản phẩm cho nhóm cha')
+        setAlertShow(true)
+        return
+      }
+      setModelProductTitle('Thêm sản phẩm')
+      setProduct({ ...product, "code": '', "name": '', "description": '' });
+      setShowProductModel(true)
+    } else if (type === 2) {
+      if (selectedItems.length < 1) {
+        setAlertMessage('Vui lòng chọn nhóm sản phẩm')
+        setAlertShow(true)
+        return
+      }
+      if (selected_product === null) {
+        setAlertMessage('Vui lòng chọn sản phẩm để sửa')
+        setAlertShow(true)
+        return
+      }
+      setModelProductTitle('Sửa thông tin sản phẩm')
+      setProduct({ ...product, "id": selected_product.id, "code": selected_product.code, "name": selected_product.name, "description": selected_product.description });
+      setShowProductModel(true)
+    } else if (type === 3) {
+      if (selectedItems.length < 1) {
+        setAlertMessage('Vui lòng chọn nhóm sản phẩm')
+        setAlertShow(true)
+        return
+      }
+      if (selected_product === null) {
+        setAlertMessage('Vui lòng chọn sản phẩm để xem')
+        setAlertShow(true)
+        return
+      }
+      setModelProductTitle('Xem thông tin sản phẩm')
+      setProduct({ ...product, "id": selected_product.id, "code": selected_product.code, "name": selected_product.name, "description": selected_product.description });
+      setShowProductModel(true)
+    } else if (type === 4) {
+      if (selectedItems.length < 1) {
+        setAlertMessage('Vui lòng chọn nhóm sản phẩm')
+        setAlertShow(true)
+        return
+      }
+      if (selected_product === null) {
+        setAlertMessage('Vui lòng chọn sản phẩm để xóa')
+        setAlertShow(true)
+        return
+      }
+      setModelProductTitle('Xóa thông tin sản phẩm')
+      setProduct({ ...product, "id": selected_product.id, "code": selected_product.code, "name": selected_product.name, "description": selected_product.description });
+      setShowProductModel(true)
+    }
+  }
+
+  function handleSaveProduct() {
+    if (selectedItems.length < 1) {
+      setAlertMessage('Vui lòng chọn nhóm sản phẩm')
+      setAlertShow(true)
+      return
+    }
+    const selected_id = parseInt(selectedItems[0])
+    if (modelEmpType === 1) {
+      const current_errors = product_insert_validator.validate(product)
+      setProductErrors(current_errors)
+      if (!Common.isEmptyObject(current_errors)) {
+        return
+      }
+      const body = {
+        code: product.code,
+        name: product.name,
+        description: product.description,
+        group_id: selected_id
+      }
+      try {
+        fetchWrapper.post(process.env.REACT_APP_API_URL + 'products/insert', body).then((data) => {
+          setShowProductModel(false)
+          if (data.success) {
+            setSelectedProduct(null)
+            fetchProductGroup()
+          } else {
+            setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
+            setAlertShow(true)
+          }
+        })
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (modelEmpType === 2) {
+      const current_errors = product_validator.validate(product)
+      setProductErrors(current_errors)
+      if (!Common.isEmptyObject(current_errors)) {
+        return
+      }
+      const body = {
+        code: product.code,
+        full_name: product.full_name,
+        account: product.account,
+        group_id: selected_id
+      }
+      try {
+        fetchWrapper.put(process.env.REACT_APP_API_URL + 'products/' + product.id + '/update', body).then((data) => {
+          setShowProductModel(false)
+          if (data.success) {
+            setSelectedProduct(null)
+            fetchProductGroup()
+          } else {
+            setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
+            setAlertShow(true)
+          }
+        })
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (modelEmpType === 4) {
+      try {
+        fetchWrapper.delete(process.env.REACT_APP_API_URL + 'products/' + product.id + '/delete').then((data) => {
+          setShowProductModel(false)
+          if (data.success) {
+            setSelectedProduct(null)
+            fetchProductGroup()
+          } else {
+            setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
+            setAlertShow(true)
+          }
+        })
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (modelEmpType === 5) {
+      const current_errors = product_insert_validator.validate(product)
+      setProductErrors(current_errors)
+      if (!Common.isEmptyObject(current_errors)) {
+        return
+      }
+      const body = {
+        password: product.password
+      }
+      try {
+        fetchWrapper.put(process.env.REACT_APP_API_URL + 'products/' + product.id + '/update_password', body).then((data) => {
+          setShowProductModel(false)
+          if (data.success) {
+            setSelectedProduct(null)
+          } else {
+            setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
+            setAlertShow(true)
+          }
+        })
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+  function handleOpenProductGroupModel(type) {
+    setModelOrgType(type)
+    setProductGroupErrors({})
+    if (type === 1) {
+      if (selectedItems.length < 1) {
+        setAlertMessage('Vui lòng chọn nhóm cha để thêm nhóm sản phẩm')
+        setAlertShow(true)
+        return
+      }
+      if (display_products && display_products.length > 0) {
+        setAlertMessage('Không được tạo nhóm con cho nhóm đã có sản phẩm')
+        setAlertShow(true)
+        return
+      }
+      setModelProductGroupTitle('Thêm nhóm sản phẩm')
+      setProductGroup({ ...product_group, "code": '', "name": '', "desc": '' });
+      setShowProductGroupModel(true)
+    } else if (type === 2) {
+      if (selectedItems.length < 1) {
+        setAlertMessage('Vui lòng chọn nhóm sản phẩm để sửa')
+        setAlertShow(true)
+        return
+      }
+      const selectedProductGroup = product_groups[selectedItems[0]]
+      setModelProductGroupTitle('Sửa nhóm sản phẩm')
+      setProductGroup({ ...product_group, "code": selectedProductGroup.code, "name": selectedProductGroup.name, "desc": selectedProductGroup.desc });
+      setShowProductGroupModel(true)
+    } else if (type === 3) {
+      if (selectedItems.length < 1) {
+        setAlertMessage('Vui lòng chọn nhóm sản phẩm để xem')
+        setAlertShow(true)
+        return
+      }
+      const selectedProductGroup = product_groups[selectedItems[0]]
+      setModelProductGroupTitle('Xem nhóm sản phẩm')
+      setProductGroup({ ...product_group, "code": selectedProductGroup.code, "name": selectedProductGroup.name, "desc": selectedProductGroup.desc });
+      setShowProductGroupModel(true)
+    } else if (type === 4) {
+      if (selectedItems.length < 1) {
+        setAlertMessage('Vui lòng chọn nhóm sản phẩm để xóa')
+        setAlertShow(true)
+        return
+      }
+      const selectedProductGroup = product_groups[selectedItems[0]]
+      if (selectedProductGroup.hasChildren) {
+        setAlertMessage('Không được xóa nhóm sản phẩm cha')
+        setAlertShow(true)
+        return
+      }
+      if (display_products && display_products.length > 0) {
+        setAlertMessage('Không được xóa nhóm sản phẩm có sản phẩm')
+        setAlertShow(true)
+        return
+      }
+      setModelProductGroupTitle('Xóa nhóm sản phẩm')
+      setProductGroup({ ...product_group, "code": selectedProductGroup.code, "name": selectedProductGroup.name, "desc": selectedProductGroup.desc });
+      setShowProductGroupModel(true)
+    }
+  }
+
+  function handleSaveProductGroup() {
+    if (selectedItems.length < 1) {
+      setAlertMessage('Vui lòng chọn nhóm sản phẩm')
+      setAlertShow(true)
+      return
+    }
+    const current_errors = product_group_validator.validate(product_group)
+    setProductGroupErrors(current_errors)
+    if (!Common.isEmptyObject(current_errors)) {
+      return
+    }
+    const selected_id = parseInt(selectedItems[0])
+    if (modelOrgType === 1) {
+      const body = {
+        code: product_group.code,
+        name: product_group.name,
+        description: product_group.desc,
+        parent_id: selected_id
+      }
+      try {
+        fetchWrapper.post(process.env.REACT_APP_API_URL + "product_groups/insert", body).then((data) => {
+          setShowProductGroupModel(false)
+          if (data.success) {
+            fetchProductGroup()
+          } else {
+            setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
+            setAlertShow(true)
+          }
+        })
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (modelOrgType === 2) {
+      const body = {
+        code: product_group.code,
+        name: product_group.name,
+        description: product_group.desc
+      }
+      try {
+        fetchWrapper.put(process.env.REACT_APP_API_URL + 'product_groups/' + selected_id + '/update', body).then((data) => {
+          setShowProductGroupModel(false)
+          if (data.success) {
+            fetchProductGroup()
+          } else {
+            setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
+            setAlertShow(true)
+          }
+        })
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (modelOrgType === 4) {
+      try {
+        fetchWrapper.delete(process.env.REACT_APP_API_URL + 'product_groups/' + selected_id + '/delete').then((data) => {
+          setShowProductGroupModel(false)
+          if (data.success) {
+            fetchProductGroup()
+          } else {
+            setAlertMessage('Có lỗi xảy ra trong quá trình thực hiện')
+            setAlertShow(true)
+          }
+        })
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+  useEffect(() => {
+    const selected_id = parseInt(selectedItems[0])
+    console.log(selectedItems[0])
+    const temp_products = products.filter(
+      (product) => product.group_id === selected_id
+    );
+    setDisplayProducts(temp_products)
+    setSelectedProduct(null)
+  }, [products, selectedItems])
+
+  return (
+    <div>
+      <div className="page-header">
+        <h3 className="page-title"> Quản lý hàng hóa </h3>
+      </div>
+      <div className="row">
+        <div className="col-lg-6 grid-margin stretch-card">
+          <div className="card">
+            <div className="card-body">
+              <div>
+                <h4 className="card-title fl-left">Danh mục hàng hóa</h4>
+                <div className='fl-right mb-10'>
+                  <button type="button" className="btn btn-primary btn-icon small_button" title="Thêm nhóm sản phẩm" onClick={() => handleOpenProductGroupModel(1)}><i className="mdi mdi-plus-box"></i></button>
+                  <button type="button" className="btn btn-success btn-icon small_button ml-10" title="Sửa nhóm sản phẩm" onClick={() => handleOpenProductGroupModel(2)}><i className="mdi mdi-pencil"></i></button>
+                  <button type="button" className="btn btn-warning btn-icon small_button ml-10" title="Xem nhóm sản phẩm" onClick={() => handleOpenProductGroupModel(3)}><i className="mdi mdi-eye"></i></button>
+                  <button type="button" className="btn btn-danger btn-icon small_button ml-10" title="Xóa nhóm sản phẩm" onClick={() => handleOpenProductGroupModel(4)}><i className="mdi mdi-delete"></i></button>
+                </div>
+                <div className='clear-both'></div>
+              </div>
+              <div className='tree-wrapper'>
+                <style>{`
+                  :root {        
+                    --rct-item-height: 32px;
+                  }
+                  .rct-tree-item-li {
+                    font-size: 1.2rem;
+                  }
+                `}</style>
+                {
+                  !Common.isEmptyObject(product_groups) &&
+                  <ControlledTreeEnvironment
+                    items={product_groups}
+                    getItemTitle={item => item.data}
+                    viewState={{
+                      ['tree_product_groups']: {
+                        focusedItem,
+                        expandedItems,
+                        selectedItems,
+                      },
+                    }}
+                    defaultInteractionMode={'click-arrow-to-expand'}
+                    onFocusItem={item => setFocusedItem(item.index)}
+                    onExpandItem={item => setExpandedItems([...expandedItems, item.index])}
+                    onCollapseItem={item =>
+                      setExpandedItems(expandedItems.filter(expandedItemIndex => expandedItemIndex !== item.index))
+                    }
+                    onSelectItems={items => setSelectedItems(items)}
+                  >
+                    <Tree treeId="tree_product_groups" rootItem="1" treeLabel="Danh mục vật tư/sản phẩm" />
+                  </ControlledTreeEnvironment>
+                }
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-lg-6 grid-margin stretch-card">
+          <div className="card">
+            <div className="card-body">
+              <div>
+                <h4 className="card-title fl-left">Danh sách hàng hóa</h4>
+                <div className='fl-right mb-10'>
+                  <button type="button" className="btn btn-primary btn-icon small_button" title="Thêm sản phẩm" onClick={() => handleOpenProductModel(1)}><i className="mdi mdi-plus-box"></i> </button>
+                  <button type="button" className="btn btn-success btn-icon small_button ml-10" title="Sửa sản phẩm" onClick={() => handleOpenProductModel(2)}><i className="mdi mdi-pencil"></i> </button>
+                  <button type="button" className="btn btn-warning btn-icon small_button ml-10" title="Xem sản phẩm" onClick={() => handleOpenProductModel(3)}><i className="mdi mdi-eye"></i> </button>
+                  <button type="button" className="btn btn-danger btn-icon small_button ml-10" title="Xóa sản phẩm" onClick={() => handleOpenProductModel(4)}><i className="mdi mdi-delete"></i> </button>
+                </div>
+                <div className='clear-both'></div>
+              </div>
+              <div className='table-wrapper'>
+                <div className="table-responsive">
+                  <table className="table table-hover products">
+                    <thead>
+                      <tr>
+                        <th style={{ width: '60px' }}>Mã sản phẩm</th>
+                        <th style={{ width: '200px' }}>Tên sản phẩm</th>
+                        <th style={{ width: '200px' }}>Mô tả</th>
+                        <th style={{ width: '60px' }}>Trạng thái</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {display_products && display_products.map(function (product, index) {
+                        return (
+                          <tr key={"product-" + index} className={selected_product && selected_product.id === product.id ? 'selected-row' : ''} onClick={() => setSelectedProduct(product)}>
+                            <td>{product.code}</td>
+                            <td>{product.name}</td>
+                            <td>{product.description}</td>
+                            <td>
+                              {product.id > 5 && <label className="badge badge-success">Hoạt động</label>}
+                              {product.id <= 5 && <label className="badge badge-warning">Tạm dừng</label>}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                  {(!display_products || display_products.length === 0) && (
+                    <div className='center'>Không có bản ghi nào</div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* model product_group */}
+      <Modal showOverlay={true} size={'md'} show={showProductGroupModel} onClose={() => { setShowProductGroupModel(false) }}>
+        <Modal.Header>
+          <Modal.Title>
+            {model_product_group_title}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className="row">
+            <label htmlFor="code" className="col-form-label col-sm-3">Mã nhóm<span>*</span></label>
+            <div className="col-sm-9">
+              <Form.Control type="text" required readOnly={modelOrgType === 3 || modelOrgType === 4} name="code" value={product_group.code} onChange={handleProductGroupChange} className="form-control" placeholder="" />
+              {product_group_errors.code && <div className="validation">{product_group_errors.code}</div>}
+            </div>
+            <div className="validation"></div>
+          </Form.Group>
+          <Form.Group className="row">
+            <label htmlFor="name" className="col-form-label col-sm-3">Tên nhóm<span>*</span></label>
+            <div className="col-sm-9">
+              <Form.Control type="text" required readOnly={modelOrgType === 3 || modelOrgType === 4} name="name" value={product_group.name} onChange={handleProductGroupChange} className="form-control" placeholder="" />
+              {product_group_errors.name && <div className="validation">{product_group_errors.name}</div>}
+            </div>
+            <div className="validation"></div>
+          </Form.Group>
+          <Form.Group className="row">
+            <label htmlFor="description" className="col-form-label col-sm-3">Mô tả</label>
+            <div className="col-sm-9">
+              <textarea className="form-control" readOnly={modelOrgType === 3 || modelOrgType === 4} name="desc" value={product_group.desc} onChange={handleProductGroupChange} rows="4"></textarea>
+            </div>
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          {(modelOrgType === 1 || modelOrgType === 2) &&
+            <button type="button" className="btn btn-primary btn-icon small_button" onClick={() => handleSaveProductGroup()}>Lưu</button>
+          }
+          {(modelOrgType === 4) &&
+            <button type="button" className="btn btn-danger btn-icon small_button" onClick={() => handleSaveProductGroup()}>Xóa</button>
+          }
+          <button type="button" className="btn btn-secondary btn-icon small_button" onClick={() => { setShowProductGroupModel(false) }}>Đóng</button>
+        </Modal.Footer>
+      </Modal>
+      {/* model product */}
+      <Modal showOverlay={true} size={'md'} show={showProductModel} onClose={() => { setShowProductModel(false) }}>
+        <Modal.Header>
+          <Modal.Title>
+            {model_product_title}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className="row">
+            <label htmlFor="code" className="col-form-label col-sm-3">Mã sản phẩm<span>*</span></label>
+            <div className="col-sm-9">
+              <Form.Control type="text" readOnly={[3, 4, 5].includes(modelEmpType)} name="code" value={product.code} onChange={handleProductChange} className="form-control" placeholder="" />
+              {product_errors.code && <div className="validation">{product_errors.code}</div>}
+            </div>
+          </Form.Group>
+          <Form.Group className="row">
+            <label htmlFor="name" className="col-form-label col-sm-3">Tên sản phẩm<span>*</span></label>
+            <div className="col-sm-9">
+              <Form.Control type="text" readOnly={[3, 4, 5].includes(modelEmpType)} name="name" value={product.name} onChange={handleProductChange} className="form-control" placeholder="" />
+              {product_errors.name && <div className="validation">{product_errors.name}</div>}
+            </div>
+          </Form.Group>
+          <Form.Group className="row">
+            <label htmlFor="description" className="col-form-label col-sm-3">Mô tả</label>
+            <div className="col-sm-9">
+              <Form.Control type="text" readOnly={[3, 4, 5].includes(modelEmpType)} name="description" value={product.description} onChange={handleProductChange} className="form-control" placeholder="" />
+              {product_errors.description && <div className="validation">{product_errors.description}</div>}
+            </div>
+          </Form.Group>          
+        </Modal.Body>
+        <Modal.Footer>
+          {([1, 2, 5].includes(modelEmpType)) &&
+            <button type="button" className="btn btn-primary btn-icon small_button" onClick={() => handleSaveProduct()}>Lưu</button>
+          }
+          {(modelEmpType === 4) &&
+            <button type="button" className="btn btn-danger btn-icon small_button" onClick={() => handleSaveProduct()}>Xóa</button>
+          }
+          <button type="button" className="btn btn-secondary btn-icon small_button" onClick={() => { setShowProductModel(false) }}>Đóng</button>
+        </Modal.Footer>
+      </Modal>
+      {/* model alert */}
+      <Alert message={alert_message} show={alert_show} onClose={() => setAlertShow(false)} />
+    </div>
+  )
+}
+export default List

@@ -38,6 +38,7 @@ class Sidebar extends Component {
       {path:'/providers', state: 'providersOpen'},
       {path:'/customers', state: 'customersOpen'},
       {path:'/employees', state: 'employeesOpen'},
+      {path:'/products', state: 'productsOpen'},
       {path:'/tables', state: 'tablesMenuOpen'},
       {path:'/icons', state: 'iconsMenuOpen'},
       {path:'/charts', state: 'chartsMenuOpen'},
@@ -109,7 +110,7 @@ class Sidebar extends Component {
 
           <li className={ this.isPathActive('/providers') ? 'nav-item active' : 'nav-item' }>
             <div className={ this.state.providersOpen ? 'nav-link menu-expanded' : 'nav-link' } onClick={ () => this.toggleMenuState('providersOpen') } data-toggle="collapse">
-              <i className="mdi mdi mdi mdi-account-box menu-icon"></i>
+              <i className="mdi mdi-truck menu-icon"></i>
               <span className="menu-title">Nhà cung cấp</span>
               <i className="menu-arrow"></i>
             </div>
@@ -123,7 +124,7 @@ class Sidebar extends Component {
 
           <li className={ this.isPathActive('/customers') ? 'nav-item active' : 'nav-item' }>
             <div className={ this.state.customersOpen ? 'nav-link menu-expanded' : 'nav-link' } onClick={ () => this.toggleMenuState('customersOpen') } data-toggle="collapse">
-              <i className="mdi mdi mdi mdi-account-box-outline menu-icon"></i>
+              <i className="mdi mdi-account-card-details menu-icon"></i>
               <span className="menu-title">Khách hàng</span>
               <i className="menu-arrow"></i>
             </div>
@@ -137,13 +138,26 @@ class Sidebar extends Component {
 
           <li className={ this.isPathActive('/employees') ? 'nav-item active' : 'nav-item' }>
             <div className={ this.state.employeesOpen ? 'nav-link menu-expanded' : 'nav-link' } onClick={ () => this.toggleMenuState('employeesOpen') } data-toggle="collapse">
-              <i className="mdi mdi mdi mdi-account-box-outline menu-icon"></i>
+              <i className="mdi mdi-account-multiple menu-icon"></i>
               <span className="menu-title">Nhân viên</span>
               <i className="menu-arrow"></i>
             </div>
             <Collapse in={ this.state.employeesOpen }>
               <ul className="nav flex-column sub-menu">
                 <li className="nav-item"> <Link className={ this.isPathActive('/employees/list') ? 'nav-link active' : 'nav-link' } to="/employees/list">Danh sách nhân viên</Link></li>
+              </ul>
+            </Collapse>
+          </li>
+
+          <li className={ this.isPathActive('/products') ? 'nav-item active' : 'nav-item' }>
+            <div className={ this.state.productsOpen ? 'nav-link menu-expanded' : 'nav-link' } onClick={ () => this.toggleMenuState('productsOpen') } data-toggle="collapse">
+              <i className="mdi mdi-puzzle menu-icon"></i>
+              <span className="menu-title">Vật tư</span>
+              <i className="menu-arrow"></i>
+            </div>
+            <Collapse in={ this.state.productsOpen }>
+              <ul className="nav flex-column sub-menu">
+                <li className="nav-item"> <Link className={ this.isPathActive('/products/list') ? 'nav-link active' : 'nav-link' } to="/products/list">Danh sách vật tư</Link></li>
               </ul>
             </Collapse>
           </li>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
 import Select from 'react-select';
+import { fetchWrapper } from '../../utils/fetch-wrapper';
 
 export class Edit extends Component {
 
@@ -95,63 +96,59 @@ export class Edit extends Component {
   }
 
   async fetchGeneralCate(){
-    try {
-      const response = await fetch(process.env.REACT_APP_API_URL + "general_cate");
-      const data = await response.json();
-      const types = data.data.filter(
-        (cate) => cate.cate_type === 1
-      );
-      const cate_types = types.map(s => ({value: s.cate_key, label: s.cate_name}));
-      const fields = data.data.filter(
-        (cate) => cate.cate_type === 2
-      );
-      const cate_fields = fields.map(s => ({value: s.cate_key, label: s.cate_name}));
-      const regions = data.data.filter(
-        (cate) => cate.cate_type === 3
-      );
-      const cate_regions = regions.map(s => ({value: s.cate_key, label: s.cate_name}));
-      this.setState({
-        cate_types: [{ value: 0, label: 'Chọn ...' },...cate_types],
-        cate_fields: [{ value: 0, label: 'Chọn ...' },...cate_fields],
-        cate_regions: [{ value: 0, label: 'Chọn ...' },...cate_regions]
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async fetchCustomer(id) {
-    try {
-      const response = await fetch(process.env.REACT_APP_API_URL + "customers/" + id);
-      const data = await response.json();
-      const customer = data.data.customer;
-      var contacts = data.data.contacts;
-      if(contacts.length === 0){
-        contacts.push({full_name: '', position: '', mobile: '', email: ''});
+    fetchWrapper.get(process.env.REACT_APP_API_URL + "general_cate").then((data) => {
+      if (data.success) {
+        const types = data.data.filter(
+          (cate) => cate.cate_type === 1
+        );
+        const cate_types = types.map(s => ({value: s.cate_key, label: s.cate_name}));
+        const fields = data.data.filter(
+          (cate) => cate.cate_type === 2
+        );
+        const cate_fields = fields.map(s => ({value: s.cate_key, label: s.cate_name}));
+        const regions = data.data.filter(
+          (cate) => cate.cate_type === 3
+        );
+        const cate_regions = regions.map(s => ({value: s.cate_key, label: s.cate_name}));
+        this.setState({
+          cate_types: [{ value: 0, label: 'Chọn ...' },...cate_types],
+          cate_fields: [{ value: 0, label: 'Chọn ...' },...cate_fields],
+          cate_regions: [{ value: 0, label: 'Chọn ...' },...cate_regions]
+        });
       }
-      this.setState({
-        id:customer.id,
-        code: customer.code,
-        name: customer.name,
-        address: customer.address,
-        remark: customer.remark,
-        email: customer.email,
-        tax_code: customer.tax_code,
-        phone: customer.phone,
-        type_id: customer.type_id,
-        field_id: customer.field_id,
-        region_id: customer.region_id, 
-        selected_type: {value: customer.type_id, label: customer.type_name},
-        selected_field: {value: customer.field_id, label: customer.field_name},
-        selected_region: {value: customer.region_id, label: customer.region_name},
-        items: contacts
-      });
-    } catch (error) {
-      return console.error(error);
-    }
+    })
   }
 
-  async updateCustomer() {
+  fetchCustomer(id) {
+    fetchWrapper.get(process.env.REACT_APP_API_URL + "customers/" + id).then((data) => {
+      if (data.success) {
+        const customer = data.data.customer;
+        var contacts = data.data.contacts;
+        if (contacts.length === 0) {
+          contacts.push({ full_name: '', position: '', mobile: '', email: '' });
+        }
+        this.setState({
+          id: customer.id,
+          code: customer.code,
+          name: customer.name,
+          address: customer.address,
+          remark: customer.remark,
+          email: customer.email,
+          tax_code: customer.tax_code,
+          phone: customer.phone,
+          type_id: customer.type_id,
+          field_id: customer.field_id,
+          region_id: customer.region_id,
+          selected_type: { value: customer.type_id, label: customer.type_name },
+          selected_field: { value: customer.field_id, label: customer.field_name },
+          selected_region: { value: customer.region_id, label: customer.region_name },
+          items: contacts
+        });
+      }
+    })
+  }
+
+  updateCustomer() {
     const body = {
       code: this.state.code,
       name: this.state.name,
@@ -165,15 +162,11 @@ export class Edit extends Component {
       region_id: this.state.region_id,
       contacts: this.state.items
     }
-    const requestOptions = {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    };
-    const response = await fetch(process.env.REACT_APP_API_URL + 'customers/' + this.state.id + '/update', requestOptions);
-    const data = await response.json();
-    console.log(data);
-    this.props.history.push("/customers/list");
+    fetchWrapper.put(process.env.REACT_APP_API_URL + 'customers/' + this.state.id + '/update', body).then((data) => {
+      if (data.success) {
+        this.props.history.push("/customers/list");
+      }
+    })
   }
 
   handleSave(){

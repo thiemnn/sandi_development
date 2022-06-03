@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 
-const generalCatesController = require('../controllers/generalCates.controller');
+const productsController = require('../controllers/products.controller');
 const jwt = require("jsonwebtoken");
 
 function authenToken(req, res, next) {
@@ -24,13 +24,13 @@ function authenToken(req, res, next) {
     }
 }
 
-router.route('/')
-    .get(authenToken, generalCatesController.getAll);
-
-router.route('/:_id')
-    .get(authenToken, generalCatesController.get);
+router.route('/:_id/update')
+    .put(authenToken, productsController.update);
 
 router.route('/insert')
-    .post(authenToken, generalCatesController.insert);
+    .post(authenToken, productsController.insert);
+
+router.route('/:_id/delete')
+    .delete(authenToken, productsController.delete_item);
 
 module.exports = router;

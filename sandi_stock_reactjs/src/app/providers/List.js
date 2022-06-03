@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { fetchWrapper } from '../../utils/fetch-wrapper';
 
 export class List extends Component {
 
@@ -24,12 +25,15 @@ export class List extends Component {
   }
   async fetchProviders(){
     try {
-      const response = await fetch(process.env.REACT_APP_API_URL + "providers");
-      const data = await response.json();      
-      this.setState({
-        providers: data.data
-      });
-      console.log(this.state.providers)
+      fetchWrapper.get(process.env.REACT_APP_API_URL + 'providers').then((data) => {
+        if (data.success) {
+          this.setState({
+            providers: data.data
+          });
+        } else{
+          console.log(data)
+        }
+      })
     } catch (error) {
       console.error(error);
     }

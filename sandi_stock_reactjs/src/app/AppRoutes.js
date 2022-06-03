@@ -20,6 +20,7 @@ const CustomersEdit = lazy(() => import('./customers/Edit'));
 const CustomersList = lazy(() => import('./customers/List'));
 
 const EmployeesList = lazy(() => import('./employees/List'));
+const ProductsList = lazy(() => import('./products/List'));
 
 const BasicTable = lazy(() => import('./tables/BasicTable'));
 
@@ -47,15 +48,21 @@ class AppRoutes extends Component {
           <Route path="/form-Elements/basic-elements" component={ BasicElements } />
           <Route path="/ncc/basic-elements" component={ BasicElements } />
 
+
+
+
           <Route path="/providers/insert" component={ ProvidersInsert } />
           <Route path="/providers/edit/:id" component={ ProvidersEdit } />
           <Route path="/providers/list" component={ ProvidersList } />
-
           <Route path="/customers/insert" component={ CustomersInsert } />
           <Route path="/customers/edit/:id" component={ CustomersEdit } />
           <Route path="/customers/list" component={ CustomersList } />
-
           <Route path="/employees/list" component={ EmployeesList } />
+          <Route path="/products/list" component={ ProductsList } />
+
+
+
+
 
           <Route path="/tables/basic-table" component={ BasicTable } />
 
