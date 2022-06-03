@@ -31,13 +31,13 @@ function Login() {
                 .then((data) => {
                     if (data.success) {
                         if (remember) {
-                            localStorage.setItem('employee_email', data.data.employee.account);
-                            localStorage.setItem('employee_password', data.data.employee.password);
-                            localStorage.setItem('employee_remember', true);
-                        } else{
-                            localStorage.setItem('employee_remember', false);
-                            localStorage.removeItem('employee_email')
-                            localStorage.removeItem('employee_password')
+                            const credential = { account: data.data.employee.account, password: data.data.employee.password }
+                            const remember_token = CryptoJS.AES.encrypt(JSON.stringify(credential), 'sandivietnam.com').toString();
+                            localStorage.setItem('remember_token', remember_token);
+                            localStorage.setItem('remember_password', true);
+                        } else {
+                            localStorage.setItem('remember_password', false);
+                            localStorage.removeItem('remember_token')
                         }
                         localStorage.setItem('token', data.data.token);
                         history.push("/dashboard");
@@ -51,19 +51,16 @@ function Login() {
     }
 
     useEffect(() => {
-        const employee_remember = localStorage.getItem('employee_remember');  
-        const data = {username: 'abc', password: 'abc'}
-        const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data), 'secret_key').toString();   
-        console.log(ciphertext)   
-        var bytes = CryptoJS.AES.decrypt(ciphertext, 'secret_key');
-        var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-        console.log(decryptedData)
-        if (employee_remember && employee_remember === 'true') {
+        const remember_password = localStorage.getItem('remember_password');
+        if (remember_password && remember_password === 'true') {
             setRemember(true)
-            const employee_email = localStorage.getItem('employee_email');
-            const employee_password = localStorage.getItem('employee_password');
+            const remember_token = localStorage.getItem('remember_token');
+            var credential = CryptoJS.AES.decrypt(remember_token, 'sandivietnam.com');
+            var decryptedData = JSON.parse(credential.toString(CryptoJS.enc.Utf8));
+            const employee_email = decryptedData.account;
+            const employee_password = decryptedData.password;
             setInput({ ...input, "username": employee_email, "password": employee_password });
-        } else{
+        } else {
             setRemember(false)
         }
     }, [])
