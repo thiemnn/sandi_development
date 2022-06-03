@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { Form } from 'react-bootstrap';
 import { useHistory } from "react-router-dom";
+import CryptoJS from 'crypto-js';
 
 function Login() {
     const [input, setInput] = useState({ username: "", password: "" });
+    const [remember, setRemember] = useState(false);
     const handleInputChange = (event) => {
         event.persist();
         setInput({ ...input, [event.target.name]: event.target.value });
     };
+    const handleRememberChange = (event) => {
+        event.persist();
+        setRemember(event.target.checked)
+    }
     let history = useHistory();
     function handleLogin() {
         const body = {
@@ -24,11 +30,16 @@ function Login() {
                 .then((res) => res.json())
                 .then((data) => {
                     if (data.success) {
-                        console.log(data)                        
+                        if (remember) {
+                            localStorage.setItem('employee_email', data.data.employee.account);
+                            localStorage.setItem('employee_password', data.data.employee.password);
+                            localStorage.setItem('employee_remember', true);
+                        } else{
+                            localStorage.setItem('employee_remember', false);
+                            localStorage.removeItem('employee_email')
+                            localStorage.removeItem('employee_password')
+                        }
                         localStorage.setItem('token', data.data.token);
-                        localStorage.setItem('employee_email', data.data.employee.account);
-                        localStorage.setItem('employee_password', data.data.employee.password);      
-                        localStorage.setItem('employee_remember', true);                    
                         history.push("/dashboard");
                     } else {
                         console.log('Thông tin đăng nhập không hợp lệ')
@@ -40,11 +51,20 @@ function Login() {
     }
 
     useEffect(() => {
-        const employee_remember = localStorage.getItem('employee_remember');
-        if (employee_remember) {
+        const employee_remember = localStorage.getItem('employee_remember');  
+        const data = {username: 'abc', password: 'abc'}
+        const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data), 'secret_key').toString();   
+        console.log(ciphertext)   
+        var bytes = CryptoJS.AES.decrypt(ciphertext, 'secret_key');
+        var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+        console.log(decryptedData)
+        if (employee_remember && employee_remember === 'true') {
+            setRemember(true)
             const employee_email = localStorage.getItem('employee_email');
             const employee_password = localStorage.getItem('employee_password');
             setInput({ ...input, "username": employee_email, "password": employee_password });
+        } else{
+            setRemember(false)
         }
     }, [])
 
@@ -67,14 +87,14 @@ function Login() {
                                     <Form.Control type="password" name='password' value={input.password} onChange={handleInputChange} placeholder="Mật khẩu" autoComplete="on" size="lg" className="h-auto" />
                                 </Form.Group>
                                 <div className="mt-3">
-                                    <button type="button" className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" onClick={() => handleLogin()}>Đăng nhập</button>                                    
+                                    <button type="button" className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" onClick={() => handleLogin()}>Đăng nhập</button>
                                 </div>
                                 <div className="my-2 d-flex justify-content-between align-items-center">
                                     <div className="form-check">
                                         <label className="form-check-label text-muted">
-                                            <input type="checkbox" className="form-check-input" />
+                                            <input type="checkbox" className="form-check-input" checked={remember} onChange={handleRememberChange} />
                                             <i className="input-helper"></i>
-                                            Keep me signed in
+                                            Nhớ mật khẩu
                                         </label>
                                     </div>
                                 </div>
