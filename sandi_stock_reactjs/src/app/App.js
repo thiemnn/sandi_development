@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter, Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import './App.scss';
 import AppRoutes from './AppRoutes';
 import Navbar from './shared/Navbar';
@@ -46,7 +46,7 @@ class App extends Component {
   onRouteChanged() {
     console.log("ROUTE CHANGED");
     let token = localStorage.getItem('token');
-    if(this.props.location.pathname != '/login' && !token){
+    if(this.props.location.pathname !== '/login' && !token){
       this.props.history.push("/login");
     }
     window.scrollTo(0, 0);

@@ -1,10 +1,10 @@
 const db = require('../db')
 
-const getAll = async () =>{
+const getAll = async (type) =>{
     try {
         const con = await db.getConnection()
-        const product_groups = await con.query("SELECT id, code, name, description, parent_id FROM m_product_group where status = 1")
-        const products = await con.query("SELECT id, group_id, code, name, description FROM m_product WHERE (status = 1 or status = 2)")
+        const product_groups = await con.query(`SELECT id, code, name, description, parent_id FROM m_product_group where status = 1 and type = ${type}`)
+        const products = await con.query(`SELECT id, group_id, code, name, description, manufactor, origin, status FROM m_product WHERE (status = 0 or status = 1) and type = ${type}`)
         await con.end()
     
         var childs = new Array();
@@ -37,8 +37,8 @@ const insert = async (body) =>{
     try {
         const con = await db.getConnection()
         //insert m_organization
-        var sql = `INSERT INTO m_product_group (code, name, description, parent_id) VALUES 
-        ('${body.code}', '${body.name}','${body.description}',${body.parent_id})`;
+        var sql = `INSERT INTO m_product_group (code, name, description, parent_id, type) VALUES 
+        ('${body.code}', '${body.name}','${body.description}',${body.parent_id},${body.type})`;
         const result = await con.query(sql)
         // var id = result.insertId;        
         //close connection
@@ -70,7 +70,7 @@ const delete_item = async (id) =>{
     try {
         const con = await db.getConnection()
         //update customer
-        var sql = `Update m_product_group Set status = 0 where id = ${id}`;
+        var sql = `Update m_product_group Set status = -1 where id = ${id}`;
         const result = await con.query(sql)        
         //close connection
         await con.end()

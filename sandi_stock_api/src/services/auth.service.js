@@ -13,7 +13,7 @@ const login = async (body) =>{
             if (employees && employees.length > 0){
                 const employee = employees[0];
                 const data = {email: employee.account, password: employee.password}
-                const accessToken = jwt.sign(data, 'abcde12345', {expiresIn: '3600s'});
+                const accessToken = jwt.sign(data, 'abcde12345', {expiresIn: '36000s'});
                 return { "employee": employees[0], "token": accessToken }
             }                
             else

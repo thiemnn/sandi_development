@@ -1,12 +1,13 @@
 const productGroupsService = require('../services/productGroups.service');
 const responseHelper = require('../helpers/response.helper');
 
-const getAll = async(req, res) => {
-    var response = await productGroupsService.getAll();
+const getAll = async (req, res) => {
+    var type = req.query.type;
+    var response = await productGroupsService.getAll(type);
     return responseHelper.successWithData(res, 'Success With Data', response)
 }
 
-const insert = async(req, res, next) => {
+const insert = async (req, res, next) => {
     await productGroupsService.insert(req.body);
     return responseHelper.success(res, 'Insert record successfully')
 }
@@ -18,8 +19,8 @@ const update = async (req, res, next) => {
 
 const delete_item = async (req, res, next) => {
     var response = await productGroupsService.delete_item(req.params._id);
-    if(response)
-    return responseHelper.success(res, 'Delete record successfully')
+    if (response)
+        return responseHelper.success(res, 'Delete record successfully')
     else return responseHelper.errorResponse(res, 'Can not delete data')
 }
 
