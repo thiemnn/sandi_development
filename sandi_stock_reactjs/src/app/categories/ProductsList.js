@@ -545,8 +545,8 @@ function ProductsList() {
                   <table className="table table-hover products">
                     <thead>
                       <tr>
-                        <th style={{ width: '60px' }}>Mã sản phẩm</th>
-                        <th style={{ width: '200px' }}>Tên sản phẩm</th>
+                        <th className='td_wrapper_300' style={{ width: '60px' }}>Mã sản phẩm</th>
+                        <th className='td_wrapper_300' style={{ width: '200px' }}>Tên sản phẩm</th>
                         <th style={{ width: '200px' }}>Mô tả</th>
                         <th style={{ width: '60px' }}>Trạng thái</th>
                       </tr>

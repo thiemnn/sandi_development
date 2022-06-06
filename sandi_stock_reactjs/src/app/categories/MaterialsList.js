@@ -545,8 +545,8 @@ function MaterialsList() {
                   <table className="table table-hover products">
                     <thead>
                       <tr>
-                        <th style={{ width: '60px' }}>Mã vật tư</th>
-                        <th style={{ width: '200px' }}>Tên vật tư</th>
+                        <th className='td_wrapper_300' style={{ width: '60px' }}>Mã vật tư</th>
+                        <th className='td_wrapper_300' style={{ width: '200px' }}>Tên vật tư</th>
                         <th style={{ width: '200px' }}>Mô tả</th>
                         <th style={{ width: '60px' }}>Trạng thái</th>
                       </tr>

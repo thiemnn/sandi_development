@@ -553,8 +553,8 @@ function CommercialsList() {
                       {display_products && display_products.map(function (product, index) {
                         return (
                           <tr key={"product-" + index} className={selected_product && selected_product.id === product.id ? 'selected-row' : ''} onClick={() => setSelectedProduct(product)}>
-                            <td>{product.code}</td>
-                            <td>{product.name}</td>
+                            <td className='td_wrapper_300'>{product.code}</td>
+                            <td className='td_wrapper_300'>{product.name}</td>
                             <td>{product.description}</td>
                             <td>
                               {product.status === 1 && <label className="badge badge-success">Hoạt động</label>}
