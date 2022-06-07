@@ -497,7 +497,7 @@ function List() {
                     --rct-item-height: 32px;
                   }
                   .rct-tree-item-li {
-                    font-size: 1.2rem;
+                    font-size: 1.0rem;
                   }
                 `}</style>
                 {

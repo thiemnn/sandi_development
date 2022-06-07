@@ -494,7 +494,7 @@ function CommercialsList() {
                     --rct-item-height: 32px;
                   }
                   .rct-tree-item-li {
-                    font-size: 1.2rem;
+                    font-size: 1.0rem;
                   }
                 `}</style>
                 {
@@ -543,8 +543,8 @@ function CommercialsList() {
                   <table className="table table-hover products">
                     <thead>
                       <tr>
-                        <th style={{ width: '60px' }}>Mã hàng hóa</th>
-                        <th style={{ width: '200px' }}>Tên hàng hóa</th>
+                        <th className='td_wrapper_300' style={{ width: '60px' }}>Mã hàng hóa</th>
+                        <th className='td_wrapper_300' style={{ width: '200px' }}>Tên hàng hóa</th>
                         <th style={{ width: '200px' }}>Mô tả</th>
                         <th style={{ width: '60px' }}>Trạng thái</th>
                       </tr>

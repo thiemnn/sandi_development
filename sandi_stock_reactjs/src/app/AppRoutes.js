@@ -23,7 +23,7 @@ const EmployeesList = lazy(() => import('./employees/List'));
 
 const MaterialsList = lazy(() => import('./categories/MaterialsList'));
 const CommercialsList = lazy(() => import('./categories/CommercialsList'));
-const ProductsList = lazy(() => import('./categories/ProductsList'));
+const ProductsList = lazy(() => import('./categories/test'));
 
 const BasicTable = lazy(() => import('./tables/BasicTable'));
 
