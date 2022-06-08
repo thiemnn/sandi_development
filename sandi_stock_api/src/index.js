@@ -11,7 +11,7 @@ app.use(routes);
 
 //start http server
 const httpServer = http.createServer(app);
-httpServer.listen(9000);
-console.log(`http server listening at port ${9000}`);
+httpServer.listen(9001);
+console.log(`http server listening at port ${9001}`);
 
 module.exports = { app };
