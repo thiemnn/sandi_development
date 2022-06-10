@@ -26,6 +26,7 @@ const CommercialsList = lazy(() => import('./categories/CommercialsList'));
 const ProductsList = lazy(() => import('./categories/ProductsList'));
 
 const StocksList = lazy(() => import('./stocks/List'));
+const StocksLayout = lazy(() => import('./stocks/Layout'));
 
 const BasicTable = lazy(() => import('./tables/BasicTable'));
 
@@ -67,7 +68,7 @@ class AppRoutes extends Component {
           <Route path="/categories/commercials" component={ CommercialsList } />
           <Route path="/categories/products" component={ ProductsList } />
           <Route path="/stocks/list" component={ StocksList } />
-
+          <Route path="/stocks/layout" component={ StocksLayout } />
 
           <Route path="/tables/basic-table" component={ BasicTable } />
 
