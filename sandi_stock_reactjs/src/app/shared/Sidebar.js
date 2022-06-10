@@ -39,6 +39,7 @@ class Sidebar extends Component {
       {path:'/customers', state: 'customersOpen'},
       {path:'/employees', state: 'employeesOpen'},
       {path:'/categories', state: 'categoriesOpen'},
+      {path:'/stocks', state: 'stocksOpen'},
       {path:'/tables', state: 'tablesMenuOpen'},
       {path:'/icons', state: 'iconsMenuOpen'},
       {path:'/charts', state: 'chartsMenuOpen'},
@@ -57,8 +58,8 @@ class Sidebar extends Component {
     return (
       <nav className="sidebar sidebar-offcanvas" id="sidebar">
         <div className="text-center sidebar-brand-wrapper d-flex align-items-center">
-          <a className="sidebar-brand brand-logo" href="index.html"><img src={require("../../assets/images/logo.svg")} alt="logo" /></a>
-          <a className="sidebar-brand brand-logo-mini pt-3" href="index.html"><img src={require("../../assets/images/logo-mini.svg" )} alt="logo" /></a>
+          <a className="sidebar-brand brand-logo" href="index.html"><img src={require("../../assets/images/logo-sandi.png")} /></a>
+          <a className="sidebar-brand brand-logo-mini pt-3" href="index.html"><img src={require("../../assets/images/logo-sandi-small.png")} /></a>
         </div>
         <ul className="nav">
           <li className="nav-item nav-profile not-navigation-link">
@@ -160,6 +161,19 @@ class Sidebar extends Component {
                 <li className="nav-item"> <Link className={ this.isPathActive('/categories/materials') ? 'nav-link active' : 'nav-link' } to="/categories/materials">Danh mục vật tư</Link></li>
                 <li className="nav-item"> <Link className={ this.isPathActive('/categories/commercials') ? 'nav-link active' : 'nav-link' } to="/categories/commercials">Danh mục hàng hóa</Link></li>
                 <li className="nav-item"> <Link className={ this.isPathActive('/categories/products') ? 'nav-link active' : 'nav-link' } to="/categories/products">Danh mục sản phẩm</Link></li>
+              </ul>
+            </Collapse>
+          </li>
+
+          <li className={ this.isPathActive('/stocks') ? 'nav-item active' : 'nav-item' }>
+            <div className={ this.state.stocksOpen ? 'nav-link menu-expanded' : 'nav-link' } onClick={ () => this.toggleMenuState('stocksOpen') } data-toggle="collapse">
+              <i className="mdi mdi-store menu-icon"></i>
+              <span className="menu-title">Quản lý kho</span>
+              <i className="menu-arrow"></i>
+            </div>
+            <Collapse in={ this.state.stocksOpen }>
+              <ul className="nav flex-column sub-menu">
+                <li className="nav-item"> <Link className={ this.isPathActive('/stocks/list') ? 'nav-link active' : 'nav-link' } to="/stocks/list">Danh sách kho</Link></li>
               </ul>
             </Collapse>
           </li>

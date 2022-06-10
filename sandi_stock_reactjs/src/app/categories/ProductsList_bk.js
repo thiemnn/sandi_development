@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import 'react-complex-tree/lib/style.css';
+import { ControlledTreeEnvironment, Tree } from 'react-complex-tree';
 import { Form } from 'react-bootstrap';
 import Modal from '../components/Modal';
 import Alert from '../components/Alert';
@@ -7,19 +8,13 @@ import Validator from '../../utils/validator';
 import Common from '../../utils/common';
 import { fetchWrapper } from '../../utils/fetch-wrapper';
 
-import { alpha, makeStyles, withStyles } from '@material-ui/core/styles';
-import TreeView from '@material-ui/lab/TreeView';
-import TreeItem from '@material-ui/lab/TreeItem';
-import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateCheckBoxOutlined';
-import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined';
-import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutlineBlankOutlined';
-
-function CommercialsList() {
-  const root_id = 2;
-  const category_type = 2;
+function ProductsList() {
+  const root_id = 3;
+  const category_type = 3;
   const [selected_product, setSelectedProduct] = useState(null);
+  const [focusedItem, setFocusedItem] = useState();
   const [expandedItems, setExpandedItems] = useState([]);
-  const [selectedId, setSelectedId] = useState(0);
+  const [selectedItems, setSelectedItems] = useState([]);
   const [product_groups, setProductGroups] = useState();
   const [products, setProducts] = useState([]);
   const [display_products, setDisplayProducts] = useState([]);
@@ -75,7 +70,7 @@ function CommercialsList() {
       field: 'code',
       method: 'isEmpty',
       validWhen: false,
-      message: 'Vui lòng nhập mã hàng hóa.',
+      message: 'Vui lòng nhập mã sản phẩm.',
     },
     {
       field: 'name',
@@ -91,7 +86,7 @@ function CommercialsList() {
       field: 'code',
       method: 'isEmpty',
       validWhen: false,
-      message: 'Vui lòng nhập mã hàng hóa.',
+      message: 'Vui lòng nhập mã sản phẩm.',
     },
     {
       field: 'name',
@@ -110,10 +105,10 @@ function CommercialsList() {
     try {
       fetchWrapper.get(process.env.REACT_APP_API_URL + 'product_groups?type=' + category_type).then((data) => {
         if (data.success) {
-          console.log(data.data.product_groups)          
-          setExpandedItems(data.data.ids)
-          setProductGroups(data.data.product_groups)
+          console.log(data.data)
+          setProductGroups(readProductGroup(data.data.product_groups))
           setProducts(data.data.products)
+          setExpandedItems(data.data.ids)
           setSelectedProduct(null)
         }
       })
@@ -121,61 +116,72 @@ function CommercialsList() {
       console.error(error);
     }
   }
+  const readProductGroup = (template, data = { items: {} }) => {
+    template.map((product_group, i) => {
+      data.items[product_group.id.toString()] = {
+        "index": product_group.id.toString(),
+        "desc": product_group.description,
+        "name": product_group.name,
+        "code": product_group.code,
+        "parent_id": product_group.parent_id,
+        "canMove": true,
+        "hasChildren": product_group.childs && product_group.childs.length > 0 ? true : false,
+        "children": product_group.childs && product_group.childs.length > 0 ? product_group.childs : null,
+        "data": product_group.name,
+        "canRename": true,
+      };
+      return data;
+    })
+    return data.items;
+  };
 
-  function handleOpenProductModel(type) {   
+  function handleOpenProductModel(type) {
     setModelEmpType(type)
     setProductErrors({})
     if (type === 1) {
-      if (selectedId < 1) {
-        setAlertMessage('Vui lòng chọn nhóm để thêm hàng hóa')
+      if (selectedItems.length < 1) {
+        setAlertMessage('Vui lòng chọn nhóm để thêm sản phẩm')
         setAlertShow(true)
         return
       }
-      const selectedProductGroups = product_groups.filter(
-        (product_group) => product_group.id.toString() === selectedId.toString()
-      );
-      if (selectedProductGroups.length === 0) {
-        setAlertMessage('Vui lòng chọn nhóm để thêm hàng hóa')
+      const selectedProductGroup = product_groups[selectedItems[0]]
+      if (selectedProductGroup.hasChildren) {
+        setAlertMessage('Không được thêm sản phẩm cho nhóm cha')
         setAlertShow(true)
         return
       }
-      let selectedProductGroup = selectedProductGroups[0];
-      if (selectedProductGroup.hasOwnProperty('childs') && selectedProductGroup.childs.length > 0) {
-        setAlertMessage('Không được thêm hàng hóa cho nhóm cha')
-        setAlertShow(true)
-        return
-      } else {
-        let current_id = selectedId
-        let product_code = '';
-        let product_name = '';
-        if (current_id) {
-          while (current_id != root_id) {
-            var group = product_groups.filter(
-              (product_group) => product_group.id.toString() === current_id.toString()
-            )[0];
-            product_code = group.code + '-' + product_code
-            product_name = group.name + ' ' + product_name
-            current_id = group.parent_id
-          }
-          product_code = product_code + Common.ConvertToString(display_products.length + 1, 3)
-          product_name = product_name + Common.ConvertToString(display_products.length + 1, 3)
+
+      
+
+      let current_id = selectedItems[0]
+      let product_code = '';
+      let product_name = '';
+      if (current_id) {
+        while (current_id != root_id) {
+          var group = product_groups[current_id]
+          product_code = group.code + '-' + product_code
+          product_name = group.name + ' ' + product_name
+          current_id = group.parent_id
         }
-        setModelProductTitle('Thêm hàng hóa')
-        setProduct({ ...product, "code": product_code, "name": product_name, "description": '', "manufactor": '', "origin": '', "status": 1 });
-        setShowProductModel(true)
+        product_code = product_code + Common.ConvertToString(display_products.length + 1, 3)
+        product_name = product_name + Common.ConvertToString(display_products.length + 1, 3)
       }
+
+      setModelProductTitle('Thêm sản phẩm')
+      setProduct({ ...product, "code": product_code, "name": product_name, "description": '', "manufactor": '', "origin": '', "status": 1 });
+      setShowProductModel(true)
     } else if (type === 2) {
-      if (selectedId < 1) {
-        setAlertMessage('Vui lòng chọn nhóm hàng hóa')
+      if (selectedItems.length < 1) {
+        setAlertMessage('Vui lòng chọn nhóm sản phẩm')
         setAlertShow(true)
         return
       }
       if (selected_product === null) {
-        setAlertMessage('Vui lòng chọn hàng hóa để sửa')
+        setAlertMessage('Vui lòng chọn sản phẩm để sửa')
         setAlertShow(true)
         return
       }
-      setModelProductTitle('Sửa thông tin hàng hóa')
+      setModelProductTitle('Sửa thông tin sản phẩm')
       setProduct({
         ...product,
         "id": selected_product.id,
@@ -188,17 +194,17 @@ function CommercialsList() {
       });
       setShowProductModel(true)
     } else if (type === 3) {
-      if (selectedId < 1) {
-        setAlertMessage('Vui lòng chọn nhóm hàng hóa')
+      if (selectedItems.length < 1) {
+        setAlertMessage('Vui lòng chọn nhóm sản phẩm')
         setAlertShow(true)
         return
       }
       if (selected_product === null) {
-        setAlertMessage('Vui lòng chọn hàng hóa để xem')
+        setAlertMessage('Vui lòng chọn sản phẩm để xem')
         setAlertShow(true)
         return
       }
-      setModelProductTitle('Xem thông tin hàng hóa')
+      setModelProductTitle('Xem thông tin sản phẩm')
       setProduct({
         ...product,
         "id": selected_product.id,
@@ -211,17 +217,17 @@ function CommercialsList() {
       });
       setShowProductModel(true)
     } else if (type === 4) {
-      if (selectedId < 1) {
-        setAlertMessage('Vui lòng chọn nhóm hàng hóa')
+      if (selectedItems.length < 1) {
+        setAlertMessage('Vui lòng chọn nhóm sản phẩm')
         setAlertShow(true)
         return
       }
       if (selected_product === null) {
-        setAlertMessage('Vui lòng chọn hàng hóa để xóa')
+        setAlertMessage('Vui lòng chọn sản phẩm để xóa')
         setAlertShow(true)
         return
       }
-      setModelProductTitle('Xóa thông tin hàng hóa')
+      setModelProductTitle('Xóa thông tin sản phẩm')
       setProduct({
         ...product,
         "id": selected_product.id,
@@ -237,12 +243,12 @@ function CommercialsList() {
   }
 
   function handleSaveProduct() {
-    if (selectedId < 1) {
-      setAlertMessage('Vui lòng chọn nhóm hàng hóa')
+    if (selectedItems.length < 1) {
+      setAlertMessage('Vui lòng chọn nhóm sản phẩm')
       setAlertShow(true)
       return
     }
-    const selected_id = parseInt(selectedId)
+    const selected_id = parseInt(selectedItems[0])
     if (modelEmpType === 1) {
       const current_errors = product_insert_validator.validate(product)
       setProductErrors(current_errors)
@@ -324,77 +330,70 @@ function CommercialsList() {
     setModelOrgType(type)
     setProductGroupErrors({})
     if (type === 1) {
-      if (selectedId < 1) {
-        setAlertMessage('Vui lòng chọn nhóm cha để thêm nhóm hàng hóa')
+      if (selectedItems.length < 1) {
+        setAlertMessage('Vui lòng chọn nhóm cha để thêm nhóm sản phẩm')
         setAlertShow(true)
         return
       }
       if (display_products && display_products.length > 0) {
-        setAlertMessage('Không được tạo nhóm con cho nhóm đã có hàng hóa')
+        setAlertMessage('Không được tạo nhóm con cho nhóm đã có sản phẩm')
         setAlertShow(true)
         return
       }
-      setModelProductGroupTitle('Thêm nhóm hàng hóa')
+      setModelProductGroupTitle('Thêm nhóm sản phẩm')
       setProductGroup({ ...product_group, "code": '', "name": '', "desc": '' });
       setShowProductGroupModel(true)
     } else if (type === 2) {
-      if (selectedId < 1) {
-        setAlertMessage('Vui lòng chọn nhóm hàng hóa để sửa')
+      if (selectedItems.length < 1) {
+        setAlertMessage('Vui lòng chọn nhóm sản phẩm để sửa')
         setAlertShow(true)
         return
       }
-      const selectedProductGroup = product_groups.filter(
-        (product_group) => product_group.id.toString() === selectedId.toString()
-      )[0];
-      setModelProductGroupTitle('Sửa nhóm hàng hóa')
-      setProductGroup({ ...product_group, "code": selectedProductGroup.code, "name": selectedProductGroup.name, "desc": selectedProductGroup.description });
-      console.log(product_group)
+      const selectedProductGroup = product_groups[selectedItems[0]]
+      setModelProductGroupTitle('Sửa nhóm sản phẩm')
+      setProductGroup({ ...product_group, "code": selectedProductGroup.code, "name": selectedProductGroup.name, "desc": selectedProductGroup.desc });
       setShowProductGroupModel(true)
     } else if (type === 3) {
-      if (selectedId < 1) {
-        setAlertMessage('Vui lòng chọn nhóm hàng hóa để xem')
+      if (selectedItems.length < 1) {
+        setAlertMessage('Vui lòng chọn nhóm sản phẩm để xem')
         setAlertShow(true)
         return
       }
-      const selectedProductGroup = product_groups.filter(
-        (product_group) => product_group.id.toString() === selectedId.toString()
-      )[0];
-      setModelProductGroupTitle('Xem nhóm hàng hóa')
-      setProductGroup({ ...product_group, "code": selectedProductGroup.code, "name": selectedProductGroup.name, "desc": selectedProductGroup.description });
+      const selectedProductGroup = product_groups[selectedItems[0]]
+      setModelProductGroupTitle('Xem nhóm sản phẩm')
+      setProductGroup({ ...product_group, "code": selectedProductGroup.code, "name": selectedProductGroup.name, "desc": selectedProductGroup.desc });
       setShowProductGroupModel(true)
     } else if (type === 4) {
-      if (selectedId < 1) {
-        setAlertMessage('Vui lòng chọn nhóm hàng hóa để xóa')
+      if (selectedItems.length < 1) {
+        setAlertMessage('Vui lòng chọn nhóm sản phẩm để xóa')
         setAlertShow(true)
         return
       }
-      const selectedProductGroup = product_groups.filter(
-        (product_group) => product_group.id.toString() === selectedId.toString()
-      )[0];
-      if (Array.isArray(selectedProductGroup.childs)) {
-        setAlertMessage('Không được xóa nhóm hàng hóa cha')
+      const selectedProductGroup = product_groups[selectedItems[0]]
+      if (selectedProductGroup.hasChildren) {
+        setAlertMessage('Không được xóa nhóm sản phẩm cha')
         setAlertShow(true)
         return
       }
       if(selectedProductGroup.parent_id === root_id){
-        setAlertMessage('Không được xóa nhóm hàng hóa gốc')
+        setAlertMessage('Không được xóa nhóm sản phẩm gốc')
         setAlertShow(true)
         return
       }
       if (display_products && display_products.length > 0) {
-        setAlertMessage('Không được xóa nhóm hàng hóa có hàng hóa')
+        setAlertMessage('Không được xóa nhóm sản phẩm có sản phẩm')
         setAlertShow(true)
         return
       }
-      setModelProductGroupTitle('Xóa nhóm hàng hóa')
-      setProductGroup({ ...product_group, "code": selectedProductGroup.code, "name": selectedProductGroup.name, "desc": selectedProductGroup.description });
+      setModelProductGroupTitle('Xóa nhóm sản phẩm')
+      setProductGroup({ ...product_group, "code": selectedProductGroup.code, "name": selectedProductGroup.name, "desc": selectedProductGroup.desc });
       setShowProductGroupModel(true)
     }
   }
 
   function handleSaveProductGroup() {
-    if (selectedId < 1) {
-      setAlertMessage('Vui lòng chọn nhóm hàng hóa')
+    if (selectedItems.length < 1) {
+      setAlertMessage('Vui lòng chọn nhóm sản phẩm')
       setAlertShow(true)
       return
     }
@@ -403,7 +402,7 @@ function CommercialsList() {
     if (!Common.isEmptyObject(current_errors)) {
       return
     }
-    const selected_id = parseInt(selectedId)
+    const selected_id = parseInt(selectedItems[0])
     if (modelOrgType === 1) {
       const body = {
         code: product_group.code,
@@ -462,48 +461,17 @@ function CommercialsList() {
   }
 
   useEffect(() => {
-    const selected_id = parseInt(selectedId)
+    const selected_id = parseInt(selectedItems[0])
+    console.log(selectedItems[0])
+    console.log(product_groups)
     const temp_products = products.filter(
       (product) => product.group_id === selected_id
     );
     setDisplayProducts(temp_products)
     setSelectedProduct(null)    
-  }, [products, selectedId])
+  }, [products, selectedItems])
 
-
-  const useStyles = makeStyles({
-    root: {
-      maxWidth: 400,
-    },
-  });
-
-  const StyledTreeItem = withStyles((theme) => ({
-    iconContainer: {
-      '& .close': {
-        opacity: 0.3,
-      },
-    },
-    group: {
-      marginLeft: 7,
-      paddingLeft: 18,
-      borderLeft: `1px dashed ${alpha(theme.palette.text.primary, 0.4)}`,
-    },
-  }))((props) => <TreeItem {...props}  />);
-
-  const classes = useStyles();
-  const handleSelect = (event, nodeId) => {
-    setSelectedId(nodeId)
-  };
-
-  const renderTree = (nodes) => (
-    <StyledTreeItem  key={nodes.id.toString()} nodeId={nodes.id.toString()} label={nodes.name} onLabelClick={(event) => event.preventDefault()}>
-      {Array.isArray(nodes.childs)
-        ? nodes.childs.map((node) => renderTree(node))
-        : null}
-    </StyledTreeItem >
-  );
-
-  return (    
+  return (
     <div>
       <div className="page-header">
         <h3 className="page-title"> Quản lý danh mục </h3>
@@ -513,16 +481,16 @@ function CommercialsList() {
           <div className="card">
             <div className="card-body">
               <div>
-                <h4 className="card-title fl-left">Nhóm hàng hóa</h4>
+                <h4 className="card-title fl-left">Nhóm sản phẩm</h4>
                 <div className='fl-right mb-10'>
-                  <button type="button" className="btn btn-primary btn-icon small_button" title="Thêm nhóm hàng hóa" onClick={() => handleOpenProductGroupModel(1)}><i className="mdi mdi-plus-box"></i></button>
-                  <button type="button" className="btn btn-success btn-icon small_button ml-10" title="Sửa nhóm hàng hóa" onClick={() => handleOpenProductGroupModel(2)}><i className="mdi mdi-pencil"></i></button>
-                  <button type="button" className="btn btn-warning btn-icon small_button ml-10" title="Xem nhóm hàng hóa" onClick={() => handleOpenProductGroupModel(3)}><i className="mdi mdi-eye"></i></button>
-                  <button type="button" className="btn btn-danger btn-icon small_button ml-10" title="Xóa nhóm hàng hóa" onClick={() => handleOpenProductGroupModel(4)}><i className="mdi mdi-delete"></i></button>
+                  <button type="button" className="btn btn-primary btn-icon small_button" title="Thêm nhóm sản phẩm" onClick={() => handleOpenProductGroupModel(1)}><i className="mdi mdi-plus-box"></i></button>
+                  <button type="button" className="btn btn-success btn-icon small_button ml-10" title="Sửa nhóm sản phẩm" onClick={() => handleOpenProductGroupModel(2)}><i className="mdi mdi-pencil"></i></button>
+                  <button type="button" className="btn btn-warning btn-icon small_button ml-10" title="Xem nhóm sản phẩm" onClick={() => handleOpenProductGroupModel(3)}><i className="mdi mdi-eye"></i></button>
+                  <button type="button" className="btn btn-danger btn-icon small_button ml-10" title="Xóa nhóm sản phẩm" onClick={() => handleOpenProductGroupModel(4)}><i className="mdi mdi-delete"></i></button>
                 </div>
                 <div className='clear-both'></div>
               </div>
-              <div className='tree-wrapper'>   
+              <div className='tree-wrapper'>
                 <style>{`
                   :root {        
                     --rct-item-height: 32px;
@@ -531,18 +499,30 @@ function CommercialsList() {
                     font-size: 1.0rem;
                   }
                 `}</style>
-                {!Common.isEmptyObject(product_groups) &&
-                  <TreeView onNodeSelect={handleSelect}
-                    className={classes.root}
-                    aria-label="rich object"
-                    defaultExpanded={expandedItems}
-                    defaultCollapseIcon={<IndeterminateCheckBoxOutlinedIcon />}
-                    defaultExpandIcon={<AddBoxOutlinedIcon />}
-                    defaultEndIcon={<CheckBoxOutlineBlankOutlinedIcon />}
+                {
+                  !Common.isEmptyObject(product_groups) &&
+                  <ControlledTreeEnvironment
+                    items={product_groups}
+                    getItemTitle={item => item.data}
+                    viewState={{
+                      ['tree_product_groups']: {
+                        focusedItem,
+                        expandedItems,
+                        selectedItems,
+                      },
+                    }}
+                    defaultInteractionMode={'click-arrow-to-expand'}
+                    onFocusItem={item => setFocusedItem(item.index)}
+                    onExpandItem={item => setExpandedItems([...expandedItems, item.index])}
+                    onCollapseItem={item =>
+                      setExpandedItems(expandedItems.filter(expandedItemIndex => expandedItemIndex !== item.index))
+                    }
+                    onSelectItems={items => setSelectedItems(items)}
                   >
-                    {renderTree(product_groups[1])}
-                  </TreeView>
+                    <Tree treeId="tree_product_groups" rootItem={root_id} treeLabel="Danh mục sản phẩm" />
+                  </ControlledTreeEnvironment>
                 }
+
               </div>
             </div>
           </div>
@@ -551,22 +531,22 @@ function CommercialsList() {
           <div className="card">
             <div className="card-body">
               <div>
-                <h4 className="card-title fl-left">Danh mục hàng hóa</h4>
+                <h4 className="card-title fl-left">Danh mục sản phẩm</h4>
                 <div className='fl-right mb-10'>
-                  <button type="button" className="btn btn-primary btn-icon small_button" title="Thêm hàng hóa" onClick={() => handleOpenProductModel(1)}><i className="mdi mdi-plus-box"></i> </button>
-                  <button type="button" className="btn btn-success btn-icon small_button ml-10" title="Sửa hàng hóa" onClick={() => handleOpenProductModel(2)}><i className="mdi mdi-pencil"></i> </button>
-                  <button type="button" className="btn btn-warning btn-icon small_button ml-10" title="Xem hàng hóa" onClick={() => handleOpenProductModel(3)}><i className="mdi mdi-eye"></i> </button>
-                  <button type="button" className="btn btn-danger btn-icon small_button ml-10" title="Xóa hàng hóa" onClick={() => handleOpenProductModel(4)}><i className="mdi mdi-delete"></i> </button>
+                  <button type="button" className="btn btn-primary btn-icon small_button" title="Thêm sản phẩm" onClick={() => handleOpenProductModel(1)}><i className="mdi mdi-plus-box"></i> </button>
+                  <button type="button" className="btn btn-success btn-icon small_button ml-10" title="Sửa sản phẩm" onClick={() => handleOpenProductModel(2)}><i className="mdi mdi-pencil"></i> </button>
+                  <button type="button" className="btn btn-warning btn-icon small_button ml-10" title="Xem sản phẩm" onClick={() => handleOpenProductModel(3)}><i className="mdi mdi-eye"></i> </button>
+                  <button type="button" className="btn btn-danger btn-icon small_button ml-10" title="Xóa sản phẩm" onClick={() => handleOpenProductModel(4)}><i className="mdi mdi-delete"></i> </button>
                 </div>
                 <div className='clear-both'></div>
               </div>
               <div className='table-wrapper'>
                 <div className="table-responsive">
-                  <table className="table table-bordered table-hover products">
+                  <table className="table table-hover products">
                     <thead>
                       <tr>
-                        <th className='td_wrapper_300' style={{ width: '60px' }}>Mã hàng hóa</th>
-                        <th className='td_wrapper_300' style={{ width: '200px' }}>Tên hàng hóa</th>
+                        <th className='td_wrapper_300' style={{ width: '60px' }}>Mã sản phẩm</th>
+                        <th className='td_wrapper_300' style={{ width: '200px' }}>Tên sản phẩm</th>
                         <th style={{ width: '200px' }}>Mô tả</th>
                         <th style={{ width: '60px' }}>Trạng thái</th>
                       </tr>
@@ -646,14 +626,14 @@ function CommercialsList() {
         </Modal.Header>
         <Modal.Body>
           <Form.Group className="row">
-            <label htmlFor="code" className="col-form-label col-sm-2">Mã hàng hóa<span>*</span></label>
+            <label htmlFor="code" className="col-form-label col-sm-2">Mã sản phẩm<span>*</span></label>
             <div className="col-sm-10">
               <Form.Control type="text" readOnly={[3, 4, 5].includes(modelEmpType)} name="code" value={product.code} onChange={handleProductChange} className="form-control" placeholder="" />
               {product_errors.code && <div className="validation">{product_errors.code}</div>}
             </div>
           </Form.Group>
           <Form.Group className="row">
-            <label htmlFor="name" className="col-form-label col-sm-2">Tên hàng hóa<span>*</span></label>
+            <label htmlFor="name" className="col-form-label col-sm-2">Tên sản phẩm<span>*</span></label>
             <div className="col-sm-10">
               <Form.Control type="text" readOnly={[3, 4, 5].includes(modelEmpType)} name="name" value={product.name} onChange={handleProductChange} className="form-control" placeholder="" />
               {product_errors.name && <div className="validation">{product_errors.name}</div>}
@@ -705,4 +685,4 @@ function CommercialsList() {
     </div>
   )
 }
-export default CommercialsList
+export default ProductsList

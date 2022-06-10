@@ -2,7 +2,6 @@ const db = require('../db')
 
 const getAll = async (type) =>{
     try {
-
         const con = await db.getConnection()
         const product_groups = await con.query(`SELECT id, code, name, description, parent_id FROM m_product_group where status = 1 and type = ${type}`)
         const products = await con.query(`SELECT id, group_id, code, name, description, manufactor, origin, status FROM m_product WHERE (status = 0 or status = 1) and type = ${type}`)
@@ -28,6 +27,7 @@ const getAll = async (type) =>{
             "products": products,
             "ids": ids
         }
+        //data for backup
         // const con = await db.getConnection()
         // const product_groups = await con.query(`SELECT id, code, name, description, parent_id FROM m_product_group where status = 1 and type = ${type}`)
         // const products = await con.query(`SELECT id, group_id, code, name, description, manufactor, origin, status FROM m_product WHERE (status = 0 or status = 1) and type = ${type}`)

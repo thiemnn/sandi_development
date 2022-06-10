@@ -8,19 +8,9 @@ import Validator from '../../utils/validator';
 import Common from '../../utils/common';
 import { fetchWrapper } from '../../utils/fetch-wrapper';
 
-
-import { alpha, makeStyles, withStyles } from '@material-ui/core/styles';
-import TreeView from '@material-ui/lab/TreeView';
-import TreeItem from '@material-ui/lab/TreeItem';
-import Collapse from '@material-ui/core/Collapse';
-import { animated, useSpring } from '@react-spring/web';
-import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateCheckBoxOutlined';
-import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined';
-import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutlineBlankOutlined';
-
-function MaterialsList() {
-  const root_id = 1;
-  const category_type = 1;
+function CommercialsList() {
+  const root_id = 2;
+  const category_type = 2;
   const [selected_product, setSelectedProduct] = useState(null);
   const [focusedItem, setFocusedItem] = useState();
   const [expandedItems, setExpandedItems] = useState([]);
@@ -80,7 +70,7 @@ function MaterialsList() {
       field: 'code',
       method: 'isEmpty',
       validWhen: false,
-      message: 'Vui lòng nhập mã vật tư.',
+      message: 'Vui lòng nhập mã hàng hóa.',
     },
     {
       field: 'name',
@@ -96,7 +86,7 @@ function MaterialsList() {
       field: 'code',
       method: 'isEmpty',
       validWhen: false,
-      message: 'Vui lòng nhập mã vật tư.',
+      message: 'Vui lòng nhập mã hàng hóa.',
     },
     {
       field: 'name',
@@ -113,12 +103,12 @@ function MaterialsList() {
 
   function fetchProductGroup() {
     try {
-      fetchWrapper.get(process.env.REACT_APP_API_URL + 'product_groups?type=' + category_type).then((data) => {
+      fetchWrapper.get(process.env.REACT_APP_API_URL + 'product_groups?type=' + category_type ).then((data) => {
         if (data.success) {
-          console.log(data.data.ids)          
-          setExpandedItems(data.data.ids)
-          setProductGroups(data.data.product_groups)
+          console.log(data.data)
+          setProductGroups(readProductGroup(data.data.product_groups))
           setProducts(data.data.products)
+          setExpandedItems(data.data.ids)
           setSelectedProduct(null)
         }
       })
@@ -142,7 +132,6 @@ function MaterialsList() {
       };
       return data;
     })
-    console.log(data.items);
     return data.items;
   };
 
@@ -151,18 +140,16 @@ function MaterialsList() {
     setProductErrors({})
     if (type === 1) {
       if (selectedItems.length < 1) {
-        setAlertMessage('Vui lòng chọn nhóm để thêm vật tư')
+        setAlertMessage('Vui lòng chọn nhóm để thêm hàng hóa')
         setAlertShow(true)
         return
       }
       const selectedProductGroup = product_groups[selectedItems[0]]
       if (selectedProductGroup.hasChildren) {
-        setAlertMessage('Không được thêm vật tư cho nhóm cha')
+        setAlertMessage('Không được thêm hàng hóa cho nhóm cha')
         setAlertShow(true)
         return
-      }
-
-      
+      }      
 
       let current_id = selectedItems[0]
       let product_code = '';
@@ -178,21 +165,21 @@ function MaterialsList() {
         product_name = product_name + Common.ConvertToString(display_products.length + 1, 3)
       }
 
-      setModelProductTitle('Thêm vật tư')
+      setModelProductTitle('Thêm hàng hóa')
       setProduct({ ...product, "code": product_code, "name": product_name, "description": '', "manufactor": '', "origin": '', "status": 1 });
       setShowProductModel(true)
     } else if (type === 2) {
       if (selectedItems.length < 1) {
-        setAlertMessage('Vui lòng chọn nhóm vật tư')
+        setAlertMessage('Vui lòng chọn nhóm hàng hóa')
         setAlertShow(true)
         return
       }
       if (selected_product === null) {
-        setAlertMessage('Vui lòng chọn vật tư để sửa')
+        setAlertMessage('Vui lòng chọn hàng hóa để sửa')
         setAlertShow(true)
         return
       }
-      setModelProductTitle('Sửa thông tin vật tư')
+      setModelProductTitle('Sửa thông tin hàng hóa')
       setProduct({
         ...product,
         "id": selected_product.id,
@@ -206,16 +193,16 @@ function MaterialsList() {
       setShowProductModel(true)
     } else if (type === 3) {
       if (selectedItems.length < 1) {
-        setAlertMessage('Vui lòng chọn nhóm vật tư')
+        setAlertMessage('Vui lòng chọn nhóm hàng hóa')
         setAlertShow(true)
         return
       }
       if (selected_product === null) {
-        setAlertMessage('Vui lòng chọn vật tư để xem')
+        setAlertMessage('Vui lòng chọn hàng hóa để xem')
         setAlertShow(true)
         return
       }
-      setModelProductTitle('Xem thông tin vật tư')
+      setModelProductTitle('Xem thông tin hàng hóa')
       setProduct({
         ...product,
         "id": selected_product.id,
@@ -229,16 +216,16 @@ function MaterialsList() {
       setShowProductModel(true)
     } else if (type === 4) {
       if (selectedItems.length < 1) {
-        setAlertMessage('Vui lòng chọn nhóm vật tư')
+        setAlertMessage('Vui lòng chọn nhóm hàng hóa')
         setAlertShow(true)
         return
       }
       if (selected_product === null) {
-        setAlertMessage('Vui lòng chọn vật tư để xóa')
+        setAlertMessage('Vui lòng chọn hàng hóa để xóa')
         setAlertShow(true)
         return
       }
-      setModelProductTitle('Xóa thông tin vật tư')
+      setModelProductTitle('Xóa thông tin hàng hóa')
       setProduct({
         ...product,
         "id": selected_product.id,
@@ -255,7 +242,7 @@ function MaterialsList() {
 
   function handleSaveProduct() {
     if (selectedItems.length < 1) {
-      setAlertMessage('Vui lòng chọn nhóm vật tư')
+      setAlertMessage('Vui lòng chọn nhóm hàng hóa')
       setAlertShow(true)
       return
     }
@@ -342,61 +329,61 @@ function MaterialsList() {
     setProductGroupErrors({})
     if (type === 1) {
       if (selectedItems.length < 1) {
-        setAlertMessage('Vui lòng chọn nhóm cha để thêm nhóm vật tư')
+        setAlertMessage('Vui lòng chọn nhóm cha để thêm nhóm hàng hóa')
         setAlertShow(true)
         return
       }
       if (display_products && display_products.length > 0) {
-        setAlertMessage('Không được tạo nhóm con cho nhóm đã có vật tư')
+        setAlertMessage('Không được tạo nhóm con cho nhóm đã có hàng hóa')
         setAlertShow(true)
         return
       }
-      setModelProductGroupTitle('Thêm nhóm vật tư')
+      setModelProductGroupTitle('Thêm nhóm hàng hóa')
       setProductGroup({ ...product_group, "code": '', "name": '', "desc": '' });
       setShowProductGroupModel(true)
     } else if (type === 2) {
       if (selectedItems.length < 1) {
-        setAlertMessage('Vui lòng chọn nhóm vật tư để sửa')
+        setAlertMessage('Vui lòng chọn nhóm hàng hóa để sửa')
         setAlertShow(true)
         return
       }
       const selectedProductGroup = product_groups[selectedItems[0]]
-      setModelProductGroupTitle('Sửa nhóm vật tư')
+      setModelProductGroupTitle('Sửa nhóm hàng hóa')
       setProductGroup({ ...product_group, "code": selectedProductGroup.code, "name": selectedProductGroup.name, "desc": selectedProductGroup.desc });
       setShowProductGroupModel(true)
     } else if (type === 3) {
       if (selectedItems.length < 1) {
-        setAlertMessage('Vui lòng chọn nhóm vật tư để xem')
+        setAlertMessage('Vui lòng chọn nhóm hàng hóa để xem')
         setAlertShow(true)
         return
       }
       const selectedProductGroup = product_groups[selectedItems[0]]
-      setModelProductGroupTitle('Xem nhóm vật tư')
+      setModelProductGroupTitle('Xem nhóm hàng hóa')
       setProductGroup({ ...product_group, "code": selectedProductGroup.code, "name": selectedProductGroup.name, "desc": selectedProductGroup.desc });
       setShowProductGroupModel(true)
     } else if (type === 4) {
       if (selectedItems.length < 1) {
-        setAlertMessage('Vui lòng chọn nhóm vật tư để xóa')
+        setAlertMessage('Vui lòng chọn nhóm hàng hóa để xóa')
         setAlertShow(true)
         return
       }
       const selectedProductGroup = product_groups[selectedItems[0]]
       if (selectedProductGroup.hasChildren) {
-        setAlertMessage('Không được xóa nhóm vật tư cha')
+        setAlertMessage('Không được xóa nhóm hàng hóa cha')
         setAlertShow(true)
         return
       }
       if(selectedProductGroup.parent_id === root_id){
-        setAlertMessage('Không được xóa nhóm vật tư gốc')
+        setAlertMessage('Không được xóa nhóm hàng hóa gốc')
         setAlertShow(true)
         return
       }
       if (display_products && display_products.length > 0) {
-        setAlertMessage('Không được xóa nhóm vật tư có vật tư')
+        setAlertMessage('Không được xóa nhóm hàng hóa có hàng hóa')
         setAlertShow(true)
         return
       }
-      setModelProductGroupTitle('Xóa nhóm vật tư')
+      setModelProductGroupTitle('Xóa nhóm hàng hóa')
       setProductGroup({ ...product_group, "code": selectedProductGroup.code, "name": selectedProductGroup.name, "desc": selectedProductGroup.desc });
       setShowProductGroupModel(true)
     }
@@ -404,7 +391,7 @@ function MaterialsList() {
 
   function handleSaveProductGroup() {
     if (selectedItems.length < 1) {
-      setAlertMessage('Vui lòng chọn nhóm vật tư')
+      setAlertMessage('Vui lòng chọn nhóm hàng hóa')
       setAlertShow(true)
       return
     }
@@ -471,24 +458,10 @@ function MaterialsList() {
     }
   }
 
-  function DisplayProductGroup({ product_group }) {
-    if (product_group.childs) {
-      return (
-        <StyledTreeItem nodeId={product_group.id.toString()} label={product_group.name} onLabelClick={(event) => event.preventDefault()}>
-          {product_group.childs.map((child) => (
-            <DisplayProductGroup key={child.id} product_group={child} />
-          ))}
-        </StyledTreeItem>
-      )
-    } else {
-      return (
-        <StyledTreeItem nodeId={product_group.id.toString()} label={product_group.name} onLabelClick={(event) => event.preventDefault()} />
-      )
-    }
-  }
-
   useEffect(() => {
     const selected_id = parseInt(selectedItems[0])
+    console.log(selectedItems[0])
+    console.log(product_groups)
     const temp_products = products.filter(
       (product) => product.group_id === selected_id
     );
@@ -496,43 +469,6 @@ function MaterialsList() {
     setSelectedProduct(null)    
   }, [products, selectedItems])
 
-
-  const useStyles = makeStyles({
-    root: {
-        maxWidth: 400,
-    },
-});
-
-function TransitionComponent(props) {
-    const style = useSpring({
-        from: { opacity: 0, transform: 'translate3d(20px,0,0)' },
-        to: { opacity: props.in ? 1 : 0, transform: `translate3d(${props.in ? 0 : 20}px,0,0)` },
-    });
-
-    return (
-        <animated.div style={style}>
-            <Collapse {...props} />
-        </animated.div>
-    );
-}
-
-const StyledTreeItem = withStyles((theme) => ({
-    iconContainer: {
-        '& .close': {
-            opacity: 0.3,
-        },
-    },
-    group: {
-        marginLeft: 7,
-        paddingLeft: 18,
-        borderLeft: `1px dashed ${alpha(theme.palette.text.primary, 0.4)}`,
-    },
-}))((props) => <TreeItem {...props} TransitionComponent={TransitionComponent} />);
-
-const classes = useStyles();    
-    const handleSelect = (event, nodeIds) => {
-        console.log(nodeIds)
-    };
   return (
     <div>
       <div className="page-header">
@@ -543,12 +479,12 @@ const classes = useStyles();
           <div className="card">
             <div className="card-body">
               <div>
-                <h4 className="card-title fl-left">Nhóm vật tư</h4>
+                <h4 className="card-title fl-left">Nhóm hàng hóa</h4>
                 <div className='fl-right mb-10'>
-                  <button type="button" className="btn btn-primary btn-icon small_button" title="Thêm nhóm vật tư" onClick={() => handleOpenProductGroupModel(1)}><i className="mdi mdi-plus-box"></i></button>
-                  <button type="button" className="btn btn-success btn-icon small_button ml-10" title="Sửa nhóm vật tư" onClick={() => handleOpenProductGroupModel(2)}><i className="mdi mdi-pencil"></i></button>
-                  <button type="button" className="btn btn-warning btn-icon small_button ml-10" title="Xem nhóm vật tư" onClick={() => handleOpenProductGroupModel(3)}><i className="mdi mdi-eye"></i></button>
-                  <button type="button" className="btn btn-danger btn-icon small_button ml-10" title="Xóa nhóm vật tư" onClick={() => handleOpenProductGroupModel(4)}><i className="mdi mdi-delete"></i></button>
+                  <button type="button" className="btn btn-primary btn-icon small_button" title="Thêm nhóm hàng hóa" onClick={() => handleOpenProductGroupModel(1)}><i className="mdi mdi-plus-box"></i></button>
+                  <button type="button" className="btn btn-success btn-icon small_button ml-10" title="Sửa nhóm hàng hóa" onClick={() => handleOpenProductGroupModel(2)}><i className="mdi mdi-pencil"></i></button>
+                  <button type="button" className="btn btn-warning btn-icon small_button ml-10" title="Xem nhóm hàng hóa" onClick={() => handleOpenProductGroupModel(3)}><i className="mdi mdi-eye"></i></button>
+                  <button type="button" className="btn btn-danger btn-icon small_button ml-10" title="Xóa nhóm hàng hóa" onClick={() => handleOpenProductGroupModel(4)}><i className="mdi mdi-delete"></i></button>
                 </div>
                 <div className='clear-both'></div>
               </div>
@@ -563,37 +499,26 @@ const classes = useStyles();
                 `}</style>
                 {
                   !Common.isEmptyObject(product_groups) &&
-
-                  <TreeView onNodeSelect={handleSelect}
-                      className={classes.root}
-                      defaultExpanded={expandedItems}
-                      
-                      defaultCollapseIcon={<IndeterminateCheckBoxOutlinedIcon />}
-                      defaultExpandIcon={<AddBoxOutlinedIcon />}
-                      defaultEndIcon={<CheckBoxOutlineBlankOutlinedIcon />}
+                  <ControlledTreeEnvironment
+                    items={product_groups}
+                    getItemTitle={item => item.data}
+                    viewState={{
+                      ['tree_product_groups']: {
+                        focusedItem,
+                        expandedItems,
+                        selectedItems,
+                      },
+                    }}
+                    defaultInteractionMode={'click-arrow-to-expand'}
+                    onFocusItem={item => setFocusedItem(item.index)}
+                    onExpandItem={item => setExpandedItems([...expandedItems, item.index])}
+                    onCollapseItem={item =>
+                      setExpandedItems(expandedItems.filter(expandedItemIndex => expandedItemIndex !== item.index))
+                    }
+                    onSelectItems={items => setSelectedItems(items)}
                   >
-                      <DisplayProductGroup product_group = {product_groups[0]}/>                      
-                  </TreeView>
-                  // <ControlledTreeEnvironment
-                  //   items={product_groups}
-                  //   getItemTitle={item => item.data}
-                  //   viewState={{
-                  //     ['tree_product_groups']: {
-                  //       focusedItem,
-                  //       expandedItems,
-                  //       selectedItems,
-                  //     },
-                  //   }}
-                  //   defaultInteractionMode={'click-arrow-to-expand'}
-                  //   onFocusItem={item => setFocusedItem(item.index)}
-                  //   onExpandItem={item => setExpandedItems([...expandedItems, item.index])}
-                  //   onCollapseItem={item =>
-                  //     setExpandedItems(expandedItems.filter(expandedItemIndex => expandedItemIndex !== item.index))
-                  //   }
-                  //   onSelectItems={items => setSelectedItems(items)}
-                  // >
-                  //   <Tree treeId="tree_product_groups" rootItem={root_id} treeLabel="Danh mục vật tư" />
-                  // </ControlledTreeEnvironment>
+                    <Tree treeId="tree_product_groups" rootItem={root_id} treeLabel="Danh mục hàng hóa" />
+                  </ControlledTreeEnvironment>
                 }
 
               </div>
@@ -604,12 +529,12 @@ const classes = useStyles();
           <div className="card">
             <div className="card-body">
               <div>
-                <h4 className="card-title fl-left">Danh mục vật tư</h4>
+                <h4 className="card-title fl-left">Danh mục hàng hóa</h4>
                 <div className='fl-right mb-10'>
-                  <button type="button" className="btn btn-primary btn-icon small_button" title="Thêm vật tư" onClick={() => handleOpenProductModel(1)}><i className="mdi mdi-plus-box"></i> </button>
-                  <button type="button" className="btn btn-success btn-icon small_button ml-10" title="Sửa vật tư" onClick={() => handleOpenProductModel(2)}><i className="mdi mdi-pencil"></i> </button>
-                  <button type="button" className="btn btn-warning btn-icon small_button ml-10" title="Xem vật tư" onClick={() => handleOpenProductModel(3)}><i className="mdi mdi-eye"></i> </button>
-                  <button type="button" className="btn btn-danger btn-icon small_button ml-10" title="Xóa vật tư" onClick={() => handleOpenProductModel(4)}><i className="mdi mdi-delete"></i> </button>
+                  <button type="button" className="btn btn-primary btn-icon small_button" title="Thêm hàng hóa" onClick={() => handleOpenProductModel(1)}><i className="mdi mdi-plus-box"></i> </button>
+                  <button type="button" className="btn btn-success btn-icon small_button ml-10" title="Sửa hàng hóa" onClick={() => handleOpenProductModel(2)}><i className="mdi mdi-pencil"></i> </button>
+                  <button type="button" className="btn btn-warning btn-icon small_button ml-10" title="Xem hàng hóa" onClick={() => handleOpenProductModel(3)}><i className="mdi mdi-eye"></i> </button>
+                  <button type="button" className="btn btn-danger btn-icon small_button ml-10" title="Xóa hàng hóa" onClick={() => handleOpenProductModel(4)}><i className="mdi mdi-delete"></i> </button>
                 </div>
                 <div className='clear-both'></div>
               </div>
@@ -618,8 +543,8 @@ const classes = useStyles();
                   <table className="table table-hover products">
                     <thead>
                       <tr>
-                        <th className='td_wrapper_300' style={{ width: '60px' }}>Mã vật tư</th>
-                        <th className='td_wrapper_300' style={{ width: '200px' }}>Tên vật tư</th>
+                        <th className='td_wrapper_300' style={{ width: '60px' }}>Mã hàng hóa</th>
+                        <th className='td_wrapper_300' style={{ width: '200px' }}>Tên hàng hóa</th>
                         <th style={{ width: '200px' }}>Mô tả</th>
                         <th style={{ width: '60px' }}>Trạng thái</th>
                       </tr>
@@ -699,14 +624,14 @@ const classes = useStyles();
         </Modal.Header>
         <Modal.Body>
           <Form.Group className="row">
-            <label htmlFor="code" className="col-form-label col-sm-2">Mã vật tư<span>*</span></label>
+            <label htmlFor="code" className="col-form-label col-sm-2">Mã hàng hóa<span>*</span></label>
             <div className="col-sm-10">
               <Form.Control type="text" readOnly={[3, 4, 5].includes(modelEmpType)} name="code" value={product.code} onChange={handleProductChange} className="form-control" placeholder="" />
               {product_errors.code && <div className="validation">{product_errors.code}</div>}
             </div>
           </Form.Group>
           <Form.Group className="row">
-            <label htmlFor="name" className="col-form-label col-sm-2">Tên vật tư<span>*</span></label>
+            <label htmlFor="name" className="col-form-label col-sm-2">Tên hàng hóa<span>*</span></label>
             <div className="col-sm-10">
               <Form.Control type="text" readOnly={[3, 4, 5].includes(modelEmpType)} name="name" value={product.name} onChange={handleProductChange} className="form-control" placeholder="" />
               {product_errors.name && <div className="validation">{product_errors.name}</div>}
@@ -758,4 +683,4 @@ const classes = useStyles();
     </div>
   )
 }
-export default MaterialsList
+export default CommercialsList

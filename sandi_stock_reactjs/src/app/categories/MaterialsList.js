@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import 'react-complex-tree/lib/style.css';
-import { ControlledTreeEnvironment, Tree } from 'react-complex-tree';
 import { Form } from 'react-bootstrap';
 import Modal from '../components/Modal';
 import Alert from '../components/Alert';
@@ -8,13 +7,19 @@ import Validator from '../../utils/validator';
 import Common from '../../utils/common';
 import { fetchWrapper } from '../../utils/fetch-wrapper';
 
+import { alpha, makeStyles, withStyles } from '@material-ui/core/styles';
+import TreeView from '@material-ui/lab/TreeView';
+import TreeItem from '@material-ui/lab/TreeItem';
+import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateCheckBoxOutlined';
+import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined';
+import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutlineBlankOutlined';
+
 function MaterialsList() {
   const root_id = 1;
   const category_type = 1;
   const [selected_product, setSelectedProduct] = useState(null);
-  const [focusedItem, setFocusedItem] = useState();
   const [expandedItems, setExpandedItems] = useState([]);
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedId, setSelectedId] = useState(0);
   const [product_groups, setProductGroups] = useState();
   const [products, setProducts] = useState([]);
   const [display_products, setDisplayProducts] = useState([]);
@@ -105,10 +110,10 @@ function MaterialsList() {
     try {
       fetchWrapper.get(process.env.REACT_APP_API_URL + 'product_groups?type=' + category_type).then((data) => {
         if (data.success) {
-          console.log(data.data)
-          setProductGroups(readProductGroup(data.data.product_groups))
-          setProducts(data.data.products)
+          console.log(data.data.product_groups)          
           setExpandedItems(data.data.ids)
+          setProductGroups(data.data.product_groups)
+          setProducts(data.data.products)
           setSelectedProduct(null)
         }
       })
@@ -116,62 +121,51 @@ function MaterialsList() {
       console.error(error);
     }
   }
-  const readProductGroup = (template, data = { items: {} }) => {
-    template.map((product_group, i) => {
-      data.items[product_group.id.toString()] = {
-        "index": product_group.id.toString(),
-        "desc": product_group.description,
-        "name": product_group.name,
-        "code": product_group.code,
-        "parent_id": product_group.parent_id,
-        "canMove": true,
-        "hasChildren": product_group.childs && product_group.childs.length > 0 ? true : false,
-        "children": product_group.childs && product_group.childs.length > 0 ? product_group.childs : null,
-        "data": product_group.name,
-        "canRename": true,
-      };
-      return data;
-    })
-    return data.items;
-  };
 
-  function handleOpenProductModel(type) {
+  function handleOpenProductModel(type) {   
     setModelEmpType(type)
     setProductErrors({})
     if (type === 1) {
-      if (selectedItems.length < 1) {
+      if (selectedId < 1) {
         setAlertMessage('Vui lòng chọn nhóm để thêm vật tư')
         setAlertShow(true)
         return
       }
-      const selectedProductGroup = product_groups[selectedItems[0]]
-      if (selectedProductGroup.hasChildren) {
-        setAlertMessage('Không được thêm vật tư cho nhóm cha')
+      const selectedProductGroups = product_groups.filter(
+        (product_group) => product_group.id.toString() === selectedId.toString()
+      );
+      if (selectedProductGroups.length === 0) {
+        setAlertMessage('Vui lòng chọn nhóm để thêm vật tư')
         setAlertShow(true)
         return
       }
-
-      
-
-      let current_id = selectedItems[0]
-      let product_code = '';
-      let product_name = '';
-      if (current_id) {
-        while (current_id != root_id) {
-          var group = product_groups[current_id]
-          product_code = group.code + '-' + product_code
-          product_name = group.name + ' ' + product_name
-          current_id = group.parent_id
+      let selectedProductGroup = selectedProductGroups[0];
+      if (selectedProductGroup.hasOwnProperty('childs') && selectedProductGroup.childs.length > 0) {
+        setAlertMessage('Không được thêm vật tư cho nhóm cha')
+        setAlertShow(true)
+        return
+      } else {
+        let current_id = selectedId
+        let product_code = '';
+        let product_name = '';
+        if (current_id) {
+          while (current_id != root_id) {
+            var group = product_groups.filter(
+              (product_group) => product_group.id.toString() === current_id.toString()
+            )[0];
+            product_code = group.code + '-' + product_code
+            product_name = group.name + ' ' + product_name
+            current_id = group.parent_id
+          }
+          product_code = product_code + Common.ConvertToString(display_products.length + 1, 3)
+          product_name = product_name + Common.ConvertToString(display_products.length + 1, 3)
         }
-        product_code = product_code + Common.ConvertToString(display_products.length + 1, 3)
-        product_name = product_name + Common.ConvertToString(display_products.length + 1, 3)
+        setModelProductTitle('Thêm vật tư')
+        setProduct({ ...product, "code": product_code, "name": product_name, "description": '', "manufactor": '', "origin": '', "status": 1 });
+        setShowProductModel(true)
       }
-
-      setModelProductTitle('Thêm vật tư')
-      setProduct({ ...product, "code": product_code, "name": product_name, "description": '', "manufactor": '', "origin": '', "status": 1 });
-      setShowProductModel(true)
     } else if (type === 2) {
-      if (selectedItems.length < 1) {
+      if (selectedId < 1) {
         setAlertMessage('Vui lòng chọn nhóm vật tư')
         setAlertShow(true)
         return
@@ -194,7 +188,7 @@ function MaterialsList() {
       });
       setShowProductModel(true)
     } else if (type === 3) {
-      if (selectedItems.length < 1) {
+      if (selectedId < 1) {
         setAlertMessage('Vui lòng chọn nhóm vật tư')
         setAlertShow(true)
         return
@@ -217,7 +211,7 @@ function MaterialsList() {
       });
       setShowProductModel(true)
     } else if (type === 4) {
-      if (selectedItems.length < 1) {
+      if (selectedId < 1) {
         setAlertMessage('Vui lòng chọn nhóm vật tư')
         setAlertShow(true)
         return
@@ -243,12 +237,12 @@ function MaterialsList() {
   }
 
   function handleSaveProduct() {
-    if (selectedItems.length < 1) {
+    if (selectedId < 1) {
       setAlertMessage('Vui lòng chọn nhóm vật tư')
       setAlertShow(true)
       return
     }
-    const selected_id = parseInt(selectedItems[0])
+    const selected_id = parseInt(selectedId)
     if (modelEmpType === 1) {
       const current_errors = product_insert_validator.validate(product)
       setProductErrors(current_errors)
@@ -330,7 +324,7 @@ function MaterialsList() {
     setModelOrgType(type)
     setProductGroupErrors({})
     if (type === 1) {
-      if (selectedItems.length < 1) {
+      if (selectedId < 1) {
         setAlertMessage('Vui lòng chọn nhóm cha để thêm nhóm vật tư')
         setAlertShow(true)
         return
@@ -344,33 +338,40 @@ function MaterialsList() {
       setProductGroup({ ...product_group, "code": '', "name": '', "desc": '' });
       setShowProductGroupModel(true)
     } else if (type === 2) {
-      if (selectedItems.length < 1) {
+      if (selectedId < 1) {
         setAlertMessage('Vui lòng chọn nhóm vật tư để sửa')
         setAlertShow(true)
         return
       }
-      const selectedProductGroup = product_groups[selectedItems[0]]
+      const selectedProductGroup = product_groups.filter(
+        (product_group) => product_group.id.toString() === selectedId.toString()
+      )[0];
       setModelProductGroupTitle('Sửa nhóm vật tư')
-      setProductGroup({ ...product_group, "code": selectedProductGroup.code, "name": selectedProductGroup.name, "desc": selectedProductGroup.desc });
+      setProductGroup({ ...product_group, "code": selectedProductGroup.code, "name": selectedProductGroup.name, "desc": selectedProductGroup.description });
+      console.log(product_group)
       setShowProductGroupModel(true)
     } else if (type === 3) {
-      if (selectedItems.length < 1) {
+      if (selectedId < 1) {
         setAlertMessage('Vui lòng chọn nhóm vật tư để xem')
         setAlertShow(true)
         return
       }
-      const selectedProductGroup = product_groups[selectedItems[0]]
+      const selectedProductGroup = product_groups.filter(
+        (product_group) => product_group.id.toString() === selectedId.toString()
+      )[0];
       setModelProductGroupTitle('Xem nhóm vật tư')
-      setProductGroup({ ...product_group, "code": selectedProductGroup.code, "name": selectedProductGroup.name, "desc": selectedProductGroup.desc });
+      setProductGroup({ ...product_group, "code": selectedProductGroup.code, "name": selectedProductGroup.name, "desc": selectedProductGroup.description });
       setShowProductGroupModel(true)
     } else if (type === 4) {
-      if (selectedItems.length < 1) {
+      if (selectedId < 1) {
         setAlertMessage('Vui lòng chọn nhóm vật tư để xóa')
         setAlertShow(true)
         return
       }
-      const selectedProductGroup = product_groups[selectedItems[0]]
-      if (selectedProductGroup.hasChildren) {
+      const selectedProductGroup = product_groups.filter(
+        (product_group) => product_group.id.toString() === selectedId.toString()
+      )[0];
+      if (Array.isArray(selectedProductGroup.childs)) {
         setAlertMessage('Không được xóa nhóm vật tư cha')
         setAlertShow(true)
         return
@@ -386,13 +387,13 @@ function MaterialsList() {
         return
       }
       setModelProductGroupTitle('Xóa nhóm vật tư')
-      setProductGroup({ ...product_group, "code": selectedProductGroup.code, "name": selectedProductGroup.name, "desc": selectedProductGroup.desc });
+      setProductGroup({ ...product_group, "code": selectedProductGroup.code, "name": selectedProductGroup.name, "desc": selectedProductGroup.description });
       setShowProductGroupModel(true)
     }
   }
 
   function handleSaveProductGroup() {
-    if (selectedItems.length < 1) {
+    if (selectedId < 1) {
       setAlertMessage('Vui lòng chọn nhóm vật tư')
       setAlertShow(true)
       return
@@ -402,7 +403,7 @@ function MaterialsList() {
     if (!Common.isEmptyObject(current_errors)) {
       return
     }
-    const selected_id = parseInt(selectedItems[0])
+    const selected_id = parseInt(selectedId)
     if (modelOrgType === 1) {
       const body = {
         code: product_group.code,
@@ -461,17 +462,48 @@ function MaterialsList() {
   }
 
   useEffect(() => {
-    const selected_id = parseInt(selectedItems[0])
-    console.log(selectedItems[0])
-    console.log(product_groups)
+    const selected_id = parseInt(selectedId)
     const temp_products = products.filter(
       (product) => product.group_id === selected_id
     );
     setDisplayProducts(temp_products)
     setSelectedProduct(null)    
-  }, [products, selectedItems])
+  }, [products, selectedId])
 
-  return (
+
+  const useStyles = makeStyles({
+    root: {
+      maxWidth: 400,
+    },
+  });
+
+  const StyledTreeItem = withStyles((theme) => ({
+    iconContainer: {
+      '& .close': {
+        opacity: 0.3,
+      },
+    },
+    group: {
+      marginLeft: 7,
+      paddingLeft: 18,
+      borderLeft: `1px dashed ${alpha(theme.palette.text.primary, 0.4)}`,
+    },
+  }))((props) => <TreeItem {...props}  />);
+
+  const classes = useStyles();
+  const handleSelect = (event, nodeId) => {
+    setSelectedId(nodeId)
+  };
+
+  const renderTree = (nodes) => (
+    <StyledTreeItem  key={nodes.id.toString()} nodeId={nodes.id.toString()} label={nodes.name} onLabelClick={(event) => event.preventDefault()}>
+      {Array.isArray(nodes.childs)
+        ? nodes.childs.map((node) => renderTree(node))
+        : null}
+    </StyledTreeItem >
+  );
+
+  return (    
     <div>
       <div className="page-header">
         <h3 className="page-title"> Quản lý danh mục </h3>
@@ -490,7 +522,7 @@ function MaterialsList() {
                 </div>
                 <div className='clear-both'></div>
               </div>
-              <div className='tree-wrapper'>
+              <div className='tree-wrapper'>   
                 <style>{`
                   :root {        
                     --rct-item-height: 32px;
@@ -499,30 +531,18 @@ function MaterialsList() {
                     font-size: 1.0rem;
                   }
                 `}</style>
-                {
-                  !Common.isEmptyObject(product_groups) &&
-                  <ControlledTreeEnvironment
-                    items={product_groups}
-                    getItemTitle={item => item.data}
-                    viewState={{
-                      ['tree_product_groups']: {
-                        focusedItem,
-                        expandedItems,
-                        selectedItems,
-                      },
-                    }}
-                    defaultInteractionMode={'click-arrow-to-expand'}
-                    onFocusItem={item => setFocusedItem(item.index)}
-                    onExpandItem={item => setExpandedItems([...expandedItems, item.index])}
-                    onCollapseItem={item =>
-                      setExpandedItems(expandedItems.filter(expandedItemIndex => expandedItemIndex !== item.index))
-                    }
-                    onSelectItems={items => setSelectedItems(items)}
+                {!Common.isEmptyObject(product_groups) &&
+                  <TreeView onNodeSelect={handleSelect}
+                    className={classes.root}
+                    aria-label="rich object"
+                    defaultExpanded={expandedItems}
+                    defaultCollapseIcon={<IndeterminateCheckBoxOutlinedIcon />}
+                    defaultExpandIcon={<AddBoxOutlinedIcon />}
+                    defaultEndIcon={<CheckBoxOutlineBlankOutlinedIcon />}
                   >
-                    <Tree treeId="tree_product_groups" rootItem={root_id} treeLabel="Danh mục vật tư" />
-                  </ControlledTreeEnvironment>
+                    {renderTree(product_groups[1])}
+                  </TreeView>
                 }
-
               </div>
             </div>
           </div>

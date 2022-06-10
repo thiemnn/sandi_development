@@ -10,7 +10,7 @@ export default function Alert({message, show, onClose}) {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <div style={{ width: "100%", textAlign: "center", fontSize: "22px", "line-height": "30px" }}>
+                <div style={{ width: "100%", textAlign: "center", fontSize: "22px", lineHeight: "30px" }}>
                 {message}
                 </div>
             </Modal.Body>

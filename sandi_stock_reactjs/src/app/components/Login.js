@@ -72,7 +72,7 @@ function Login() {
                     <div className="col-lg-4 mx-auto">
                         <div className="auth-form-light text-left py-5 px-4 px-sm-5">
                             <div className="brand-logo">
-                                <img src={require("../../assets/images/logo.svg")} alt="logo" />
+                                <img src={require("../../assets/images/logo-sandi.png")} alt="logo" />
                             </div>
                             <h4>Chào mừng bạn đến với phần mềm quản trị doanh nghiệp</h4>
                             <h6 className="font-weight-light">Đăng nhập để tiếp tục.</h6>
