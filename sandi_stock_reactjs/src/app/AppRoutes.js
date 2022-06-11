@@ -68,7 +68,7 @@ class AppRoutes extends Component {
           <Route path="/categories/commercials" component={ CommercialsList } />
           <Route path="/categories/products" component={ ProductsList } />
           <Route path="/stocks/list" component={ StocksList } />
-          <Route path="/stocks/layout" component={ StocksLayout } />
+          <Route path="/stocks/layout/:id" component={ StocksLayout } />
 
           <Route path="/tables/basic-table" component={ BasicTable } />
 

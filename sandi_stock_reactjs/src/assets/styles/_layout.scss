@@ -448,6 +448,10 @@
   font-size: .9rem;
   padding: 5px 5px;
 }
+.stocks td{
+  padding: 5px 5px;
+  cursor: pointer;
+}
 .employees td{
   padding: 5px 5px;
   cursor: pointer;
@@ -465,6 +469,13 @@
   width: 100%;
   margin-top: 10px;
   padding-right: 10px;
+}
+.round_small_button{
+  border-radius: 22px;
+  padding: 0.8rem 0.9rem;
+}
+.round_small_button i{
+  margin-right: 0px;
 }
 .small_button{
   padding: 0.8rem 0.9rem;
@@ -518,4 +529,40 @@
 }
 .shelf{
   padding: 30px;
+}
+.stock-layout-line{
+  cursor: pointer;
+}
+.pt-10{
+  padding-top: 10px !important;
+}
+.pt-5{
+  padding-top: 5px !important;
+}
+.pb-5{
+  padding-bottom: 5px !important;
+}
+.mb-5{
+  margin-bottom: 5px !important;
+}
+.line-title{
+  padding: 10px 40px;
+  font-size: 16px;
+  margin-bottom: 0px;
+}
+.stock-line-title{
+  width: 50%;
+    text-align: right;
+}
+
+.btn-shelf {
+  color: #fff;
+  background-color: #d61d99;
+  border-color: #d61d99;
+}
+
+.btn-shelf:hover {
+  color: #fff;
+  background-color: #ff3e32;
+  border-color: #ff3225;
 }

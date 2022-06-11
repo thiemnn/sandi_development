@@ -6,6 +6,7 @@ import Alert from '../components/Alert';
 import Validator from '../../utils/validator';
 import Common from '../../utils/common';
 import { fetchWrapper } from '../../utils/fetch-wrapper';
+import { useHistory } from "react-router-dom";
 
 import { alpha, makeStyles, withStyles } from '@material-ui/core/styles';
 import TreeView from '@material-ui/lab/TreeView';
@@ -23,6 +24,7 @@ function List() {
   const [stocks, setStocks] = useState([]);
   const [display_stocks, setDisplayStocks] = useState([]);
 
+  let history = useHistory();
   //model stock_group
   const [model_stock_group_title, setModelStockGroupTitle] = useState();
   const [showStockGroupModel, setShowStockGroupModel] = useState(false);
@@ -448,6 +450,15 @@ function List() {
     }
   }
 
+  function viewLayout(){
+    if (selected_stock === null) {
+      setAlertMessage('Vui lòng chọn kho để xem layout')
+      setAlertShow(true)
+      return
+    }
+    history.push("/stocks/layout/" + selected_stock.id);
+  }
+
   useEffect(() => {
     const selected_id = parseInt(selectedId)
     const temp_stocks = stocks.filter(
@@ -543,6 +554,7 @@ function List() {
                   <button type="button" className="btn btn-primary btn-icon small_button" title="Thêm kho" onClick={() => handleOpenStockModel(1)}><i className="mdi mdi-plus-box"></i> </button>
                   <button type="button" className="btn btn-success btn-icon small_button ml-10" title="Sửa kho" onClick={() => handleOpenStockModel(2)}><i className="mdi mdi-pencil"></i> </button>
                   <button type="button" className="btn btn-warning btn-icon small_button ml-10" title="Xem kho" onClick={() => handleOpenStockModel(3)}><i className="mdi mdi-eye"></i> </button>
+                  <button type="button" className="btn btn-info btn-icon small_button ml-10" title="Xem layout" onClick={() => viewLayout()}><i className="mdi mdi-server"></i> </button>
                   <button type="button" className="btn btn-danger btn-icon small_button ml-10" title="Xóa kho" onClick={() => handleOpenStockModel(4)}><i className="mdi mdi-delete"></i> </button>
                 </div>
                 <div className='clear-both'></div>
