@@ -13,6 +13,7 @@ function Insert() {
 
   const [showStockGroupModel, setShowStockGroupModel] = useState(false);
   const items = [{ full_name: '', position: '', mobile: '', email: '' }];
+  const materials = [{code: 'abc', name: 'abc'},{code: 'abc', name: 'abc'},{code: 'abc', name: 'abc'},{code: 'abc', name: 'abc'},{code: 'abc', name: 'abc'}];
   const [styles, setStyles] = useState(null);
   const [input_material_name, setInputMaterialName] = useState('');
   //#endregion
@@ -380,15 +381,11 @@ function Insert() {
                 </tr>
               </thead>
               <tbody>
-                {items.map(function (o, i) {
+                {materials.map(function (material, i) {
                   return (
                     <tr key={"item-" + i}>
-                      <td className='relative'>
-                        adfsdfsdfsdf
-                      </td>
-                      <td className='relative'>
-                        adfadfadf
-                      </td>
+                      <td className='relative'>{material.code}</td>
+                      <td className='relative'>{material.name}</td>
                     </tr>
                   );
                 })}
