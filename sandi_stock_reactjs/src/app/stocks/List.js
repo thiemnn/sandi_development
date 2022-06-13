@@ -23,7 +23,6 @@ function List() {
   const [stock_groups, setStockGroups] = useState();
   const [stocks, setStocks] = useState([]);
   const [display_stocks, setDisplayStocks] = useState([]);
-
   let history = useHistory();
   //model stock_group
   const [model_stock_group_title, setModelStockGroupTitle] = useState();
@@ -595,8 +594,9 @@ function List() {
           </div>
         </div>
       </div>
-      {/* model stock_group */}
-      <Modal showOverlay={true} size={'md'} show={showStockGroupModel} onClose={() => { setShowStockGroupModel(false) }}>
+      <div style={{ position: 'relative' }}>
+
+      <Modal showOverlay={false} style={{ position: 'absolute', top: '0px', left: '0px' }} size={'md'} show={showStockGroupModel} onClose={() => { setShowStockGroupModel(false) }}>
         <Modal.Header>
           <Modal.Title>
             {model_stock_group_title}
@@ -636,8 +636,11 @@ function List() {
           <button type="button" className="btn btn-secondary btn-icon small_button" onClick={() => { setShowStockGroupModel(false) }}>Đóng</button>
         </Modal.Footer>
       </Modal>
+      </div>
+      {/* model stock_group */}
+      
       {/* model stock */}
-      <Modal showOverlay={true} size={'lg'} show={showStockModel} onClose={() => { setShowStockModel(false) }}>
+      <Modal showOverlay={true} size={'md'} show={showStockModel} onClose={() => { setShowStockModel(false) }}>
         <Modal.Header>
           <Modal.Title>
             {model_stock_title}

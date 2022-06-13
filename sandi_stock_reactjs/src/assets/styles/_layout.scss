@@ -477,6 +477,23 @@
 .round_small_button i{
   margin-right: 0px;
 }
+
+.line_inside_button{
+  border-radius: 22px;
+  padding: 0.25rem 0.2rem 0.15rem 0.2rem;
+  position: absolute;
+  top: 2px;
+  right: 2px;
+}
+
+.line_inside_button i{
+  margin-right: 0px;
+}
+
+.relative{
+  position: relative;
+}
+
 .small_button{
   padding: 0.8rem 0.9rem;
 }
@@ -565,4 +582,11 @@
   color: #fff;
   background-color: #ff3e32;
   border-color: #ff3225;
+}
+
+.max_content{
+  width: max-content;
+}
+.no-border-row td{
+  border: none;
 }
