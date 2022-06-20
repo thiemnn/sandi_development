@@ -48,8 +48,21 @@ const delete_item = async (id) =>{
     }  
 }
 
+const getAll = async (type) =>{
+    try {
+        const con = await db.getConnection()
+        const products = await con.query(`select * from m_product where type = ${type}`)
+        await con.end()    
+        return products
+    } catch (e) {
+        console.log("can't query all products");
+        return null;  
+    }  
+}
+
 module.exports = {
     insert,
     update,
-    delete_item
+    delete_item,
+    getAll
 };

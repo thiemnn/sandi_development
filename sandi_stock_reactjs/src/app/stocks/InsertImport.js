@@ -16,6 +16,9 @@ function Insert() {
   const materials = [{code: 'abc', name: 'abc'},{code: 'abc', name: 'abc'},{code: 'abc', name: 'abc'},{code: 'abc', name: 'abc'},{code: 'abc', name: 'abc'}];
   const [styles, setStyles] = useState(null);
   const [input_material_name, setInputMaterialName] = useState('');
+  const [input_material_code, setInputMaterialCode] = useState('');
+  const [products, setProducts] = useState([]);
+  const [filter_products, setFilterProducts] = useState([]);
   //#endregion
 
   //#region main process
@@ -147,26 +150,62 @@ function Insert() {
   }
 
   useEffect(() => {
-    if (input_material_name != '') {
-      let elem = document.querySelector('#input_material_name');
-      let rect = elem.getBoundingClientRect();
-      setStyles({
-        position: 'absolute',
-        bottom: window.innerHeight - rect.top + 10,
-        left: rect.left
-      })
-      console.log(rect)
+    let elem = document.querySelector('#input_material_code');
+    let rect = elem.getBoundingClientRect();
+    setStyles({
+      position: 'absolute',
+      bottom: window.innerHeight - rect.top + 10,
+      left: rect.left
+    })
+    const temp_products = products.filter(
+      (product) => product.name.toLowerCase().includes(input_material_name.toLowerCase())
+    );
+    setFilterProducts(temp_products)
+    if(input_material_name != ''){
       setShowStockGroupModel(true)
     }
   }, [input_material_name])
 
-  var context = this;
-  const countries = [
-    { code: 'ADDGDB DFEER', name: 'Andorra sdfsdfsdf' },
-    { code: 'DGHEDFDFEDFDF', name: 'Andsdfsdfsdfsdorra' },
-    { code: 'ĐFCDFĐFDFEGDG', name: 'Andorrfsdfsdfsa' },
-    { code: 'GDDFDFDFDFDFD', name: 'Andorrdfsdfsdfsdfa' },
-  ];
+  useEffect(() => {
+    let elem = document.querySelector('#input_material_code');
+    let rect = elem.getBoundingClientRect();
+    setStyles({
+      position: 'absolute',
+      bottom: window.innerHeight - rect.top + 10,
+      left: rect.left
+    })
+    const temp_products = products.filter(
+      (product) => product.code.toLowerCase().includes(input_material_code.toLowerCase())
+    );
+    setFilterProducts(temp_products)
+    if(input_material_code != ''){
+      setShowStockGroupModel(true)
+    }
+  }, [input_material_code])
+
+  useEffect(() => {
+    fetchProducts();
+  }, [])
+
+  function setSelectedProduct(product){
+    console.log(product)
+    setShowStockGroupModel(false)
+  }
+
+  function fetchProducts() {
+    try {
+      fetchWrapper.get(process.env.REACT_APP_API_URL + 'products?type=1').then((data) => {
+        if (data.success) {
+          setProducts(data.data)
+          setFilterProducts(data.data)
+        } else {
+          console.log(data)
+        }
+      })
+    } catch (error) {
+      console.error(error);
+    }
+  }
   return (
     <div>
       <div className="page-header">
@@ -298,14 +337,13 @@ function Insert() {
 
                           </td>
                           <td>
-                            <Form.Control type="text" className="form-control" placeholder="" />
-
+                            <Form.Control id="input_material_code" value={input_material_code} onChange={(e) => setInputMaterialCode(e.target.value)} type="text" className="form-control" placeholder="" />
                           </td>
                           <td>
                             <Form.Control id="input_material_name" value={input_material_name} onChange={(e) => setInputMaterialName(e.target.value)} type="text" className="form-control" placeholder="" />
                           </td>
                           <td>
-                            <button type="button" id='add_new_line' className="btn btn-primary btn-icon small_button" onClick={() => handleOpenStockModel()}><i className="mdi mdi-plus-box"></i></button>
+                            {/* <button type="button" id='add_new_line' className="btn btn-primary btn-icon small_button" onClick={() => handleOpenStockModel()}><i className="mdi mdi-plus-box"></i></button> */}
                           </td>
                           <td>
 
@@ -336,30 +374,6 @@ function Insert() {
                     </table>
                   </div>
                 </div>
-                <div className='col-sm-4 left mt-10'>
-                  <Autocomplete
-                    id="country-select-demo"
-                    className='form-control'
-                    sx={{ width: 300 }}
-                    options={countries}
-                    autoHighlight
-                    getOptionLabel={(option) => option.code + option.name}
-                    renderOption={(option) => (
-                      <Box>
-                        <div>Mã vật tư: {option.code}</div><div>Tên vật tư: {option.name}</div>
-                      </Box>
-                    )}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        inputProps={{
-                          ...params.inputProps,
-                          autoComplete: '',
-                        }}
-                      />
-                    )}
-                  />
-                </div>
               </Form.Group>
             </div>
           </div>
@@ -372,8 +386,8 @@ function Insert() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="table-responsive">
-            <table className="table table-bordered inside_table">
+          <div className="table-responsive" style={{ maxHeight: '250px' }}>
+            <table className="table table-bordered table-hover selectable inside_table">
               <thead>
                 <tr>
                   <th style={{ width: '250px' }}> Mã VT </th>
@@ -381,13 +395,13 @@ function Insert() {
                 </tr>
               </thead>
               <tbody>
-                {materials.map(function (material, i) {
+                {filter_products.map(function (product, i) {
                   return (
-                    <tr key={"item-" + i}>
-                      <td className='relative'>{material.code}</td>
-                      <td className='relative'>{material.name}</td>
+                    <tr key={"item-" + i} onClick={() => setSelectedProduct(product)}>
+                      <td className='relative'>{product.code}</td>
+                      <td className='relative'>{product.name}</td>
                     </tr>
-                  );
+                  );                  
                 })}
               </tbody>
             </table>

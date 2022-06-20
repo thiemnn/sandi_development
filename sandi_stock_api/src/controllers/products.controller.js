@@ -16,8 +16,15 @@ const delete_item = async (req, res, next) => {
     return responseHelper.successWithData(res, 'Update record successfully', response)
 }
 
+const getAll = async (req, res) => {
+    var type = req.query.type;
+    var response = await productsService.getAll(type);
+    return responseHelper.successWithData(res, 'Success With Data', response)
+}
+
 module.exports = {
     insert,
     update,
-    delete_item
+    delete_item,
+    getAll
 };
