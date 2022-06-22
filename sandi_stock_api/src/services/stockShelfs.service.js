@@ -48,8 +48,23 @@ const delete_item = async (id) =>{
     }  
 }
 
+const getAll = async () =>{
+    try {
+        const con = await db.getConnection()
+        const stock_shelfs = await con.query(`SELECT A.* FROM m_stock_shelfs as A
+        inner join m_stock_lines as B on A.stock_line_id= B.id
+        where (A.status = 0 or A.status = 1)`)        
+        await con.end()   
+        return stock_shelfs
+    } catch (e) {
+        console.log("can't query all stock_shelfs");
+        return null;  
+    }  
+}
+
 module.exports = {
     insert,
     update,
-    delete_item
+    delete_item,
+    getAll
 };

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 
-const stockShelfsController = require('../controllers/stockShelfs.controller');
+const stocksTransactionsController = require('../controllers/stocksTransactions.controller');
 const jwt = require("jsonwebtoken");
 
 function authenToken(req, res, next) {
@@ -25,15 +25,9 @@ function authenToken(req, res, next) {
 }
 
 router.route('/:_id/update')
-    .put(authenToken, stockShelfsController.update);
+    .put(authenToken, stocksTransactionsController.update);
 
 router.route('/insert')
-    .post(authenToken, stockShelfsController.insert);
-
-router.route('/:_id/delete')
-    .delete(authenToken, stockShelfsController.delete_item);
-
-router.route('/')
-    .get(authenToken, stockShelfsController.getAll);
+    .post(authenToken, stocksTransactionsController.insert);
 
 module.exports = router;

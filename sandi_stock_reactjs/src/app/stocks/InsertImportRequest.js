@@ -360,7 +360,7 @@ export class Insert extends Component {
                         </table>
                       </div>
                     </div>
-                    <div className='right'>
+                    <div className='right_button'>
                       <button type="button" className="btn btn-primary btn-icon small_button" onClick={this.handleAddItem.bind(this)}><i className="mdi mdi-plus-box"></i></button>
                     </div>
                   </Form.Group>                  

@@ -7,27 +7,42 @@ function Insert() {
 
   //#region state manager  
 
-  const [showStockGroupModel, setShowStockGroupModel] = useState(false);
+  const [showMaterialSelectModel, setShowMaterialSelectModel] = useState(false);
+  const [showPositionSelectModel, setShowPositionSelectModel] = useState(false);
   const [items, setItems] = useState([]);
+  const [positions, setPositions] = useState([]);
+  const [selectPositionRow, setSelectPositionRow ]= useState([]);
   //const items = [{ code: 'adfsdsdfdf', name: 'adfasdfaddf' }];
   const [styles, setStyles] = useState(null);
   const [input_material_name, setInputMaterialName] = useState('');
   const [input_material_code, setInputMaterialCode] = useState('');
   const [products, setProducts] = useState([]);
   const [filter_products, setFilterProducts] = useState([]);
+  const [stock_transaction, setStockTransaction] = useState({ 
+    id: 0, 
+    transaction_number: "", 
+    stock_id: "", 
+    deliver_person: "", 
+    deliver_unit: "", 
+    deliver_address: "", 
+    explain: "", 
+    attach: "" 
+  });
+  const handleStockTransactionChange = (event) => {
+    event.persist();
+    setStockTransaction({ ...stock_transaction, [event.target.name]: event.target.value });
+  };
   //#endregion
   const addCommas = num => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   const removeNonNumeric = num => num.toString().replace(/[^0-9.]/g, "");
-  
+
   function handleItemsChange(index, event) {
     let items_copy = [...items];
     let item = { ...items_copy[index] };
-    if (event.target.name === "quantity") {
+    if (event.target.name === "quantity" || event.target.name === "price") {
       const re = /^[0-9,]*\.?[0-9]?[0-9]?$/;
       if (event.target.value === '' || re.test(event.target.value)) {
-        console.log(event.target.value)
         item = { ...item, [event.target.name]: addCommas(removeNonNumeric(event.target.value)) };
-        //(1234.56789).toLocaleString('en', { maximumFractionDigits: 2 })
         items_copy[index] = item;
         setItems(items_copy)
       }
@@ -36,128 +51,6 @@ function Insert() {
       items_copy[index] = item;
       setItems(items_copy)
     }
-  }
-
-  function fetchGeneralCate() {
-    try {
-      fetchWrapper.get(process.env.REACT_APP_API_URL + "general_cate").then((data) => {
-        if (data.success) {
-          const types = data.data.filter(
-            (cate) => cate.cate_type === 1
-          );
-          const cate_types = types.map(s => ({ value: s.cate_key, label: s.cate_name }));
-          const fields = data.data.filter(
-            (cate) => cate.cate_type === 2
-          );
-          const cate_fields = fields.map(s => ({ value: s.cate_key, label: s.cate_name }));
-          const regions = data.data.filter(
-            (cate) => cate.cate_type === 3
-          );
-          const cate_regions = regions.map(s => ({ value: s.cate_key, label: s.cate_name }));
-          this.setState({
-            cate_types: [{ value: 0, label: 'Chọn ...' }, ...cate_types],
-            cate_fields: [{ value: 0, label: 'Chọn ...' }, ...cate_fields],
-            cate_regions: [{ value: 0, label: 'Chọn ...' }, ...cate_regions]
-          });
-        }
-      })
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  function insertProvider() {
-    const body = {
-      code: this.state.code,
-      name: this.state.name,
-      address: this.state.address,
-      email: this.state.email,
-      tax_code: this.state.tax_code,
-      phone: this.state.phone,
-      remark: this.state.remark,
-      type_id: this.state.type_id,
-      field_id: this.state.field_id,
-      region_id: this.state.region_id,
-      contacts: this.state.items
-    }
-    fetchWrapper.post(process.env.REACT_APP_API_URL + 'providers/insert', body).then((data) => {
-      if (data.success) {
-        this.props.history.push("/providers/list");
-      }
-    })
-  }
-
-  function handleSave() {
-    this.insertProvider();
-  }
-
-  function handleReturn() {
-    this.props.history.push("/providers/list");
-  }
-
-  const defaulOption = { value: '0', label: 'Chọn ...' }
-  //#endregion
-
-  //#region manage items
-  function handleItemFullNameChanged(i, event) {
-    var items = this.state.items;
-    items[i].full_name = event.target.value;
-    this.setState({
-      items: items
-    });
-  }
-
-  function handleItemPositionChanged(i, event) {
-    var items = this.state.items;
-    items[i].position = event.target.value;
-    this.setState({
-      items: items
-    });
-  }
-
-  function handleItemEmailChanged(i, event) {
-    var items = this.state.items;
-    items[i].email = event.target.value;
-    this.setState({
-      items: items
-    });
-  }
-
-  function handleItemMobileChanged(i, event) {
-    var items = this.state.items;
-    items[i].mobile = event.target.value;
-    this.setState({
-      items: items
-    });
-  }
-
-  function handleDeleteItem(i) {
-    var items = this.state.items;
-    items.splice(i, 1);
-    this.setState({
-      items: items
-    });
-  }
-
-  function handleAddItem() {
-    var items = this.state.items;
-    items.push({ full_name: '', position: '', mobile: '', email: '' });
-    this.setState({
-      items: items
-    });
-  }
-  //#endregion
-
-  function handleOpenStockModel() {
-    let elem = document.querySelector('#input_material_name');
-    let rect = elem.getBoundingClientRect();
-    setStyles({
-      position: 'absolute',
-      bottom: window.innerHeight - rect.top + 10,
-      left: rect.left
-    })
-    console.log(rect)
-    setShowStockGroupModel(true)
   }
 
   useEffect(() => {
@@ -176,14 +69,26 @@ function Insert() {
 
   useEffect(() => {
     fetchProducts();
+    fetchPositions();
   }, [])
 
   function setSelectedProduct(product) {
-    console.log(product)
     var temps = items;
-    temps.push({ code: product.code, name: product.name, unit: product.unit, unit_to_kg: product.unit_to_kg, tk_co: product.tk_co, tk_no: product.tk_no, quantity: ''});
+    temps.push({
+      code: product.code,
+      name: product.name,
+      unit: product.unit,
+      unit_to_kg: product.unit_to_kg,
+      tk_co: product.tk_co,
+      tk_no: product.tk_no,
+      quantity: '',
+      price: '',
+      position: ''
+    });
     setItems(temps);
-    setShowStockGroupModel(false)
+    setShowMaterialSelectModel(false)
+    setInputMaterialCode('')
+    setInputMaterialName('')
   }
 
   function fetchProducts() {
@@ -201,7 +106,22 @@ function Insert() {
     }
   }
 
-  function onFocus() {    
+  function fetchPositions() {
+    try {
+      fetchWrapper.get(process.env.REACT_APP_API_URL + 'stock_shelfs/').then((data) => {
+        if (data.success) {
+          setPositions(data.data)
+          console.log(data.data)
+        } else {
+          console.log(data)
+        }
+      })
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  function onFocus() {
     let elem = document.querySelector('#input_material_code');
     let rect = elem.getBoundingClientRect();
     const position = window.pageYOffset;
@@ -210,11 +130,45 @@ function Insert() {
       bottom: window.innerHeight - rect.top + 10 - position,
       left: rect.left
     })
-    setShowStockGroupModel(true)
+    setShowMaterialSelectModel(true)
   }
 
   function onBlur() {
 
+  }
+
+  function onPositionFocus(index, event){    
+    let rect = event.target.getBoundingClientRect();
+    const position = window.pageYOffset;
+    setStyles({
+      position: 'absolute',
+      bottom: window.innerHeight - rect.top + 10 - position,
+      left: rect.right - 500
+    })
+    setSelectPositionRow(index)
+    setShowPositionSelectModel(true)
+  }
+
+  function setSelectedPosition(position) {
+    let items_copy = [...items];
+    let item = { ...items_copy[selectPositionRow] };
+    console.log(item)
+    item = { ...item, 'position': position.code };
+    console.log(item)
+    items_copy[selectPositionRow] = item;
+    setItems(items_copy)
+
+    setShowPositionSelectModel(false)
+    setInputMaterialCode('')
+    setInputMaterialName('')
+  }
+
+  function handlePositionChange(i, e){
+    e.persist();
+  }
+
+  function handleSaveStockTransaction(){
+    console.log(stock_transaction)
   }
 
   return (
@@ -222,7 +176,7 @@ function Insert() {
       <div className="page-header">
         <h3 className="page-title"> Thêm mới phiếu nhập kho</h3>
         <div>
-          <button type="button" className="btn btn-primary btn-icon small_button" style={{ margin: '0px 10px' }} ><i className="mdi mdi-content-save"></i></button>
+          <button type="button" onClick={() => handleSaveStockTransaction()} className="btn btn-primary btn-icon small_button" style={{ margin: '0px 10px' }} ><i className="mdi mdi-content-save"></i></button>
           <button type="button" className="btn btn-warning btn-icon small_button" ><i className="mdi mdi-keyboard-return"></i></button>
         </div>
       </div>
@@ -232,9 +186,9 @@ function Insert() {
             <div className="card-body">
               <form className="forms-sample">
                 <Form.Group className="row">
-                  <label htmlFor="code" className="col-sm-2 col-form-label">Số chứng từ</label>
+                  <label htmlFor="transaction_number" className="col-sm-2 col-form-label">Số chứng từ</label>
                   <div className="col-sm-4">
-                    <Form.Control type="text" className="form-control" placeholder="" />
+                    <Form.Control type="text" name="transaction_number" value={stock_transaction.transaction_number} onChange={handleStockTransactionChange} className="form-control" placeholder="" />
                   </div>
                   <label htmlFor="field" className="col-sm-2 col-form-label">Nhập hàng tại kho</label>
                   <div className="col-sm-4">
@@ -244,29 +198,29 @@ function Insert() {
                 <Form.Group className="row">
                   <label htmlFor="name" className="col-sm-2 col-form-label">Người giao hàng</label>
                   <div className="col-sm-4">
-                    <Form.Control type="text" className="form-control" placeholder="" />
+                    <Form.Control type="text" name="deliver_person" value={stock_transaction.deliver_person} onChange={handleStockTransactionChange} className="form-control" placeholder="" />
                   </div>
                   <label htmlFor="name" className="col-sm-2 col-form-label">Đơn vị</label>
                   <div className="col-sm-4">
-                    <Form.Control type="text" className="form-control" placeholder="" />
+                    <Form.Control type="text" name="deliver_unit" value={stock_transaction.deliver_unit} onChange={handleStockTransactionChange} className="form-control" placeholder="" />
                   </div>
                 </Form.Group>
                 <Form.Group className="row">
-                  <label htmlFor="name" className="col-sm-2 col-form-label">Địa chỉ</label>
+                  <label htmlFor="deliver_address" className="col-sm-2 col-form-label">Địa chỉ</label>
                   <div className="col-sm-10">
-                    <Form.Control type="text" className="form-control" placeholder="" />
+                    <Form.Control type="text" name="deliver_address" value={stock_transaction.deliver_address} onChange={handleStockTransactionChange} className="form-control" placeholder="" />
                   </div>
                 </Form.Group>
                 <Form.Group className="row">
-                  <label htmlFor="address" className="col-sm-2 col-form-label">Diễn giải</label>
+                  <label htmlFor="explain" className="col-sm-2 col-form-label">Diễn giải</label>
                   <div className="col-sm-10">
-                    <Form.Control type="text" className="form-control" placeholder="" />
+                    <Form.Control type="text" name="explain" value={stock_transaction.explain} onChange={handleStockTransactionChange} className="form-control" placeholder="" />
                   </div>
                 </Form.Group>
                 <Form.Group className="row">
-                  <label htmlFor="remark" className="col-sm-2 col-form-label">Kèm theo</label>
+                  <label htmlFor="attach" className="col-sm-2 col-form-label">Kèm theo</label>
                   <div className="col-sm-10">
-                    <Form.Control type="text" className="form-control" placeholder="" />
+                    <Form.Control type="text" name="attach" value={stock_transaction.attach} onChange={handleStockTransactionChange} className="form-control" placeholder="" />
                   </div>
                 </Form.Group>
               </form>
@@ -323,22 +277,22 @@ function Insert() {
                                 {item.unit}
                               </td>
                               <td>
-                                <Form.Control type="text" name="quantity" value={item.quantity} onChange={(e) => handleItemsChange(i, e)} className="form-control" placeholder="" />
+                                <Form.Control type="text" name="quantity" value={item.quantity} onChange={(e) => handleItemsChange(i, e)} className="form-control right" placeholder="" />
                               </td>
-                              <td className='center'>
+                              <td className='right'>
                                 {item.unit_to_kg}
                               </td>
-                              <td  className='center'>
-                                {(Math.round(removeNonNumeric(item.quantity) * item.unit_to_kg * 100) / 100).toLocaleString('en', { maximumFractionDigits: 2 }) }
+                              <td className='right'>
+                                {(Math.round(removeNonNumeric(item.quantity) * item.unit_to_kg * 100) / 100).toLocaleString('en', { maximumFractionDigits: 2 })}
                               </td>
                               <td>
-                                <Form.Control type="text" className="form-control" placeholder="" />
+                                <Form.Control type="text" value={item.position} onFocus={(event) => onPositionFocus(i, event)} onChange={(e) => handlePositionChange(i, e)} className="form-control" placeholder="" />
                               </td>
-                              <td>
-                                <Form.Control type="text" className="form-control" placeholder="" />
+                              <td className='right'>
+                                <Form.Control type="text" name="price" value={item.price} onChange={(e) => handleItemsChange(i, e)} className="form-control right" placeholder="" />
                               </td>
-                              <td>
-                              {(1234.56789).toLocaleString('en', { maximumFractionDigits: 2 })}
+                              <td className='right'>
+                                {(Math.round(removeNonNumeric(item.quantity) * removeNonNumeric(item.price) * 100) / 100).toLocaleString('en', { maximumFractionDigits: 2 })}
                               </td>
                             </tr>
                           );
@@ -405,7 +359,7 @@ function Insert() {
           </div>
         </div>
       </div>
-      <Modal showOverlay={false} style={styles} size={'md'} show={showStockGroupModel} onClose={() => { setShowStockGroupModel(false) }}>
+      <Modal showOverlay={false} style={styles} size={'md'} show={showMaterialSelectModel} onClose={() => { setShowMaterialSelectModel(false) }}>
         <Modal.Header>
           <Modal.Title>
             Chọn vật tư
@@ -426,6 +380,35 @@ function Insert() {
                     <tr key={"item-" + i} onClick={() => setSelectedProduct(product)}>
                       <td className='relative'>{product.code}</td>
                       <td className='relative'>{product.name}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </Modal.Body>
+      </Modal>
+      <Modal showOverlay={false} style={styles} size={'md'} show={showPositionSelectModel} onClose={() => { setShowPositionSelectModel(false) }}>
+        <Modal.Header>
+          <Modal.Title>
+            Chọn vị trí kho
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="table-responsive" style={{ maxHeight: '250px' }}>
+            <table className="table table-bordered table-hover selectable inside_table">
+              <thead>
+                <tr>
+                  <th style={{ width: '250px' }}> Mã kệ </th>
+                  <th style={{ width: '450px' }}> Tên kệ </th>
+                </tr>
+              </thead>
+              <tbody>
+                {positions.map(function (position, i) {
+                  return (
+                    <tr key={"item-" + i} onClick={() => setSelectedPosition(position)}>
+                      <td className='relative'>{position.code}</td>
+                      <td className='relative'>{position.name}</td>
                     </tr>
                   );
                 })}
