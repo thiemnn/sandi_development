@@ -39,15 +39,35 @@ function MaterialsList() {
   const [model_product_title, setModelProductTitle] = useState();
   const [showProductModel, setShowProductModel] = useState(false);
   const [product_errors, setProductErrors] = useState({});
-  const [product, setProduct] = useState({ id: 0, code: "", name: "", description: "", manufactor: "", origin: "", status: 1 });
+  const [product, setProduct] = useState(
+    {
+      id: 0,
+      code: "",
+      name: "",
+      description: "",
+      manufactor: "",
+      origin: "",
+      unit: "",
+      unit_to_kg: "",
+      tk_co: "",
+      tk_no: "",
+      status: 1
+    });
   const handleProductChange = (event) => {
     event.persist();
-    setProduct({ ...product, [event.target.name]: event.target.value });
-  };  
+    if (event.target.name === "unit_to_kg") {
+      const re = /^[0-9]*\.?[0-9]*$/;
+      if (event.target.value === '' || re.test(event.target.value)) {
+        setProduct({ ...product, [event.target.name]: event.target.value });
+      }
+    } else {
+      setProduct({ ...product, [event.target.name]: event.target.value });
+    }
+  };
   const handleStatusChange = (event) => {
     event.persist();
     setProduct({ ...product, status: event.target.checked })
-}
+  }
   const [modelEmpType, setModelEmpType] = useState(0);
 
   //alert message
@@ -81,7 +101,7 @@ function MaterialsList() {
       field: 'name',
       method: 'isEmpty',
       validWhen: false,
-      message: 'Vui lòng nhập họ tên.',
+      message: 'Vui lòng nhập tên vật tư.',
     }
   ];
   const product_validator = new Validator(product_rules);
@@ -97,7 +117,7 @@ function MaterialsList() {
       field: 'name',
       method: 'isEmpty',
       validWhen: false,
-      message: 'Vui lòng nhập họ tên.',
+      message: 'Vui lòng nhập tên vật tư.',
     }
   ];
   const product_insert_validator = new Validator(product_insert_rules);
@@ -110,7 +130,7 @@ function MaterialsList() {
     try {
       fetchWrapper.get(process.env.REACT_APP_API_URL + 'product_groups?type=' + category_type).then((data) => {
         if (data.success) {
-          console.log(data.data.product_groups)          
+          console.log(data.data)
           setExpandedItems(data.data.ids)
           setProductGroups(data.data.product_groups)
           setProducts(data.data.products)
@@ -122,7 +142,7 @@ function MaterialsList() {
     }
   }
 
-  function handleOpenProductModel(type) {   
+  function handleOpenProductModel(type) {
     setModelEmpType(type)
     setProductErrors({})
     if (type === 1) {
@@ -161,7 +181,17 @@ function MaterialsList() {
           product_name = product_name + Common.ConvertToString(display_products.length + 1, 3)
         }
         setModelProductTitle('Thêm vật tư')
-        setProduct({ ...product, "code": product_code, "name": product_name, "description": '', "manufactor": '', "origin": '', "status": 1 });
+        setProduct({ ...product, 
+          "code": product_code, 
+          "name": product_name, 
+          "description": '', 
+          "manufactor": '', 
+          "origin": '', 
+          "status": 1,
+          "unit": '',
+          "unit_to_kg": '',
+          "tk_co": '',
+          "tk_no": '' });
         setShowProductModel(true)
       }
     } else if (type === 2) {
@@ -184,7 +214,11 @@ function MaterialsList() {
         "description": selected_product.description,
         "manufactor": selected_product.manufactor,
         "origin": selected_product.origin,
-        "status": selected_product.status
+        "status": selected_product.status,
+        "unit": selected_product.unit,
+        "unit_to_kg": selected_product.unit_to_kg,
+        "tk_co": selected_product.tk_co,
+        "tk_no": selected_product.tk_no
       });
       setShowProductModel(true)
     } else if (type === 3) {
@@ -207,7 +241,11 @@ function MaterialsList() {
         "description": selected_product.description,
         "manufactor": selected_product.manufactor,
         "origin": selected_product.origin,
-        "status": selected_product.status
+        "status": selected_product.status,
+        "unit": selected_product.unit,
+        "unit_to_kg": selected_product.unit_to_kg,
+        "tk_co": selected_product.tk_co,
+        "tk_no": selected_product.tk_no
       });
       setShowProductModel(true)
     } else if (type === 4) {
@@ -230,7 +268,11 @@ function MaterialsList() {
         "description": selected_product.description,
         "manufactor": selected_product.manufactor,
         "origin": selected_product.origin,
-        "status": selected_product.status
+        "status": selected_product.status,
+        "unit": selected_product.unit,
+        "unit_to_kg": selected_product.unit_to_kg,
+        "tk_co": selected_product.tk_co,
+        "tk_no": selected_product.tk_no
       });
       setShowProductModel(true)
     }
@@ -257,7 +299,11 @@ function MaterialsList() {
         origin: product.origin,
         status: product.status,
         group_id: selected_id,
-        type: category_type
+        type: category_type,
+        unit: product.unit,
+        unit_to_kg: product.unit_to_kg,
+        tk_co: product.tk_co,
+        tk_no: product.tk_no
       }
       try {
         fetchWrapper.post(process.env.REACT_APP_API_URL + 'products/insert', body).then((data) => {
@@ -286,7 +332,11 @@ function MaterialsList() {
         manufactor: product.manufactor,
         origin: product.origin,
         status: product.status,
-        group_id: selected_id
+        group_id: selected_id,
+        unit: product.unit,
+        unit_to_kg: product.unit_to_kg,
+        tk_co: product.tk_co,
+        tk_no: product.tk_no
       }
       try {
         fetchWrapper.put(process.env.REACT_APP_API_URL + 'products/' + product.id + '/update', body).then((data) => {
@@ -376,7 +426,7 @@ function MaterialsList() {
         setAlertShow(true)
         return
       }
-      if(selectedProductGroup.parent_id === root_id){
+      if (selectedProductGroup.parent_id === root_id) {
         setAlertMessage('Không được xóa nhóm vật tư gốc')
         setAlertShow(true)
         return
@@ -467,7 +517,7 @@ function MaterialsList() {
       (product) => product.group_id === selected_id
     );
     setDisplayProducts(temp_products)
-    setSelectedProduct(null)    
+    setSelectedProduct(null)
   }, [products, selectedId])
 
 
@@ -488,7 +538,7 @@ function MaterialsList() {
       paddingLeft: 18,
       borderLeft: `1px dashed ${alpha(theme.palette.text.primary, 0.4)}`,
     },
-  }))((props) => <TreeItem {...props}  />);
+  }))((props) => <TreeItem {...props} />);
 
   const classes = useStyles();
   const handleSelect = (event, nodeId) => {
@@ -496,14 +546,14 @@ function MaterialsList() {
   };
 
   const renderTree = (nodes) => (
-    <StyledTreeItem  key={nodes.id.toString()} nodeId={nodes.id.toString()} label={nodes.name} onLabelClick={(event) => event.preventDefault()}>
+    <StyledTreeItem key={nodes.id.toString()} nodeId={nodes.id.toString()} label={nodes.name} onLabelClick={(event) => event.preventDefault()}>
       {Array.isArray(nodes.childs)
         ? nodes.childs.map((node) => renderTree(node))
         : null}
     </StyledTreeItem >
   );
 
-  return (    
+  return (
     <div>
       <div className="page-header">
         <h3 className="page-title"> Quản lý danh mục </h3>
@@ -522,7 +572,7 @@ function MaterialsList() {
                 </div>
                 <div className='clear-both'></div>
               </div>
-              <div className='tree-wrapper'>   
+              <div className='tree-wrapper'>
                 <style>{`
                   :root {        
                     --rct-item-height: 32px;
@@ -662,11 +712,31 @@ function MaterialsList() {
           <Form.Group className="row">
             <label htmlFor="manufactor" className="col-form-label col-sm-2">Nhà sản xuất</label>
             <div className="col-sm-4">
-              <Form.Control type="text" readOnly={[3, 4, 5].includes(modelEmpType)} name="manufactor" value={product.manufactor} onChange={handleProductChange} className="form-control" placeholder="" />              
+              <Form.Control type="text" readOnly={[3, 4, 5].includes(modelEmpType)} name="manufactor" value={product.manufactor} onChange={handleProductChange} className="form-control" placeholder="" />
             </div>
             <label htmlFor="origin" className="col-form-label col-sm-2">Xuất xứ</label>
             <div className="col-sm-4">
-              <Form.Control type="text" readOnly={[3, 4, 5].includes(modelEmpType)} name="origin" value={product.origin} onChange={handleProductChange} className="form-control" placeholder="" />              
+              <Form.Control type="text" readOnly={[3, 4, 5].includes(modelEmpType)} name="origin" value={product.origin} onChange={handleProductChange} className="form-control" placeholder="" />
+            </div>
+          </Form.Group>
+          <Form.Group className="row">
+            <label htmlFor="manufactor" className="col-form-label col-sm-2">Đơn vị tính</label>
+            <div className="col-sm-4">
+              <Form.Control type="text" readOnly={[3, 4, 5].includes(modelEmpType)} name="unit" value={product.unit} onChange={handleProductChange} className="form-control" placeholder="" />
+            </div>
+            <label htmlFor="origin" className="col-form-label col-sm-2">Tỷ trọng</label>
+            <div className="col-sm-4">
+              <Form.Control type="text" readOnly={[3, 4, 5].includes(modelEmpType)} name="unit_to_kg" value={product.unit_to_kg} onChange={handleProductChange} className="form-control" placeholder="" />
+            </div>
+          </Form.Group>
+          <Form.Group className="row">
+            <label htmlFor="manufactor" className="col-form-label col-sm-2">TK có</label>
+            <div className="col-sm-4">
+              <Form.Control type="number" step="1" readOnly={[3, 4, 5].includes(modelEmpType)} name="tk_co" value={product.tk_co} onChange={handleProductChange} className="form-control" placeholder="" />
+            </div>
+            <label htmlFor="origin" className="col-form-label col-sm-2">TK nợ</label>
+            <div className="col-sm-4">
+              <Form.Control type="number" step="1" readOnly={[3, 4, 5].includes(modelEmpType)} name="tk_no" value={product.tk_no} onChange={handleProductChange} className="form-control" placeholder="" />
             </div>
           </Form.Group>
           <Form.Group className="row">
@@ -682,7 +752,7 @@ function MaterialsList() {
             <div className="col-sm-10">
               <div className="form-check">
                 <label className="form-check-label text-muted">
-                  <input type="checkbox" className="form-check-input" name='status' checked={product.status} onChange={handleStatusChange}/>
+                  <input type="checkbox" className="form-check-input" name='status' checked={product.status} onChange={handleStatusChange} />
                   <i className="input-helper"></i>
                   Hoạt động
                 </label>

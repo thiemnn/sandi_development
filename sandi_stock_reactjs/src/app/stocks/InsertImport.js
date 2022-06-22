@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Form } from 'react-bootstrap';
-import Select from 'react-select';
 import { fetchWrapper } from '../../utils/fetch-wrapper';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
-import Box from '@material-ui/core/Box';
 import Modal from '../components/Modal';
 
 function Insert() {
@@ -12,20 +8,35 @@ function Insert() {
   //#region state manager  
 
   const [showStockGroupModel, setShowStockGroupModel] = useState(false);
-  const items = [{ full_name: '', position: '', mobile: '', email: '' }];
-  const materials = [{code: 'abc', name: 'abc'},{code: 'abc', name: 'abc'},{code: 'abc', name: 'abc'},{code: 'abc', name: 'abc'},{code: 'abc', name: 'abc'}];
+  const [items, setItems] = useState([]);
+  //const items = [{ code: 'adfsdsdfdf', name: 'adfasdfaddf' }];
   const [styles, setStyles] = useState(null);
   const [input_material_name, setInputMaterialName] = useState('');
   const [input_material_code, setInputMaterialCode] = useState('');
   const [products, setProducts] = useState([]);
   const [filter_products, setFilterProducts] = useState([]);
   //#endregion
-
-  //#region main process
-  // componentDidMount() {
-  //   console.log(this.props)
-  //   this.fetchGeneralCate()
-  // }
+  const addCommas = num => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  const removeNonNumeric = num => num.toString().replace(/[^0-9.]/g, "");
+  
+  function handleItemsChange(index, event) {
+    let items_copy = [...items];
+    let item = { ...items_copy[index] };
+    if (event.target.name === "quantity") {
+      const re = /^[0-9,]*\.?[0-9]?[0-9]?$/;
+      if (event.target.value === '' || re.test(event.target.value)) {
+        console.log(event.target.value)
+        item = { ...item, [event.target.name]: addCommas(removeNonNumeric(event.target.value)) };
+        //(1234.56789).toLocaleString('en', { maximumFractionDigits: 2 })
+        items_copy[index] = item;
+        setItems(items_copy)
+      }
+    } else {
+      item = { ...item, [event.target.name]: event.target.value };
+      items_copy[index] = item;
+      setItems(items_copy)
+    }
+  }
 
   function fetchGeneralCate() {
     try {
@@ -150,45 +161,28 @@ function Insert() {
   }
 
   useEffect(() => {
-    let elem = document.querySelector('#input_material_code');
-    let rect = elem.getBoundingClientRect();
-    setStyles({
-      position: 'absolute',
-      bottom: window.innerHeight - rect.top + 10,
-      left: rect.left
-    })
     const temp_products = products.filter(
       (product) => product.name.toLowerCase().includes(input_material_name.toLowerCase())
     );
     setFilterProducts(temp_products)
-    if(input_material_name != ''){
-      setShowStockGroupModel(true)
-    }
   }, [input_material_name])
 
   useEffect(() => {
-    let elem = document.querySelector('#input_material_code');
-    let rect = elem.getBoundingClientRect();
-    setStyles({
-      position: 'absolute',
-      bottom: window.innerHeight - rect.top + 10,
-      left: rect.left
-    })
     const temp_products = products.filter(
       (product) => product.code.toLowerCase().includes(input_material_code.toLowerCase())
     );
     setFilterProducts(temp_products)
-    if(input_material_code != ''){
-      setShowStockGroupModel(true)
-    }
   }, [input_material_code])
 
   useEffect(() => {
     fetchProducts();
   }, [])
 
-  function setSelectedProduct(product){
+  function setSelectedProduct(product) {
     console.log(product)
+    var temps = items;
+    temps.push({ code: product.code, name: product.name, unit: product.unit, unit_to_kg: product.unit_to_kg, tk_co: product.tk_co, tk_no: product.tk_no, quantity: ''});
+    setItems(temps);
     setShowStockGroupModel(false)
   }
 
@@ -206,6 +200,23 @@ function Insert() {
       console.error(error);
     }
   }
+
+  function onFocus() {    
+    let elem = document.querySelector('#input_material_code');
+    let rect = elem.getBoundingClientRect();
+    const position = window.pageYOffset;
+    setStyles({
+      position: 'absolute',
+      bottom: window.innerHeight - rect.top + 10 - position,
+      left: rect.left
+    })
+    setShowStockGroupModel(true)
+  }
+
+  function onBlur() {
+
+  }
+
   return (
     <div>
       <div className="page-header">
@@ -281,25 +292,44 @@ function Insert() {
                           <th style={{ width: '80px' }}> TK có </th>
                           <th style={{ width: '50px' }}> DVT </th>
                           <th style={{ width: '150px' }}> SL </th>
-                          <th style={{ width: '80px' }}> HS quy đổi </th>
-                          <th style={{ width: '150px' }}> SL quy đổi </th>
+                          <th style={{ width: '80px' }}> HSQĐ(kg) </th>
+                          <th style={{ width: '150px' }}> SLQĐ(kg) </th>
                           <th style={{ width: '150px' }}> Vị trí </th>
                           <th style={{ width: '150px' }}> Đơn giá </th>
                           <th style={{ width: '150px' }}> Thành tiền </th>
                         </tr>
                       </thead>
                       <tbody>
-                        {items.map(function (o, i) {
+                        {items.map(function (item, i) {
                           return (
                             <tr key={"item-" + i}>
                               <td className='center'>
                                 {i + 1}
                               </td>
                               <td className='relative'>
-                                <button type="button" className="btn btn-danger btn-icon line_inside_button" ><i className="mdi mdi-window-close"></i></button>{'abc'}
+                                <button type="button" className="btn btn-danger btn-icon line_inside_button" ><i className="mdi mdi-window-close"></i></button>{item.code}
                               </td>
                               <td className='relative'>
-                                <button type="button" className="btn btn-primary btn-icon line_inside_button"><i className="mdi mdi-plus"></i></button>{'abc'}
+                                {/* <button type="button" className="btn btn-primary btn-icon line_inside_button"><i className="mdi mdi-plus"></i></button> */}
+                                {item.name}
+                              </td>
+                              <td className='center'>
+                                {item.tk_no}
+                              </td>
+                              <td className='center'>
+                                {item.tk_co}
+                              </td>
+                              <td className='center'>
+                                {item.unit}
+                              </td>
+                              <td>
+                                <Form.Control type="text" name="quantity" value={item.quantity} onChange={(e) => handleItemsChange(i, e)} className="form-control" placeholder="" />
+                              </td>
+                              <td className='center'>
+                                {item.unit_to_kg}
+                              </td>
+                              <td  className='center'>
+                                {(Math.round(removeNonNumeric(item.quantity) * item.unit_to_kg * 100) / 100).toLocaleString('en', { maximumFractionDigits: 2 }) }
                               </td>
                               <td>
                                 <Form.Control type="text" className="form-control" placeholder="" />
@@ -308,25 +338,7 @@ function Insert() {
                                 <Form.Control type="text" className="form-control" placeholder="" />
                               </td>
                               <td>
-                                {'abc'}
-                              </td>
-                              <td>
-                                <Form.Control type="text" className="form-control" placeholder="" />
-                              </td>
-                              <td>
-                                {'abc'}
-                              </td>
-                              <td>
-                                <Form.Control type="text" className="form-control" placeholder="" />
-                              </td>
-                              <td>
-                                <Form.Control type="text" className="form-control" placeholder="" />
-                              </td>
-                              <td>
-                                <Form.Control type="text" className="form-control" placeholder="" />
-                              </td>
-                              <td>
-                                <Form.Control type="text" className="form-control" placeholder="" />
+                              {(1234.56789).toLocaleString('en', { maximumFractionDigits: 2 })}
                               </td>
                             </tr>
                           );
@@ -337,10 +349,24 @@ function Insert() {
 
                           </td>
                           <td>
-                            <Form.Control id="input_material_code" value={input_material_code} onChange={(e) => setInputMaterialCode(e.target.value)} type="text" className="form-control" placeholder="" />
+                            <Form.Control id="input_material_code"
+                              value={input_material_code}
+                              onFocus={() => onFocus()}
+                              onBlur={() => onBlur()}
+                              onChange={(e) => setInputMaterialCode(e.target.value)}
+                              type="text"
+                              className="form-control"
+                              placeholder="" />
                           </td>
                           <td>
-                            <Form.Control id="input_material_name" value={input_material_name} onChange={(e) => setInputMaterialName(e.target.value)} type="text" className="form-control" placeholder="" />
+                            <Form.Control id="input_material_name"
+                              value={input_material_name}
+                              onFocus={() => onFocus()}
+                              onBlur={() => onBlur()}
+                              onChange={(e) => setInputMaterialName(e.target.value)}
+                              type="text"
+                              className="form-control"
+                              placeholder="" />
                           </td>
                           <td>
                             {/* <button type="button" id='add_new_line' className="btn btn-primary btn-icon small_button" onClick={() => handleOpenStockModel()}><i className="mdi mdi-plus-box"></i></button> */}
@@ -401,7 +427,7 @@ function Insert() {
                       <td className='relative'>{product.code}</td>
                       <td className='relative'>{product.name}</td>
                     </tr>
-                  );                  
+                  );
                 })}
               </tbody>
             </table>
