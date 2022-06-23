@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { Form } from 'react-bootstrap';
 import { fetchWrapper } from '../../utils/fetch-wrapper';
 import Modal from '../components/Modal';
@@ -11,27 +11,29 @@ function Insert() {
   const [showPositionSelectModel, setShowPositionSelectModel] = useState(false);
   const [items, setItems] = useState([]);
   const [positions, setPositions] = useState([]);
-  const [selectPositionRow, setSelectPositionRow ]= useState([]);
+  const [selectPositionRow, setSelectPositionRow] = useState(-1);
   //const items = [{ code: 'adfsdsdfdf', name: 'adfasdfaddf' }];
   const [styles, setStyles] = useState(null);
   const [input_material_name, setInputMaterialName] = useState('');
   const [input_material_code, setInputMaterialCode] = useState('');
   const [products, setProducts] = useState([]);
   const [filter_products, setFilterProducts] = useState([]);
-  const [stock_transaction, setStockTransaction] = useState({ 
-    id: 0, 
-    transaction_number: "", 
-    stock_id: "", 
-    deliver_person: "", 
-    deliver_unit: "", 
-    deliver_address: "", 
-    explain: "", 
-    attach: "" 
+  const [stock_transaction, setStockTransaction] = useState({
+    id: 0,
+    transaction_number: "",
+    stock_id: "",
+    deliver_person: "",
+    deliver_unit: "",
+    deliver_address: "",
+    explain: "",
+    attach: ""
   });
   const handleStockTransactionChange = (event) => {
     event.persist();
     setStockTransaction({ ...stock_transaction, [event.target.name]: event.target.value });
   };
+  const wrapperRef = useRef(null);
+  const wrapperPositionRef = useRef(null);
   //#endregion
   const addCommas = num => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   const removeNonNumeric = num => num.toString().replace(/[^0-9.]/g, "");
@@ -72,6 +74,29 @@ function Insert() {
     fetchPositions();
   }, [])
 
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [selectPositionRow])
+
+  function handleClickOutside(event) {
+    if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+      let input_material_code = document.querySelector('#input_material_code');
+      let input_material_name = document.querySelector('#input_material_name');
+      if (!input_material_code.contains(event.target) && !input_material_name.contains(event.target)) {
+        setShowMaterialSelectModel(false)
+      }
+    }
+    if (selectPositionRow >= 0 && wrapperPositionRef.current && !wrapperPositionRef.current.contains(event.target)) {
+      let input_position = document.querySelector('#position_' + selectPositionRow);
+      if (!input_position.contains(event.target)) {
+        setShowPositionSelectModel(false)
+      }
+    }
+  }
+
   function setSelectedProduct(product) {
     var temps = items;
     temps.push({
@@ -111,7 +136,6 @@ function Insert() {
       fetchWrapper.get(process.env.REACT_APP_API_URL + 'stock_shelfs/').then((data) => {
         if (data.success) {
           setPositions(data.data)
-          console.log(data.data)
         } else {
           console.log(data)
         }
@@ -133,11 +157,7 @@ function Insert() {
     setShowMaterialSelectModel(true)
   }
 
-  function onBlur() {
-
-  }
-
-  function onPositionFocus(index, event){    
+  function onPositionFocus(index, event) {
     let rect = event.target.getBoundingClientRect();
     const position = window.pageYOffset;
     setStyles({
@@ -152,22 +172,19 @@ function Insert() {
   function setSelectedPosition(position) {
     let items_copy = [...items];
     let item = { ...items_copy[selectPositionRow] };
-    console.log(item)
     item = { ...item, 'position': position.code };
-    console.log(item)
     items_copy[selectPositionRow] = item;
     setItems(items_copy)
-
     setShowPositionSelectModel(false)
     setInputMaterialCode('')
     setInputMaterialName('')
   }
 
-  function handlePositionChange(i, e){
+  function handlePositionChange(i, e) {
     e.persist();
   }
 
-  function handleSaveStockTransaction(){
+  function handleSaveStockTransaction() {
     console.log(stock_transaction)
   }
 
@@ -286,7 +303,15 @@ function Insert() {
                                 {(Math.round(removeNonNumeric(item.quantity) * item.unit_to_kg * 100) / 100).toLocaleString('en', { maximumFractionDigits: 2 })}
                               </td>
                               <td>
-                                <Form.Control type="text" value={item.position} onFocus={(event) => onPositionFocus(i, event)} onChange={(e) => handlePositionChange(i, e)} className="form-control" placeholder="" />
+                                <Form.Control
+                                  id={"position_" + i}
+                                  type="text"
+                                  autoComplete="off"
+                                  value={item.position}
+                                  onFocus={(event) => onPositionFocus(i, event)}
+                                  onChange={(e) => handlePositionChange(i, e)}
+                                  className="form-control"
+                                  placeholder="" />
                               </td>
                               <td className='right'>
                                 <Form.Control type="text" name="price" value={item.price} onChange={(e) => handleItemsChange(i, e)} className="form-control right" placeholder="" />
@@ -304,22 +329,24 @@ function Insert() {
                           </td>
                           <td>
                             <Form.Control id="input_material_code"
+                              name='input_material_code'
                               value={input_material_code}
                               onFocus={() => onFocus()}
-                              onBlur={() => onBlur()}
                               onChange={(e) => setInputMaterialCode(e.target.value)}
                               type="text"
                               className="form-control"
+                              autoComplete="off"
                               placeholder="" />
                           </td>
                           <td>
                             <Form.Control id="input_material_name"
+                              name='input_material_name'
                               value={input_material_name}
                               onFocus={() => onFocus()}
-                              onBlur={() => onBlur()}
                               onChange={(e) => setInputMaterialName(e.target.value)}
                               type="text"
                               className="form-control"
+                              autoComplete="off"
                               placeholder="" />
                           </td>
                           <td>
@@ -359,64 +386,70 @@ function Insert() {
           </div>
         </div>
       </div>
-      <Modal showOverlay={false} style={styles} size={'md'} show={showMaterialSelectModel} onClose={() => { setShowMaterialSelectModel(false) }}>
-        <Modal.Header>
-          <Modal.Title>
-            Chọn vật tư
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="table-responsive" style={{ maxHeight: '250px' }}>
-            <table className="table table-bordered table-hover selectable inside_table">
-              <thead>
-                <tr>
-                  <th style={{ width: '250px' }}> Mã VT </th>
-                  <th style={{ width: '450px' }}> Tên VT </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filter_products.map(function (product, i) {
-                  return (
-                    <tr key={"item-" + i} onClick={() => setSelectedProduct(product)}>
-                      <td className='relative'>{product.code}</td>
-                      <td className='relative'>{product.name}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </Modal.Body>
-      </Modal>
-      <Modal showOverlay={false} style={styles} size={'md'} show={showPositionSelectModel} onClose={() => { setShowPositionSelectModel(false) }}>
-        <Modal.Header>
-          <Modal.Title>
-            Chọn vị trí kho
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="table-responsive" style={{ maxHeight: '250px' }}>
-            <table className="table table-bordered table-hover selectable inside_table">
-              <thead>
-                <tr>
-                  <th style={{ width: '250px' }}> Mã kệ </th>
-                  <th style={{ width: '450px' }}> Tên kệ </th>
-                </tr>
-              </thead>
-              <tbody>
-                {positions.map(function (position, i) {
-                  return (
-                    <tr key={"item-" + i} onClick={() => setSelectedPosition(position)}>
-                      <td className='relative'>{position.code}</td>
-                      <td className='relative'>{position.name}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </Modal.Body>
-      </Modal>
+      <div ref={wrapperRef}>
+        <Modal showOverlay={false} style={styles} size={'md'} show={showMaterialSelectModel} onClose={() => { setShowMaterialSelectModel(false) }}>
+          <Modal.Header>
+            <Modal.Title>
+              Chọn vật tư
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="table-responsive" style={{ maxHeight: '250px' }}>
+              <table className="table table-bordered table-hover selectable inside_table">
+                <thead>
+                  <tr>
+                    <th style={{ width: '250px' }}> Mã VT </th>
+                    <th style={{ width: '450px' }}> Tên VT </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filter_products.map(function (product, i) {
+                    return (
+                      <tr key={"item-" + i} onClick={() => setSelectedProduct(product)}>
+                        <td className='relative'>{product.code}</td>
+                        <td className='relative'>{product.name}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </Modal.Body>
+        </Modal>
+      </div>
+
+      <div ref={wrapperPositionRef}>
+        <Modal showOverlay={false} style={styles} size={'md'} show={showPositionSelectModel} onClose={() => { setShowPositionSelectModel(false) }}>
+          <Modal.Header>
+            <Modal.Title>
+              Chọn vị trí kho
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="table-responsive" style={{ maxHeight: '250px' }}>
+              <table className="table table-bordered table-hover selectable inside_table">
+                <thead>
+                  <tr>
+                    <th style={{ width: '250px' }}> Mã kệ </th>
+                    <th style={{ width: '450px' }}> Tên kệ </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {positions.map(function (position, i) {
+                    return (
+                      <tr key={"item-" + i} onClick={() => setSelectedPosition(position)}>
+                        <td className='relative'>{position.code}</td>
+                        <td className='relative'>{position.name}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </Modal.Body>
+        </Modal>
+      </div>
+
     </div>
   )
 }
