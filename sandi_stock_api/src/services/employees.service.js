@@ -63,9 +63,22 @@ const delete_item = async (id) =>{
     }  
 }
 
+const getAll = async () =>{
+    try {
+        const con = await db.getConnection()
+        const customers = await con.query(`select *, full_name as name from m_employee`)
+        await con.end()    
+        return customers
+    } catch (e) {
+        console.log("can't query all m_employee");
+        return null;  
+    }  
+}
+
 module.exports = {
     insert,
     update,
     update_password,
-    delete_item
+    delete_item,
+    getAll
 };

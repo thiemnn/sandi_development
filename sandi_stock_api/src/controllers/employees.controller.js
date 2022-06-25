@@ -21,9 +21,15 @@ const delete_item = async (req, res, next) => {
     return responseHelper.successWithData(res, 'Update record successfully', response)
 }
 
+const getAll = async(req, res) => {
+    var response = await employeesService.getAll();
+    return responseHelper.successWithData(res, 'Success With Data', response)
+}
+
 module.exports = {
     insert,
     update,
     update_password,
-    delete_item
+    delete_item,
+    getAll
 };

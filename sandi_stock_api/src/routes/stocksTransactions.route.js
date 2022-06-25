@@ -30,4 +30,10 @@ router.route('/:_id/update')
 router.route('/insert')
     .post(authenToken, stocksTransactionsController.insert);
 
+router.route('/')
+    .get(authenToken, stocksTransactionsController.getAll);
+
+router.route('/:_id')
+    .get(authenToken, stocksTransactionsController.get);
+
 module.exports = router;

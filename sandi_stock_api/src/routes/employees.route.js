@@ -36,4 +36,7 @@ router.route('/insert')
 router.route('/:_id/delete')
     .delete(authenToken, employeesController.delete_item);
 
+router.route('/')
+    .get(authenToken, employeesController.getAll);
+
 module.exports = router;

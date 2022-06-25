@@ -33,4 +33,7 @@ router.route('/insert')
 router.route('/:_id/delete')
     .delete(authenToken, stocksController.delete_item);
 
+router.route('/')
+    .get(authenToken, stocksController.getAll);
+
 module.exports = router;

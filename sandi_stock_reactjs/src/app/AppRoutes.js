@@ -28,6 +28,9 @@ const ProductsList = lazy(() => import('./categories/ProductsList'));
 const StocksList = lazy(() => import('./stocks/List'));
 const StocksLayout = lazy(() => import('./stocks/Layout'));
 const StocksInsertImport = lazy(() => import('./stocks/InsertImport'));
+const StocksListImport = lazy(() => import('./stocks/ListImport'));
+const StocksViewImport = lazy(() => import('./stocks/ViewImport'));
+const StocksEditImport = lazy(() => import('./stocks/EditImport'));
 
 const BasicTable = lazy(() => import('./tables/BasicTable'));
 
@@ -71,6 +74,9 @@ class AppRoutes extends Component {
           <Route path="/stocks/list" component={ StocksList } />
           <Route path="/stocks/layout/:id" component={ StocksLayout } />
           <Route path="/stocks/insertImport" component={ StocksInsertImport } />
+          <Route path="/stocks/listImport" component={ StocksListImport } />
+          <Route path="/stocks/viewImport/:id" component={ StocksViewImport } />
+          <Route path="/stocks/editImport/:id" component={ StocksEditImport } />
 
           <Route path="/tables/basic-table" component={ BasicTable } />
 
