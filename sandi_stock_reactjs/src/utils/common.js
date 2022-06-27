@@ -42,10 +42,11 @@ class Common {
         return found ? found.label : ''
     }
 
-    static convertStatus(status) {
+    static convertStatusImportRequest(status) {
         const statusList = [
-            { value: 2, label: "Đã nhập" },
-            { value: 1, label: "Chờ nhập" },
+            { value: 1, label: "Lưu nháp" },
+            { value: 2, label: "Xác nhận" },
+            { value: 3, label: "Đã tạo PNK" },
             { value: -1, label: "Hủy bỏ" }
         ]
 

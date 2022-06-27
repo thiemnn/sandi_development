@@ -174,6 +174,7 @@ class Sidebar extends Component {
             <Collapse in={ this.state.stocksOpen }>
               <ul className="nav flex-column sub-menu">
                 <li className="nav-item"> <Link className={ this.isPathActive('/stocks/list') ? 'nav-link active' : 'nav-link' } to="/stocks/list">Danh sách kho</Link></li>
+                <li className="nav-item"> <Link className={ this.isPathActive('/stocks/listImportRequest') ? 'nav-link active' : 'nav-link' } to="/stocks/listImportRequest">Phiếu đề nghị NK</Link></li>
                 <li className="nav-item"> <Link className={ this.isPathActive('/stocks/listImport') ? 'nav-link active' : 'nav-link' } to="/stocks/listImport">Phiếu nhập kho</Link></li>
               </ul>
             </Collapse>

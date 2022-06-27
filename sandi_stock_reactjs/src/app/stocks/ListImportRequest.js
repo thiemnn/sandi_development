@@ -14,25 +14,34 @@ function List() {
   let history = useHistory();
 
   function handleInsert() {
-    history.push("/stocks/insertImport");
+    history.push("/stocks/insertImportRequest");
   }
 
   function handleView() {
     if (!selected_import) {
-      setAlertMessage('Vui lòng chọn PNK để xem')
+      setAlertMessage('Vui lòng chọn phiếu đề nghị NK để xem')
       setAlertShow(true)
       return;
     }
-    history.push("/stocks/viewImport/" + selected_import.id);
+    history.push("/stocks/viewImportRequest/" + selected_import.id);
   }
 
   function handleEdit() {
     if (!selected_import) {
-      setAlertMessage('Vui lòng chọn PNK để sửa')
+      setAlertMessage('Vui lòng chọn phiếu đề nghị NK để sửa')
       setAlertShow(true)
       return;
     }
-    history.push("/stocks/editImport/" + selected_import.id);
+    history.push("/stocks/editImportRequest/" + selected_import.id);
+  }
+
+  function handleCreateImport(){
+    if (!selected_import) {
+      setAlertMessage('Vui lòng chọn phiếu đề nghị NK để tạo PNK')
+      setAlertShow(true)
+      return;
+    }
+    history.push("/stocks/createImport/" + selected_import.id);
   }
 
   useEffect(() => {
@@ -40,7 +49,7 @@ function List() {
   }, [])
 
   function fetchStockTransactions() {
-    fetchWrapper.get(process.env.REACT_APP_API_URL + 'stocks_transactions').then((data) => {
+    fetchWrapper.get(process.env.REACT_APP_API_URL + 'stocks_transaction_requests').then((data) => {
       if (data.success) {
         setStockTransactions(data.data)
       }
@@ -50,11 +59,12 @@ function List() {
   return (
     <div>
       <div className="page-header">
-        <h3 className="page-title"> Danh sách Phiếu Nhập Kho </h3>
+        <h3 className="page-title"> Danh sách Phiếu đề nghị NK </h3>
         <div className='fl-right mb-10'>
-          <button type="button" className="btn btn-primary btn-icon small_button hidden" title="Thêm Phiếu Nhập Kho" onClick={() => handleInsert()}><i className="mdi mdi-plus-box"></i></button>
+          <button type="button" className="btn btn-primary btn-icon small_button" title="Thêm Phiếu Nhập Kho" onClick={() => handleInsert()}><i className="mdi mdi-plus-box"></i></button>
           <button type="button" className="btn btn-warning btn-icon small_button ml-10" title="Thêm Phiếu Nhập Kho" onClick={() => handleView()}><i className="mdi mdi-eye"></i></button>
-          <button type="button" className="btn btn-success btn-icon small_button ml-10" title="Sửa Phiếu Nhập Kho" onClick={() => handleEdit()}><i className="mdi mdi-pencil"></i></button>          
+          <button type="button" className="btn btn-success btn-icon small_button ml-10" title="Sửa Phiếu Nhập Kho" onClick={() => handleEdit()}><i className="mdi mdi-pencil"></i></button>
+          <button type="button" className="btn btn-info btn-icon small_button ml-10" title="Tạo Nhập Kho" onClick={() => handleCreateImport()}>Tạo PNK</button>                    
         </div>
       </div>
       <div className="row">

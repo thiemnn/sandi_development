@@ -5,8 +5,9 @@ import Modal from '../components/Modal';
 import Alert from '../components/Alert';
 import Select from 'react-select';
 import { useHistory } from "react-router-dom";
+import Common from '../../utils/common';
 
-function Insert() {
+function Insert(props) {
 
   //#region state manager  
   let history = useHistory();
@@ -16,7 +17,7 @@ function Insert() {
   const [showProviderSelectModel, setShowProviderSelectModel] = useState(false);
   const [showEmployeeSelectModel, setShowEmployeeSelectModel] = useState(false);
   const [items, setItems] = useState([]);
-  
+
   //all the categories in form
   const [customers, setCustomers] = useState([]);
   const [providers, setProviders] = useState([]);
@@ -24,7 +25,8 @@ function Insert() {
   const [products, setProducts] = useState([]);
   const [stocks, setStocks] = useState([]);
 
-  //const items = [{ code: 'adfsdsdfdf', name: 'adfasdfaddf' }];
+  const [selected_status, setSelectedStatus] = useState({value: "1", label: "Nháp"});
+
   const [styles, setStyles] = useState(null);
   const [input_material_name, setInputMaterialName] = useState('');
   const [input_material_code, setInputMaterialCode] = useState('');
@@ -41,7 +43,7 @@ function Insert() {
   const defaultDateValue = today.toISOString().split('T')[0];
   const [stock_transaction, setStockTransaction] = useState({
     id: 0,
-    transaction_number: "DNNK00012",
+    transaction_number: "PNK220624001",
     transaction_type: 5,
     stock_id: "",
     stock_name: "",
@@ -82,6 +84,59 @@ function Insert() {
       item = { ...item, [event.target.name]: event.target.value };
       items_copy[index] = item;
       setItems(items_copy)
+    }
+  }
+
+  useEffect(() => {
+    let transaction_id = parseInt(props.match.params.id);
+    console.log(transaction_id)
+    fetchTransactions(transaction_id)
+  }, [])
+
+  function fetchTransactions(transaction_id) {
+    try {
+      fetchWrapper.get(process.env.REACT_APP_API_URL + 'stocks_transaction_requests/' + transaction_id).then((data) => {
+        if (data.success) {
+          let transaction = data.data.transaction
+          let transaction_details = data.data.transaction_details
+          const today = new Date(transaction.transaction_date);
+          const defaultDateValue = today.toISOString().split('T')[0];
+          setStockTransaction({
+            ...stock_transaction,
+            "id": transaction_id,
+            "transaction_number": transaction.transaction_number,
+            "transaction_type": transaction.transaction_type,
+            "stock_id": transaction.stock_id,
+            "stock_name": transaction.stock_name,
+            "deliver_unit_code": transaction.deliver_unit_code,
+            "deliver_unit_name": transaction.deliver_unit_name,
+            "deliver_person": transaction.deliver_person,
+            "transaction_date": defaultDateValue,
+            "explain": transaction.transaction_explain,
+            "attach": transaction.transaction_attach,
+            "transaction_status": transaction.status
+          });
+          setSelectedStatus({ value: transaction.status, label: Common.convertStatusImportRequest(transaction.status) })
+          var temps = [];
+          transaction_details.forEach(element => {
+            temps.push({
+              index: temps[temps.length - 1] ? temps[temps.length - 1].index + 1 : 1,
+              code: element.material_code,
+              name: element.material_name,
+              unit: element.unit,
+              unit_to_kg: element.unit_to_kg,
+              tk_co: element.tk_co,
+              tk_no: element.tk_no,
+              quantity: addCommas(removeNonNumeric(element.quantity))
+            });
+          });
+          setItems(temps);
+        } else {
+          console.log(data)
+        }
+      })
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -148,17 +203,17 @@ function Insert() {
     }
   }
 
-  function setSelectedCustomer(customer){
+  function setSelectedCustomer(customer) {
     setStockTransaction({ ...stock_transaction, "deliver_unit_code": customer.code, "deliver_unit_name": customer.name });
     setShowCustomerSelectModel(false);
   }
 
-  function setSelectedProvider(provider){
+  function setSelectedProvider(provider) {
     setStockTransaction({ ...stock_transaction, "deliver_unit_code": provider.code, "deliver_unit_name": provider.name });
     setShowProviderSelectModel(false);
   }
 
-  function setSelectedEmployee(employee){
+  function setSelectedEmployee(employee) {
     setStockTransaction({ ...stock_transaction, "deliver_unit_code": employee.code, "deliver_unit_name": employee.name });
     setShowEmployeeSelectModel(false);
   }
@@ -270,7 +325,7 @@ function Insert() {
     })
     setShowMaterialSelectModel(true)
   }
-  
+
   function onDeliverUnitFocus(input_id, left_type) {
     let elem = document.querySelector('#' + input_id);
     let rect = elem.getBoundingClientRect();
@@ -288,15 +343,16 @@ function Insert() {
         right: window.innerWidth - rect.right
       })
     }
-    if(stock_transaction.transaction_type === 1 || stock_transaction.transaction_type === 5){
+    
+    if (stock_transaction.transaction_type === 1 || stock_transaction.transaction_type === 5) {
       setShowEmployeeSelectModel(true)
     }
-    if(stock_transaction.transaction_type === 3 || stock_transaction.transaction_type === 4){
+    if (stock_transaction.transaction_type === 3 || stock_transaction.transaction_type === 4) {
       setShowCustomerSelectModel(true)
     }
-    if(stock_transaction.transaction_type === 2){
+    if (stock_transaction.transaction_type === 2) {
       setShowProviderSelectModel(true)
-    }    
+    }
   }
 
   function onStockFocus() {
@@ -311,21 +367,21 @@ function Insert() {
     setShowStockSelectModel(true)
   }
 
-  function setTransactionType(e){
+  function setTransactionType(e) {
     setStockTransaction({ ...stock_transaction, "transaction_type": e.value, "deliver_unit_code": "", "deliver_unit_name": "" });
-    if(e.value === 1 || e.value === 5){
+    if (e.value === 1 || e.value === 5) {
       setDeliverCodeLabel('Mã nhân viên')
       setDeliverNameLabel('Tên nhân viên giao hàng')
     }
-    if(e.value === 3 || e.value === 4){
+    if (e.value === 3 || e.value === 4) {
       setDeliverCodeLabel('Mã khách hàng')
       setDeliverNameLabel('Tên khách hàng')
     }
-    if(e.value === 2){
+    if (e.value === 2) {
       setDeliverCodeLabel('Mã đối tác')
       setDeliverNameLabel('Tên đối tác')
     }
-  }  
+  }
 
   function setTransactionStatus(e){
     setStockTransaction({ ...stock_transaction, "transaction_status": e.value });
@@ -346,7 +402,7 @@ function Insert() {
       materials: items
     }
     try {
-      fetchWrapper.post(process.env.REACT_APP_API_URL + 'stocks_transaction_requests/insert', body).then((data) => {
+      fetchWrapper.put(process.env.REACT_APP_API_URL + 'stocks_transaction_requests/' + stock_transaction.id + '/update', body).then((data) => {
         if (data.success) {
           history.push("/stocks/listImportRequest");
         } else {
@@ -362,6 +418,7 @@ function Insert() {
   const status = [
     { value: 1, label: "Lưu nháp" },
     { value: 2, label: "Xác nhận" },
+    { value: -1, label: "Hủy bỏ" }
   ]
 
   const types = [
@@ -372,7 +429,7 @@ function Insert() {
     { value: 5, label: "Khác" }
   ]
 
-  function handleReturn(){
+  function handleReturn() {
     history.push('/stocks/listImportRequest')
   }
 
@@ -386,7 +443,7 @@ function Insert() {
   return (
     <div>
       <div className="page-header">
-        <h3 className="page-title"> Thêm mới phiếu đề nghị nhập kho</h3>
+        <h3 className="page-title"> Sửa phiếu đề nghị nhập kho</h3>
         <div>
           <button type="button" onClick={() => handleSaveStockTransaction()} className="btn btn-primary btn-icon small_button" style={{ margin: '0px 10px' }} ><i className="mdi mdi-content-save"></i></button>
           <button type="button" className="btn btn-warning btn-icon small_button" onClick={handleReturn}><i className="mdi mdi-keyboard-return"></i></button>
@@ -411,7 +468,8 @@ function Insert() {
                   <label htmlFor="transaction_type" className="col-sm-2 col-form-label">Loại nhập kho</label>
                   <div className="col-sm-4">
                     <Select
-                      defaultValue={types[4]}
+                      defaultValue={types[4]}                      
+                      value={types.filter((item) => item.value === stock_transaction.transaction_type)[0]}
                       className="basic-single"
                       classNamePrefix="select"
                       isDisabled={false}
@@ -420,15 +478,15 @@ function Insert() {
                       isRtl={false}
                       isSearchable={true}
                       name="transaction_type"
-                      options={types}                      
+                      options={types}
                       onChange={e => setTransactionType(e)}
                     />
-                  </div>                  
+                  </div>
                   <label htmlFor="field" className="col-sm-2 col-form-label">Nhập hàng tại kho</label>
                   <div className="col-sm-4">
                     <FormControl type='hidden' id="stock_id" name="stock_id" value={stock_transaction.stock_id} />
                     <Form.Control type="text" autoComplete="off" id="stock_name" name="stock_name" value={stock_transaction.stock_name} onChange={handleStockTransactionChange} onFocus={() => onStockFocus()} className="form-control" placeholder="" />
-                  </div>                  
+                  </div>
                 </Form.Group>
                 <Form.Group className="row">
                   <label htmlFor="deliver_unit_code" className="col-sm-2 col-form-label">{deliver_code_label}</label>
@@ -448,13 +506,13 @@ function Insert() {
                         <Form.Control type="text" autoComplete="off" name="deliver_person" value={stock_transaction.deliver_person} onChange={handleStockTransactionChange} className="form-control" placeholder="" />
                       </div>
                     </>
-                  )}                  
+                  )}
                   <label htmlFor="explain" className="col-sm-2 col-form-label">Diễn giải</label>
                   <div className="col-sm-4">
                     <Form.Control type="text" autoComplete="off" name="explain" value={stock_transaction.explain} onChange={handleStockTransactionChange} className="form-control" placeholder="" />
                   </div>
                 </Form.Group>
-                <Form.Group className="row">                  
+                <Form.Group className="row">
                   <label htmlFor="attach" className="col-sm-2 col-form-label">Kèm theo</label>
                   <div className="col-sm-4">
                     <Form.Control type="text" autoComplete="off" name="attach" value={stock_transaction.attach} onChange={handleStockTransactionChange} className="form-control" placeholder="" />
@@ -462,7 +520,8 @@ function Insert() {
                   <label htmlFor="explain" className="col-sm-2 col-form-label">Trạng thái</label>
                   <div className="col-sm-4">
                     <Select
-                      defaultValue={status[0]}
+                      defaultValue={status[1]}
+                      value={status.filter((item) => item.value === stock_transaction.transaction_status)[0]}
                       className="basic-single"
                       classNamePrefix="select"
                       isDisabled={false}
@@ -498,7 +557,7 @@ function Insert() {
                           <th style={{ width: '80px' }}> TK nợ </th>
                           <th style={{ width: '80px' }}> TK có </th>
                           <th style={{ width: '50px' }}> DVT </th>
-                          <th style={{ width: '150px' }}> SL đề xuất </th>
+                          <th style={{ width: '150px' }}> SL đề xuất</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -525,7 +584,7 @@ function Insert() {
                               </td>
                               <td>
                                 <Form.Control type="text" name="quantity" value={item.quantity} onChange={(e) => handleItemsChange(i, e)} className="form-control right" placeholder="" />
-                              </td>                           
+                              </td>
                             </tr>
                           );
                         })}

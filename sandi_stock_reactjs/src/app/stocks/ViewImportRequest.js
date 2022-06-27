@@ -19,12 +19,12 @@ function View(props) {
   }, [])
 
   function handleReturn(){
-    history.push('/stocks/listImport')
+    history.push('/stocks/listImportRequest')
   }
 
   function fetchTransactions(transaction_id) {
     try {
-      fetchWrapper.get(process.env.REACT_APP_API_URL + 'stocks_transactions/' + transaction_id).then((data) => {
+      fetchWrapper.get(process.env.REACT_APP_API_URL + 'stocks_transaction_requests/' + transaction_id).then((data) => {
         if (data.success) {
           console.log(data.data)
           setTransaction(data.data.transaction)
@@ -54,9 +54,8 @@ function View(props) {
   return (
     <div>
       <div className="page-header">
-        <h3 className="page-title"> Phiếu nhập kho {transaction.transaction_number}</h3>
+        <h3 className="page-title"> Thông tin phiếu đề nghị nhập kho</h3>
         <div>
-          <button type="button" className="btn btn-primary btn-icon small_button" style={{ margin: '0px 10px' }} ><i className="mdi mdi-content-save"></i></button>
           <button type="button" className="btn btn-warning btn-icon small_button"  onClick={handleReturn}><i className="mdi mdi-keyboard-return"></i></button>
         </div>
       </div>
@@ -142,12 +141,7 @@ function View(props) {
                           <th style={{ width: '80px' }}> TK nợ </th>
                           <th style={{ width: '80px' }}> TK có </th>
                           <th style={{ width: '50px' }}> DVT </th>
-                          <th style={{ width: '150px' }}> SL </th>
-                          <th style={{ width: '80px' }}> HSQĐ(kg) </th>
-                          <th style={{ width: '150px' }}> SLQĐ(kg) </th>
-                          <th style={{ width: '150px' }}> Vị trí </th>
-                          <th style={{ width: '150px' }}> Đơn giá </th>
-                          <th style={{ width: '150px' }}> Thành tiền </th>
+                          <th style={{ width: '150px' }}> SL đề xuất</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -174,22 +168,7 @@ function View(props) {
                               </td>
                               <td className='right'>
                               {item.quantity}
-                              </td>
-                              <td className='right'>
-                                {item.unit_to_kg}
-                              </td>
-                              <td className='right'>
-                                {(Math.round(Common.removeNonNumeric(item.quantity) * item.unit_to_kg * 100) / 100).toLocaleString('en', { maximumFractionDigits: 2 })}
-                              </td>
-                              <td className='center'>
-                              {item.position_code}
-                              </td>
-                              <td className='right'>
-                              {item.price}
-                              </td>
-                              <td className='right'>
-                                {(Math.round(Common.removeNonNumeric(item.quantity) * Common.removeNonNumeric(item.price) * 100) / 100).toLocaleString('en', { maximumFractionDigits: 2 })}
-                              </td>
+                              </td>                                                          
                             </tr>
                           );
                         })}

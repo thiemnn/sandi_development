@@ -32,6 +32,12 @@ const StocksListImport = lazy(() => import('./stocks/ListImport'));
 const StocksViewImport = lazy(() => import('./stocks/ViewImport'));
 const StocksEditImport = lazy(() => import('./stocks/EditImport'));
 
+const StocksInsertImportRequest = lazy(() => import('./stocks/InsertImportRequest'));
+const StocksListImportRequest = lazy(() => import('./stocks/ListImportRequest'));
+const StocksViewImportRequest = lazy(() => import('./stocks/ViewImportRequest'));
+const StocksEditImportRequest = lazy(() => import('./stocks/EditImportRequest'));
+const StocksCreateImport = lazy(() => import('./stocks/CreateImport'));
+
 const BasicTable = lazy(() => import('./tables/BasicTable'));
 
 const Mdi = lazy(() => import('./icons/Mdi'));
@@ -73,10 +79,17 @@ class AppRoutes extends Component {
           <Route path="/categories/products" component={ ProductsList } />
           <Route path="/stocks/list" component={ StocksList } />
           <Route path="/stocks/layout/:id" component={ StocksLayout } />
+
           <Route path="/stocks/insertImport" component={ StocksInsertImport } />
           <Route path="/stocks/listImport" component={ StocksListImport } />
           <Route path="/stocks/viewImport/:id" component={ StocksViewImport } />
           <Route path="/stocks/editImport/:id" component={ StocksEditImport } />
+
+          <Route path="/stocks/insertImportRequest" component={ StocksInsertImportRequest } />
+          <Route path="/stocks/listImportRequest" component={ StocksListImportRequest } />
+          <Route path="/stocks/viewImportRequest/:id" component={ StocksViewImportRequest } />
+          <Route path="/stocks/editImportRequest/:id" component={ StocksEditImportRequest } />
+          <Route path="/stocks/createImport/:id" component={ StocksCreateImport } />
 
           <Route path="/tables/basic-table" component={ BasicTable } />
 
