@@ -122,6 +122,7 @@ function Insert(props) {
           var temps = [];
           transaction_details.forEach(element => {
             temps.push({
+              index: temps[temps.length - 1] ? temps[temps.length - 1].index + 1 : 1,
               code: element.material_code,
               name: element.material_name,
               unit: element.unit,
@@ -231,6 +232,7 @@ function Insert(props) {
   function setSelectedProduct(product) {
     var temps = items;
     temps.push({
+      index: items[items.length - 1] ? items[items.length - 1].index + 1 : 1,
       code: product.code,
       name: product.name,
       unit: product.unit,
@@ -469,6 +471,13 @@ function Insert(props) {
     history.push('/stocks/listImport')
   }
 
+  function handleRemove(item){
+    let filters = items.filter((element) => {
+      return element.index !== item.index;
+    });
+    setItems(filters)
+  }
+
   return (
     <div>
       <div className="page-header">
@@ -599,10 +608,9 @@ function Insert(props) {
                                 {i + 1}
                               </td>
                               <td className='relative'>
-                                <button type="button" className="btn btn-danger btn-icon line_inside_button" ><i className="mdi mdi-window-close"></i></button>{item.code}
+                                <button type="button" className="btn btn-danger btn-icon line_inside_button" onClick={() => handleRemove(item)}><i className="mdi mdi-window-close"></i></button>{item.code}
                               </td>
                               <td className='relative'>
-                                {/* <button type="button" className="btn btn-primary btn-icon line_inside_button"><i className="mdi mdi-plus"></i></button> */}
                                 {item.name}
                               </td>
                               <td className='center'>

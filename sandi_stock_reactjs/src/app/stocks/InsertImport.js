@@ -176,6 +176,7 @@ function Insert() {
   function setSelectedProduct(product) {
     var temps = items;
     temps.push({
+      index: items[items.length - 1] ? items[items.length - 1].index + 1 : 1,
       code: product.code,
       name: product.name,
       unit: product.unit,
@@ -401,7 +402,7 @@ function Insert() {
     { value: 1, label: "Chờ nhập" },
     { value: -1, label: "Hủy bỏ" }
   ]
-  
+
   const types = [
     { value: 1, label: "Thành phẩm sản xuất" },
     { value: 2, label: "Mua hàng" },
@@ -412,6 +413,13 @@ function Insert() {
 
   function handleReturn(){
     history.push('/stocks/listImport')
+  }
+
+  function handleRemove(item){
+    let filters = items.filter((element) => {
+      return element.index !== item.index;
+    });
+    setItems(filters)
   }
 
   return (
@@ -544,10 +552,9 @@ function Insert() {
                                 {i + 1}
                               </td>
                               <td className='relative'>
-                                <button type="button" className="btn btn-danger btn-icon line_inside_button" ><i className="mdi mdi-window-close"></i></button>{item.code}
+                                <button type="button" className="btn btn-danger btn-icon line_inside_button" onClick={() => handleRemove(item)}><i className="mdi mdi-window-close"></i></button>{item.code}
                               </td>
                               <td className='relative'>
-                                {/* <button type="button" className="btn btn-primary btn-icon line_inside_button"><i className="mdi mdi-plus"></i></button> */}
                                 {item.name}
                               </td>
                               <td className='center'>
