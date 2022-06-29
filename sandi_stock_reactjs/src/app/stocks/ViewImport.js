@@ -18,7 +18,7 @@ function View(props) {
     fetchTransactions(transaction_id)
   }, [])
 
-  function handleReturn(){
+  function handleReturn() {
     history.push('/stocks/listImport')
   }
 
@@ -54,10 +54,10 @@ function View(props) {
   return (
     <div>
       <div className="page-header">
-        <h3 className="page-title"> Phiếu nhập kho {transaction.transaction_number}</h3>
+        <h3 className="page-title"> Thông tin phiếu nhập kho</h3>
         <div>
           <button type="button" className="btn btn-primary btn-icon small_button" style={{ margin: '0px 10px' }} ><i className="mdi mdi-content-save"></i></button>
-          <button type="button" className="btn btn-warning btn-icon small_button"  onClick={handleReturn}><i className="mdi mdi-keyboard-return"></i></button>
+          <button type="button" className="btn btn-warning btn-icon small_button" onClick={handleReturn}><i className="mdi mdi-keyboard-return"></i></button>
         </div>
       </div>
 
@@ -67,57 +67,57 @@ function View(props) {
             <div className="card-body">
               <form className="forms-sample">
                 <Form.Group className="row">
-                  <label htmlFor="transaction_number" className="col-sm-2">Số chứng từ</label>
+                  <label htmlFor="transaction_number" className="col-sm-2 col-form-label">Số chứng từ</label>
                   <div className="col-sm-4">
-                    {transaction.transaction_number}
+                    <div className='form_value'>{transaction.transaction_number}</div>
                   </div>
-                  <label htmlFor="transaction_date" className="col-sm-2">Ngày chứng từ</label>
+                  <label htmlFor="transaction_date" className="col-sm-2 col-form-label">Ngày chứng từ</label>
                   <div className="col-sm-4">
-                    {Common.prettyDate(transaction.transaction_date)}
-                  </div>
-                </Form.Group>
-                <Form.Group className="row">
-                  <label htmlFor="transaction_type" className="col-sm-2">Loại nhập kho</label>
-                  <div className="col-sm-4">
-                    {Common.convertTransType(transaction.transaction_type)}
-                  </div>
-                  <label htmlFor="field" className="col-sm-2">Nhập hàng tại kho</label>
-                  <div className="col-sm-4">
-                    {transaction.stock_name}
+                    <div className='form_value'>{Common.prettyDate(transaction.transaction_date)}</div>
                   </div>
                 </Form.Group>
                 <Form.Group className="row">
-                  <label htmlFor="deliver_unit_code" className="col-sm-2">{deliver_code_label}</label>
+                  <label htmlFor="transaction_type" className="col-sm-2 col-form-label">Loại nhập kho</label>
                   <div className="col-sm-4">
-                    {transaction.deliver_unit_code}
+                    <div className='form_value'>{Common.convertTransType(transaction.transaction_type)}</div>
                   </div>
-                  <label htmlFor="deliver_unit_name" className="col-sm-2">{deliver_name_label}</label>
+                  <label htmlFor="field" className="col-sm-2 col-form-label">Nhập hàng tại kho</label>
                   <div className="col-sm-4">
-                    {transaction.deliver_unit_name}
+                    <div className='form_value'>{transaction.stock_name}</div>
+                  </div>
+                </Form.Group>
+                <Form.Group className="row">
+                  <label htmlFor="deliver_unit_code" className="col-sm-2 col-form-label">{deliver_code_label}</label>
+                  <div className="col-sm-4">
+                    <div className='form_value'>{transaction.deliver_unit_code}</div>
+                  </div>
+                  <label htmlFor="deliver_unit_name" className="col-sm-2 col-form-label">{deliver_name_label}</label>
+                  <div className="col-sm-4">
+                    <div className='form_value'>{transaction.deliver_unit_name}</div>
                   </div>
                 </Form.Group>
                 <Form.Group className="row">
                   {(transaction.transaction_type !== 1 && transaction.transaction_type !== 5) && (
                     <>
-                      <label htmlFor="name" className="col-sm-2">Người giao hàng</label>
+                      <label htmlFor="name" className="col-sm-2 col-form-label">Người giao hàng</label>
                       <div className="col-sm-4">
                         {transaction.deliver_person}
                       </div>
                     </>
                   )}
-                  <label htmlFor="explain" className="col-sm-2">Diễn giải</label>
+                  <label htmlFor="explain" className="col-sm-2 col-form-label">Diễn giải</label>
                   <div className="col-sm-4">
-                    {transaction.transaction_explain}
+                    <div className='form_value'>{transaction.transaction_explain}</div>
                   </div>
                 </Form.Group>
                 <Form.Group className="row">
-                  <label htmlFor="attach" className="col-sm-2">Kèm theo</label>
+                  <label htmlFor="attach" className="col-sm-2 col-form-label">Kèm theo</label>
                   <div className="col-sm-4">
-                    {transaction.transaction_attach}
+                    <div className='form_value'>{transaction.transaction_attach}</div>
                   </div>
-                  <label htmlFor="explain" className="col-sm-2">Trạng thái</label>
+                  <label htmlFor="explain" className="col-sm-2 col-form-label">Trạng thái</label>
                   <div className="col-sm-4">
-                    {Common.convertStatusImportRequest(transaction.status)}
+                    <div className='form_value'>{Common.convertStatusImportRequest(transaction.status)}</div>
                   </div>
                 </Form.Group>
               </form>
@@ -173,7 +173,7 @@ function View(props) {
                                 {item.unit}
                               </td>
                               <td className='right'>
-                              {item.quantity}
+                                {item.quantity}
                               </td>
                               <td className='right'>
                                 {item.unit_to_kg}
@@ -182,10 +182,10 @@ function View(props) {
                                 {(Math.round(Common.removeNonNumeric(item.quantity) * item.unit_to_kg * 100) / 100).toLocaleString('en', { maximumFractionDigits: 2 })}
                               </td>
                               <td className='center'>
-                              {item.position_code}
+                                {item.position_code}
                               </td>
                               <td className='right'>
-                              {item.price}
+                                {item.price}
                               </td>
                               <td className='right'>
                                 {(Math.round(Common.removeNonNumeric(item.quantity) * Common.removeNonNumeric(item.price) * 100) / 100).toLocaleString('en', { maximumFractionDigits: 2 })}

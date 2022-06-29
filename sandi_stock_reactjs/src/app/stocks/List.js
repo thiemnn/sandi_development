@@ -149,7 +149,7 @@ function List() {
         let stock_code = '';
         let stock_name = '';
         if (current_id) {
-          while (current_id != root_id) {
+          while (current_id !== root_id) {
             var group = stock_groups.filter(
               (stock_group) => stock_group.id.toString() === current_id.toString()
             )[0];
@@ -596,7 +596,7 @@ function List() {
       </div>
       <div style={{ position: 'relative' }}>
 
-      <Modal showOverlay={false} style={{ position: 'absolute', top: '0px', left: '0px' }} size={'md'} show={showStockGroupModel} onClose={() => { setShowStockGroupModel(false) }}>
+      <Modal showOverlay={true} size={'md'} show={showStockGroupModel} onClose={() => { setShowStockGroupModel(false) }}>
         <Modal.Header>
           <Modal.Title>
             {model_stock_group_title}

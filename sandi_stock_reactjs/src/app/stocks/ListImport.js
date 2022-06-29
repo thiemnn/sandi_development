@@ -80,7 +80,7 @@ function List() {
                         return (
                           <tr key={"stockTransaction-" + index} className={selected_import && selected_import.id === stockTransaction.id ? 'selected-row' : ''} onClick={() => setSelectedImport(stockTransaction)}>
                             <td className='center'>
-                              {Common.convertStatusImportRequest(stockTransaction.status)}
+                              {Common.convertStatusImport(stockTransaction.status)}
                             </td>
                             <td className='center'>
                               {Common.prettyDate(stockTransaction.transaction_date)}

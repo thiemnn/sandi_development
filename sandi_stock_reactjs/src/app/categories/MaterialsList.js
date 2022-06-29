@@ -169,7 +169,7 @@ function MaterialsList() {
         let product_code = '';
         let product_name = '';
         if (current_id) {
-          while (current_id != root_id) {
+          while (current_id !== root_id) {
             var group = product_groups.filter(
               (product_group) => product_group.id.toString() === current_id.toString()
             )[0];

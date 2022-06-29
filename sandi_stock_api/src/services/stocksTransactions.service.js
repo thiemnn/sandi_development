@@ -4,6 +4,7 @@ const insert = async (body) => {
     try {
         const con = await db.getConnection()
         var sql = `INSERT INTO m_stock_transaction (
+            transaction_R_id,
             transaction_number, 
             stock_id, 
             transaction_type,
@@ -12,8 +13,10 @@ const insert = async (body) => {
             deliver_person, 
             transaction_date, 
             transaction_explain, 
-            transaction_attach) VALUES 
+            transaction_attach,
+            status) VALUES 
         (
+            ${body.transaction_R_id},
             '${body.transaction_number}', 
             ${body.stock_id},
             ${body.transaction_type},
@@ -22,15 +25,20 @@ const insert = async (body) => {
             '${body.deliver_person}',
             '${body.transaction_date}',
             '${body.transaction_explain}',
-            '${body.transaction_attach}'
+            '${body.transaction_attach}',
+            ${body.transaction_status}
         )`;
         const result = await con.query(sql)
+
+        await con.query(`update m_stock_transaction_R set status = 3 where id = ${body.transaction_R_id}`)
+
         var transaction_id = result.insertId;
 
         await Promise.all(body.materials.map(async (material) => {
             var sqlDetail = `INSERT INTO m_stock_transaction_D (
                 transaction_id, 
                 material_code, 
+                quantity_expect,
                 quantity,
                 price,
                 position_code,
@@ -40,6 +48,7 @@ const insert = async (body) => {
             (
                 ${transaction_id}, 
                 '${material.code}',
+                ${parseFloat(material.quantity_expect.replaceAll(',', ''))},
                 ${parseFloat(material.quantity.replaceAll(',', ''))},
                 ${parseFloat(material.price.replaceAll(',', ''))},
                 '${material.position}',
@@ -71,7 +80,8 @@ const update = async (id, body) => {
         deliver_person = '${body.deliver_person}',
         transaction_date = '${body.transaction_date}',
         transaction_explain = '${body.transaction_explain}',
-        transaction_attach = '${body.transaction_attach}'
+        transaction_attach = '${body.transaction_attach}',
+        status = ${body.transaction_status}
         where id = ${id}`;
         const result = await con.query(sql)
 
@@ -82,6 +92,7 @@ const update = async (id, body) => {
                 transaction_id, 
                 material_code, 
                 quantity,
+                quantity_expect,
                 price,
                 position_code,
                 tk_co, 
@@ -91,6 +102,7 @@ const update = async (id, body) => {
                 ${id}, 
                 '${material.code}',
                 ${parseFloat(material.quantity.replaceAll(',', ''))},
+                ${parseFloat(material.quantity_expect.replaceAll(',', ''))},
                 ${parseFloat(material.price.replaceAll(',', ''))},
                 '${material.position}',
                 '${material.tk_co}',
@@ -111,7 +123,7 @@ const update = async (id, body) => {
 const getAll = async () => {
     try {
         const con = await db.getConnection()
-        const stock_transactions = await con.query(`SELECT * FROM m_stock_transaction where (status = 0 or status = 1)`)
+        const stock_transactions = await con.query(`SELECT * FROM m_stock_transaction where (status >= 0)`)
         await con.end()
         return stock_transactions
     } catch (e) {

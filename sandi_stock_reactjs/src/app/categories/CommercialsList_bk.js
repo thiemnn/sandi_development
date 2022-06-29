@@ -155,7 +155,7 @@ function CommercialsList() {
       let product_code = '';
       let product_name = '';
       if (current_id) {
-        while (current_id != root_id) {
+        while (current_id !== root_id) {
           var group = product_groups[current_id]
           product_code = group.code + '-' + product_code
           product_name = group.name + ' ' + product_name

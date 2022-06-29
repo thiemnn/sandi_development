@@ -57,6 +57,21 @@ class Common {
         return found ? found.label : ''
     }
 
+    static convertStatusImport(status) {
+        const statusList = [
+            { value: 1, label: "Lưu nháp" },
+            { value: 2, label: "Xác nhận" },
+            { value: 3, label: "Đã nhập" },
+            { value: -1, label: "Hủy bỏ" }
+        ]
+
+        let found = statusList.find((element) => {
+            return element.value === status;
+        });
+
+        return found ? found.label : ''
+    }
+
     static addCommas = num => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     static removeNonNumeric = num => num.toString().replace(/[^0-9.]/g, "");
 }
