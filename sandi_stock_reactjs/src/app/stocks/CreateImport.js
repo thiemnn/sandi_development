@@ -31,7 +31,7 @@ function Insert(props) {
   const defaultDateValue = today.toISOString().split('T')[0];
   const [stock_transaction, setStockTransaction] = useState({
     transaction_R_id: 0,
-    transaction_number: "PNK220624001",
+    transaction_number: "",
     transaction_type: 5,
     stock_id: "",
     stock_name: "",
@@ -73,34 +73,37 @@ function Insert(props) {
 
   useEffect(() => {
     let transaction_R_id = parseInt(props.match.params.id);
-    console.log(transaction_R_id)
-    fetchTransactionRequest(transaction_R_id)
+    //fetchLastNumber();
+    fetchTransactionRequest(transaction_R_id);
+    fetchPositions();
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, [])
 
   function fetchTransactionRequest(transaction_R_id) {
     try {
       fetchWrapper.get(process.env.REACT_APP_API_URL + 'stocks_transaction_requests/' + transaction_R_id).then((data) => {
         if (data.success) {
-          console.log(data.data)
           let transaction = data.data.transaction
           let transaction_details = data.data.transaction_details
           const today = new Date(transaction.transaction_date);
           const defaultDateValue = today.toISOString().split('T')[0];
-          setStockTransaction({
-            ...stock_transaction,
-            "transaction_R_id": transaction_R_id,
-            "transaction_number": "PNK0012",
-            "transaction_type": transaction.transaction_type,
-            "stock_id": transaction.stock_id,
-            "stock_name": transaction.stock_name,
-            "deliver_unit_code": transaction.deliver_unit_code,
-            "deliver_unit_name": transaction.deliver_unit_name,
-            "deliver_person": transaction.deliver_person,
-            "transaction_date": defaultDateValue,
-            "explain": transaction.transaction_explain,
-            "attach": transaction.transaction_attach,
-            "transaction_status": transaction.status
-          });
+          var temp = {...stock_transaction};
+          temp.transaction_R_id = transaction_R_id;
+          temp.transaction_number = transaction.transaction_number.replace("PĐNNK","PNK");
+          temp.transaction_type = transaction.transaction_type;
+          temp.stock_id = transaction.stock_id;
+          temp.stock_name = transaction.stock_name;
+          temp.deliver_unit_code = transaction.deliver_unit_code;
+          temp.deliver_unit_name = transaction.deliver_unit_name;
+          temp.deliver_person = transaction.deliver_person;
+          temp.transaction_date = defaultDateValue;
+          temp.explain = transaction.transaction_explain;
+          temp.attach = transaction.transaction_attach;
+          temp.transaction_status = transaction.status;
+          setStockTransaction(temp);
           let transaction_type = data.data.transaction.transaction_type
           if (transaction_type === 1 || transaction_type === 5) {
             setDeliverCodeLabel('Mã nhân viên')
@@ -125,7 +128,7 @@ function Insert(props) {
               tk_co: element.tk_co,
               tk_no: element.tk_no,
               quantity: addCommas(removeNonNumeric(element.quantity)),
-              quantity_expect: addCommas(removeNonNumeric(element.quantity)),              
+              quantity_expect: addCommas(removeNonNumeric(element.quantity)),
               price: "",
               position: ""
             });
@@ -139,17 +142,6 @@ function Insert(props) {
       console.error(error);
     }
   }
-
-  useEffect(() => {
-    fetchPositions();
-  }, [])
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [])
 
   function fetchPositions() {
     try {
@@ -165,7 +157,21 @@ function Insert(props) {
     }
   }
 
-  function handleClickOutside(event) {        
+  // function fetchLastNumber() {
+  //   try {
+  //     fetchWrapper.get(process.env.REACT_APP_API_URL + 'stocks_transactions/lastNumber').then((data) => {
+  //       if (data.success) {          
+  //         console.log(data.data)
+  //       } else {
+  //         console.log(data)
+  //       }
+  //     })
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
+
+  function handleClickOutside(event) {
     if (selectPositionRow >= 0 && wrapperPositionRef.current && !wrapperPositionRef.current.contains(event.target)) {
       let input_position = document.querySelector('#position_' + selectPositionRow);
       if (!input_position.contains(event.target)) {
@@ -292,19 +298,19 @@ function Insert(props) {
                     <>
                       <label htmlFor="name" className="col-sm-2 col-form-label">Người giao hàng</label>
                       <div className="col-sm-4">
-                        <div className='form_value'>{stock_transaction.deliver_person}</div>                        
+                        <div className='form_value'>{stock_transaction.deliver_person}</div>
                       </div>
                     </>
                   )}
                   <label htmlFor="explain" className="col-sm-2 col-form-label">Diễn giải</label>
                   <div className="col-sm-4">
-                  <div className='form_value'>{stock_transaction.transaction_explain}</div>
+                    <div className='form_value'>{stock_transaction.transaction_explain}</div>
                   </div>
                 </Form.Group>
                 <Form.Group className="row">
                   <label htmlFor="attach" className="col-sm-2 col-form-label">Kèm theo</label>
                   <div className="col-sm-4">
-                  <div className='form_value'>{stock_transaction.transaction_attach}</div>
+                    <div className='form_value'>{stock_transaction.transaction_attach}</div>
                   </div>
                   <label htmlFor="explain" className="col-sm-2 col-form-label">Trạng thái</label>
                   <div className="col-sm-4">
@@ -346,7 +352,7 @@ function Insert(props) {
                           <th style={{ width: '80px' }}> TK nợ </th>
                           <th style={{ width: '80px' }}> TK có </th>
                           <th style={{ width: '50px' }}> DVT </th>
-                          <th style={{ width: '150px' }}> SL đề xuất</th>                          
+                          <th style={{ width: '150px' }}> SL đề xuất</th>
                           <th style={{ width: '150px' }}> SL thực nhập</th>
                           <th style={{ width: '80px' }}> HSQĐ(kg) </th>
                           <th style={{ width: '150px' }}> SLQĐ(kg) </th>
@@ -378,7 +384,7 @@ function Insert(props) {
                                 {item.unit}
                               </td>
                               <td className='right'>
-                                {item.quantity_expect}                                
+                                {item.quantity_expect}
                               </td>
                               <td>
                                 <Form.Control type="text" name="quantity" value={item.quantity} onChange={(e) => handleItemsChange(i, e)} className="form-control right" placeholder="" />

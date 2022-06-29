@@ -118,9 +118,9 @@ const getAll = async () => {
 const get = async (_id) => {
     try {
         const con = await db.getConnection()
-        const transactions = await con.query(`SELECT A.*, B.name as stock_name FROM sandi_stock_db.m_stock_transaction_R as A
+        const transactions = await con.query(`SELECT A.*, B.name as stock_name FROM m_stock_transaction_R as A
         left join m_stock as B on A.stock_id = B.id WHERE A.id = ` + _id)
-        const transaction_details = await con.query(`SELECT *, B.name as material_name FROM sandi_stock_db.m_stock_transaction_RD as A
+        const transaction_details = await con.query(`SELECT *, B.name as material_name FROM m_stock_transaction_RD as A
         left join m_product as B on A.material_code = B.code
         where A.transaction_id = ` + _id)
         await con.end()
@@ -134,9 +134,37 @@ const get = async (_id) => {
     }
 }
 
+
+function padLeadingZeros(num, size) {
+    var s = num+"";
+    while (s.length < size) s = "0" + s;
+    return s;
+}
+
+const getLastNumber = async () => {
+    try {
+        const con = await db.getConnection()
+        const stock_transactions = await con.query(`SELECT transaction_number FROM m_stock_transaction_R order by created_at desc limit 1`)
+        await con.end()
+        if (stock_transactions && stock_transactions.length > 0)
+        {
+            var old_number = stock_transactions[0].transaction_number
+            var temp = old_number.replace('PĐNNK', '')
+            var tempInt = parseInt(temp) + 1
+            return "PĐNNK" + padLeadingZeros(tempInt, 5)
+        }            
+        else
+            return "PĐNNK00001"
+    } catch (e) {
+        console.log("can't query last number from m_stock_transaction");
+        return null;
+    }
+}
+
 module.exports = {
     insert,
     update,
     getAll,
-    get
+    get,
+    getLastNumber
 };

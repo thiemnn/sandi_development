@@ -23,9 +23,17 @@ const get = async(req, res) => {
     else return responseHelper.notFound(res, 'Can not get data')
 }
 
+const getLastNumber = async(req, res) => {
+    var response = await stocksTransactionsService.getLastNumber();
+    if(response)
+    return responseHelper.successWithData(res, 'Success With Data', response)
+    else return responseHelper.notFound(res, 'Can not get data')
+}
+
 module.exports = {
     insert,
     update,
     getAll,
-    get
+    get,
+    getLastNumber
 };

@@ -16,7 +16,7 @@ function View(props) {
   useEffect(() => {
     let transaction_id = parseInt(props.match.params.id);
     fetchTransactions(transaction_id)
-  }, [])
+  }, [props.match.params.id])
 
   function handleReturn() {
     history.push('/stocks/listImportRequest')

@@ -132,12 +132,38 @@ const getAll = async () => {
     }
 }
 
+function padLeadingZeros(num, size) {
+    var s = num+"";
+    while (s.length < size) s = "0" + s;
+    return s;
+}
+
+const getLastNumber = async () => {
+    try {
+        const con = await db.getConnection()
+        const stock_transactions = await con.query(`SELECT transaction_number FROM m_stock_transaction order by created_at desc limit 1;`)
+        await con.end()
+        if (stock_transactions && stock_transactions.length > 0)
+        {
+            var old_number = stock_transactions[0].transaction_number
+            var temp = old_number.replace('PNK', '')
+            var tempInt = parseInt(temp) + 1
+            return "PNK" + padLeadingZeros(tempInt, 5)
+        }            
+        else
+            return "PNK00001"
+    } catch (e) {
+        console.log("can't query last number from m_stock_transaction");
+        return null;
+    }
+}
+
 const get = async (_id) => {
     try {
         const con = await db.getConnection()
-        const transactions = await con.query(`SELECT A.*, B.name as stock_name FROM sandi_stock_db.m_stock_transaction as A
+        const transactions = await con.query(`SELECT A.*, B.name as stock_name FROM m_stock_transaction as A
         left join m_stock as B on A.stock_id = B.id WHERE A.id = ` + _id)
-        const transaction_details = await con.query(`SELECT *, B.name as material_name, C.name as position_name FROM sandi_stock_db.m_stock_transaction_D as A
+        const transaction_details = await con.query(`SELECT *, B.name as material_name, C.name as position_name FROM m_stock_transaction_D as A
         left join m_product as B on A.material_code = B.code
         left join m_stock_shelfs as C on A.position_code = C.code where A.transaction_id = ` + _id)
         await con.end()
@@ -155,5 +181,6 @@ module.exports = {
     insert,
     update,
     getAll,
-    get
+    get,
+    getLastNumber
 };

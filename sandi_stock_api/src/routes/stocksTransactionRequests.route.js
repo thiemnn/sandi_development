@@ -33,7 +33,11 @@ router.route('/insert')
 router.route('/')
     .get(authenToken, stocksTransactionRequestsController.getAll);
 
+router.route('/lastNumber')
+    .get(authenToken, stocksTransactionRequestsController.getLastNumber);
+
 router.route('/:_id')
     .get(authenToken, stocksTransactionRequestsController.get);
+
 
 module.exports = router;
