@@ -1,0 +1,47 @@
+.insert-import {
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .form-group .validation {
+    margin: 4px 0 0;
+    font-size: 13px;
+  }
+  .card-body > .validation {
+    font-size: 14px;
+  }
+
+  .insert-import-table {
+    td { vertical-align: middle; }
+    td.wrap { white-space: normal; }
+    td.strong { font-weight: 600; }
+    .form-control { height: 38px; padding: 6px 8px; }
+    .select__control { min-height: 38px; }
+    .remove-line {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      i { margin: 0; }
+    }
+    .row-error td { background: #fff1f1; }
+    .cell-error .select__control { border-color: #fc424a; }
+    .add-row td { background: #f8f9fb; }
+    .total-row td {
+      font-weight: 600;
+      background: #f3f5f9;
+    }
+  }
+}
+
+// Menu chọn vật tư (gắn vào body qua portal)
+.product-option {
+  display: grid;
+  grid-template-columns: 110px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  b { font-family: monospace; }
+  small { color: #8e94a9; white-space: nowrap; }
+}

@@ -52,8 +52,8 @@ function List() {
       <div className="page-header">
         <h3 className="page-title"> Danh sách Phiếu Nhập Kho </h3>
         <div className='fl-right mb-10'>
-          <button type="button" className="btn btn-primary btn-icon small_button hidden" title="Thêm Phiếu Nhập Kho" onClick={() => handleInsert()}><i className="mdi mdi-plus-box"></i></button>
-          <button type="button" className="btn btn-warning btn-icon small_button ml-10" title="Thêm Phiếu Nhập Kho" onClick={() => handleView()}><i className="mdi mdi-eye"></i></button>
+          <button type="button" className="btn btn-primary btn-icon small_button" title="Thêm Phiếu Nhập Kho" onClick={() => handleInsert()}><i className="mdi mdi-plus-box"></i></button>
+          <button type="button" className="btn btn-warning btn-icon small_button ml-10" title="Xem Phiếu Nhập Kho" onClick={() => handleView()}><i className="mdi mdi-eye"></i></button>
           <button type="button" className="btn btn-success btn-icon small_button ml-10" title="Sửa Phiếu Nhập Kho" onClick={() => handleEdit()}><i className="mdi mdi-pencil"></i></button>          
         </div>
       </div>
