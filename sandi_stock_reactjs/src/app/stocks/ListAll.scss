@@ -1,0 +1,63 @@
+.stocks-all {
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .stocks-all-filter .form-group {
+    margin-bottom: 12px;
+  }
+  .stocks-all-reset {
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 12px;
+    .btn { width: 100%; }
+  }
+  .stocks-all-summary {
+    font-size: 13px;
+    margin-bottom: 10px;
+    color: #6c7383;
+  }
+
+  th.sortable {
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    i { margin-left: 4px; font-size: 14px; }
+  }
+  .stocks-all-wrap {
+    white-space: normal;
+    min-width: 160px;
+  }
+  .stocks-all-code {
+    font-weight: 600;
+  }
+  .stocks-all-actions {
+    white-space: nowrap;
+    .btn {
+      padding: 0.45rem 0.6rem;
+      margin: 0 2px;
+      i { margin-right: 0; font-size: 15px; }
+    }
+  }
+
+  .stocks-all-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+    > div {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+    select { width: auto; }
+    .page-link { cursor: pointer; }
+  }
+}
